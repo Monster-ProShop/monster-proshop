@@ -15,9 +15,9 @@
             theme: {
                 extend: {
                     colors: {
-                        dark: '#0B0F19', // Deep Midnight Navy
+                        dark: '#0B0F19',
                         card: '#1E293B',
-                        primary: '#38BDF8', // Cobalt Blue
+                        primary: '#38BDF8', 
                         primaryHover: '#2563EB'
                     }
                 }
@@ -35,9 +35,7 @@
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased pb-20">
 
-    <!-- Header with Integrated Logo Concept 2 -->
     <header class="bg-card border-b border-gray-800 sticky top-0 z-40 px-4 py-3 shadow-lg flex justify-between items-center">
-        <!-- SVG Logo: Core Vault Sphere -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="30 20 350 120" class="h-10 w-auto">
             <defs>
                 <linearGradient id="cobaltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -69,7 +67,6 @@
         </div>
     </main>
 
-    <!-- Bowler Form / Detail Modal -->
     <div id="formModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
         <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10">
             <h2 id="formTitle" class="text-lg font-bold text-white">Bowler Profile</h2>
@@ -82,7 +79,6 @@
             <!-- Profile Identity & Style -->
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-4">
                 <div class="flex items-center gap-4">
-                    <!-- Profile Picture Upload -->
                     <div class="relative w-16 h-16 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer" onclick="document.getElementById('profilePhotoInput').click()">
                         <img id="profilePreview" class="w-full h-full object-cover hidden">
                         <span id="profileIcon" class="text-2xl text-gray-500">📷</span>
@@ -134,12 +130,12 @@
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-4">
                 <label class="block text-xs font-bold text-primary uppercase border-b border-gray-700 pb-2">Drill Sheet / Pitches</label>
                 
-                <!-- Spans & Auto-Pitch Suggester (Hidden if No Thumb) -->
+                <!-- Spans & Auto-Pitch Suggester -->
                 <div id="spanSection" class="space-y-2 pb-2 border-b border-gray-800">
                     <span class="text-xs font-bold text-gray-400 block">Spans</span>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="spanLeft" placeholder="Left Span" class="pitch-input text-center">
-                        <input type="text" id="spanRight" placeholder="Right Span" class="pitch-input text-center">
+                        <select id="spanLeft" class="pitch-input text-center text-sm font-mono"></select>
+                        <select id="spanRight" class="pitch-input text-center text-sm font-mono"></select>
                     </div>
                     
                     <div class="flex gap-2 items-center bg-gray-900 p-2 rounded border border-gray-700 mt-2">
@@ -178,9 +174,8 @@
                     </div>
                 </div>
 
-                <!-- Thumb Features (Hidden if No Thumb) -->
+                <!-- Thumb Features -->
                 <div id="thumbFeaturesSection" class="space-y-4">
-                    <!-- Thumb -->
                     <div class="bg-gray-900 p-2 rounded border border-gray-700">
                         <span class="text-xs font-bold text-primary block mb-1">Thumb</span>
                         <div class="flex gap-2 mb-2">
@@ -193,7 +188,6 @@
                         </div>
                     </div>
 
-                    <!-- Thumb Oval Calculator -->
                     <div class="bg-gray-800 p-3 rounded border border-gray-700">
                         <span class="text-xs font-bold text-primary block mb-2 uppercase">Thumb Oval Generator</span>
                         <div class="grid grid-cols-3 gap-2">
@@ -206,7 +200,6 @@
                     </div>
                 </div>
 
-                <!-- Hard Copy Photo Upload -->
                 <div>
                     <label class="block text-xs text-gray-400 mt-3 mb-1">Physical Spec Sheet Photo (Optional)</label>
                     <input type="file" accept="image/*" onchange="handleFile(event, 'drillPhoto')" class="text-sm text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-800 file:text-white w-full">
@@ -215,13 +208,11 @@
                 </div>
             </div>
 
-            <!-- Arsenal -->
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-2">
                 <label class="block text-xs font-bold text-primary uppercase mb-2">Arsenal (9 Balls Max)</label>
                 <div id="arsenalContainer" class="space-y-3"></div>
             </div>
 
-            <!-- Video -->
             <div class="bg-card p-4 rounded-lg border border-gray-800">
                 <label class="block text-xs font-bold text-primary uppercase mb-1">Release Video</label>
                 <input type="file" accept="video/*" onchange="handleFile(event, 'video')" class="text-sm text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-800 file:text-white w-full">
@@ -254,6 +245,20 @@
             navigator.serviceWorker.register(URL.createObjectURL(blob));
         }
 
+        // Generate Span Options (3 to 7 in 1/16 increments)
+        const fractionsArr = ['','1/16','1/8','3/16','1/4','5/16','3/8','7/16','1/2','9/16','5/8','11/16','3/4','13/16','7/8','15/16'];
+        let spanOptions = '<option value="">Select Span</option>';
+        for(let whole = 3; whole <= 7; whole++) {
+            for(let frac of fractionsArr) {
+                if(whole === 7 && frac !== '') break;
+                let text = frac ? `${whole} ${frac}` : `${whole}`;
+                spanOptions += `<option value="${text}">${text}</option>`;
+            }
+        }
+        document.getElementById('spanLeft').innerHTML = spanOptions;
+        document.getElementById('spanRight').innerHTML = spanOptions;
+
+        // Setup Arsenal
         const finishes = ['500','500P','1000','1000P','1500','1500P','2000','2000P','3000','3000P','4000','4000P'];
         const arsenalDiv = document.getElementById('arsenalContainer');
         for(let i=0; i<9; i++) {
@@ -278,17 +283,17 @@
         };
         request.onsuccess = (e) => { db = e.target.result; loadList(); };
 
-        // Parsing and Math Utils
         function parseFraction(str) {
             str = str.trim();
+            if(!str) return 0;
             if(str.includes('/')) {
+                if(str.includes(' ')) {
+                    let parts = str.split(' ');
+                    let fParts = parts[1].split('/');
+                    return parseFloat(parts[0]) + (parseFloat(fParts[0]) / parseFloat(fParts[1]));
+                }
                 let parts = str.split('/');
                 return parseFloat(parts[0]) / parseFloat(parts[1]);
-            }
-            if(str.includes(' ')) {
-                let parts = str.split(' ');
-                let fParts = parts[1].split('/');
-                return parseFloat(parts[0]) + (parseFloat(fParts[0]) / parseFloat(fParts[1]));
             }
             return parseFloat(str) || 0;
         }
@@ -314,23 +319,22 @@
             return fracStr;
         }
 
-        // Auto Pitch Suggestion (Spectre Logic)
+        // Auto Pitch Suggestion (Based on Largest Span)
         function suggestThumbPitch() {
             let leftSpanStr = document.getElementById('spanLeft').value;
             let rightSpanStr = document.getElementById('spanRight').value;
+            
             if (!leftSpanStr && !rightSpanStr) {
-                alert("Please enter a span first.");
+                alert("Please select a span first.");
                 return;
             }
             
             let leftSpan = parseFraction(leftSpanStr);
             let rightSpan = parseFraction(rightSpanStr);
-            let avgSpan = 0;
-            if (leftSpan > 0 && rightSpan > 0) avgSpan = (leftSpan + rightSpan) / 2;
-            else avgSpan = leftSpan > 0 ? leftSpan : rightSpan;
+            let largestSpan = Math.max(leftSpan, rightSpan);
 
-            // Algorithm derived from Spectre PRO column: Pitch = (4.5 - Span) / 2
-            let basePitch = (4.5 - avgSpan) / 2;
+            // Pitch = (4.5 - Largest Span) / 2
+            let basePitch = (4.5 - largestSpan) / 2;
             
             let thumbSize = document.getElementById('thumbSize').value;
             let adj = 0;
@@ -344,7 +348,6 @@
             document.getElementById('thD1').value = dir;
         }
 
-        // Oval Calculator
         function generateCuts() {
             let startStr = document.getElementById('thumbStart').value;
             let endStr = document.getElementById('thumbEnd').value;
@@ -372,7 +375,6 @@
             cutsDiv.classList.remove('hidden');
         }
 
-        // UI Interactions
         function toggleThumbSections() {
             const style = document.getElementById('bowlerStyle').value;
             const spanSec = document.getElementById('spanSection');
@@ -411,7 +413,6 @@
             reader.readAsDataURL(file);
         }
 
-        // Load & Save
         function loadList() {
             const tx = db.transaction("bowlers", "readonly");
             const req = tx.objectStore("bowlers").getAll();
