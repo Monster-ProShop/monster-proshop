@@ -84,6 +84,7 @@
             
             <!-- Dropdown Menu -->
             <div id="mainMenu" class="absolute top-16 right-4 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
+                <button onclick="switchView('bowlers'); toggleMenu();" id="btnMenuBowlers" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🎳 My Bowlers</button>
                 <button onclick="toggleSearch()" id="btnMenuSearch" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🔍 Search Bowlers</button>
                 <button onclick="exportBackup()" id="btnMenuExport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">💾 Backup & Export</button>
                 <button onclick="document.getElementById('importInput').click(); toggleMenu();" id="btnMenuImport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">📂 Upload Backup</button>
@@ -92,49 +93,61 @@
             <input type="file" id="importInput" accept=".json" class="hidden" onchange="importBackup(event)">
         </header>
 
-        <main class="p-4 w-full max-w-lg mx-auto">
-            <div id="searchContainer" class="hidden mb-4">
-                <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
+        <main class="w-full max-w-lg mx-auto" id="mainContentView">
+            
+            <!-- Bowlers View -->
+            <div id="viewBowlers" class="p-4 block">
+                <div id="searchContainer" class="hidden mb-4">
+                    <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
+                </div>
+                <div id="bowlerList" class="space-y-3"></div>
+                <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
+                    <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <p id="txtEmpty">No bowlers found.<br>Tap + NEW to create a profile.</p>
+                </div>
             </div>
-            <div id="bowlerList" class="space-y-3"></div>
-            <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
-                <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                <p id="txtEmpty">No bowlers found.<br>Tap + NEW to create a profile.</p>
-            </div>
+
         </main>
 
-        <!-- Layout Expert Floating Bubble -->
-        <button onclick="openLayoutModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primaryHover text-dark rounded-full shadow-[0_0_15px_rgba(56,189,248,0.4)] flex items-center justify-center text-2xl z-30 transition-transform active:scale-95">
-            📐
+        <!-- Layout Expert Floating Bubble (Red Bowling Ball) -->
+        <button onclick="openLayoutModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center justify-center z-30 transition-transform active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-9 h-9">
+                <circle cx="40" cy="30" r="7" fill="#7F1D1D"/>
+                <circle cx="60" cy="25" r="7" fill="#7F1D1D"/>
+                <circle cx="50" cy="55" r="9" fill="#7F1D1D"/>
+            </svg>
         </button>
     </div>
 
     <!-- Layout Expert Modal -->
     <div id="layoutModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
-        <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10">
+        <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10 shadow-lg">
             <h2 id="layoutTitle" class="text-lg font-bold text-white">Layout Expert</h2>
-            <button onclick="closeLayoutModal()" class="text-gray-400 hover:text-white font-bold text-xl">&times;</button>
+            <button onclick="closeLayoutModal()" class="text-gray-400 hover:text-white font-bold text-2xl">&times;</button>
         </div>
         <div class="p-4 space-y-4 pb-12">
-            <p id="layoutDesc" class="text-sm text-gray-400">Generate Dual Angle Layouts based on bowler specs.</p>
+            <p id="layoutDesc" class="text-sm text-gray-400">Generate Dual Angle Layouts based on bowler and ball specs.</p>
+            
+            <!-- Bowler Specs -->
             <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
-                <div>
-                    <label id="lblCalcSpeed" class="block text-xs font-bold text-primary mb-1 uppercase">Bowler Speed (mph)</label>
-                    <input type="number" id="calcSpeed" value="16" step="0.1" class="pitch-input font-bold" oninput="calculateLayout()">
-                </div>
+                <h3 class="text-xs font-bold text-white uppercase border-b border-gray-800 pb-1">Bowler Specs</h3>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label id="lblCalcRevs" class="block text-xs font-bold text-primary mb-1 uppercase">Revolutions (RPM)</label>
-                        <input type="number" id="calcRevs" value="350" class="pitch-input" oninput="calculateLayout()">
+                        <label id="lblCalcSpeed" class="block text-[10px] font-bold text-primary mb-1 uppercase">Speed (mph)</label>
+                        <input type="number" id="calcSpeed" value="16" step="0.1" class="pitch-input font-bold" oninput="calculateLayout()">
                     </div>
                     <div>
-                        <label id="lblCalcTilt" class="block text-xs font-bold text-primary mb-1 uppercase">Axis Tilt (deg)</label>
+                        <label id="lblCalcRevs" class="block text-[10px] font-bold text-primary mb-1 uppercase">Revs (RPM)</label>
+                        <input type="number" id="calcRevs" value="350" class="pitch-input font-bold" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcTilt" class="block text-[10px] font-bold text-primary mb-1 uppercase">Axis Tilt (deg)</label>
                         <input type="number" id="calcTilt" value="12" class="pitch-input" oninput="calculateLayout()">
                     </div>
-                </div>
-                <div>
-                    <label id="lblCalcRot" class="block text-xs font-bold text-primary mb-1 uppercase">Axis Rotation (deg)</label>
+                    <div>
+                        <label id="lblCalcRot" class="block text-[10px] font-bold text-primary mb-1 uppercase">Rotation (deg)</label>
                         <input type="number" id="calcRot" value="45" class="pitch-input" oninput="calculateLayout()">
+                    </div>
                 </div>
                 <div>
                     <label id="lblCalcMovement" class="block text-xs font-bold text-primary mb-1 uppercase">Desired Ball Movement</label>
@@ -150,6 +163,11 @@
                         <option value="Early roll Weak" id="optMov9">Early roll Weak</option>
                     </select>
                 </div>
+            </div>
+
+            <!-- Ball Specs -->
+            <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
+                <h3 class="text-xs font-bold text-white uppercase border-b border-gray-800 pb-1">Ball Specs</h3>
                 <div>
                     <label id="lblCalcBall" class="block text-xs font-bold text-primary mb-1 uppercase">Ball Type</label>
                     <select id="calcBall" class="pitch-input text-sm" onchange="calculateLayout()">
@@ -157,8 +175,23 @@
                         <option value="Symmetric" id="optSym">Symmetric</option>
                     </select>
                 </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label id="lblCalcRG" class="block text-[10px] font-bold text-primary mb-1 uppercase">RG</label>
+                        <input type="number" id="calcRG" value="2.50" step="0.01" class="pitch-input text-center text-xs" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcDiff" class="block text-[10px] font-bold text-primary mb-1 uppercase">Diff</label>
+                        <input type="number" id="calcDiff" value="0.050" step="0.001" class="pitch-input text-center text-xs" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcIntDiff" class="block text-[10px] font-bold text-primary mb-1 uppercase">Int. Diff</label>
+                        <input type="number" id="calcIntDiff" value="0.015" step="0.001" class="pitch-input text-center text-xs" oninput="calculateLayout()">
+                    </div>
+                </div>
             </div>
 
+            <!-- Recommended Layout Output -->
             <div class="bg-gray-900 p-5 rounded-xl border border-primary space-y-3">
                 <h3 id="lblRecLayout" class="text-sm font-bold text-primary uppercase text-center border-b border-gray-800 pb-2">Recommended Layout</h3>
                 <div class="flex justify-between items-center text-sm mt-3">
@@ -187,9 +220,9 @@
 
     <!-- Bowler Form / Detail Modal -->
     <div id="formModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
-        <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10">
+        <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10 shadow-lg">
             <h2 id="formTitle" class="text-lg font-bold text-white">Bowler Profile</h2>
-            <button onclick="closeForm()" class="text-gray-400 hover:text-white font-bold text-xl">&times;</button>
+            <button onclick="closeForm()" class="text-gray-400 hover:text-white font-bold text-2xl">&times;</button>
         </div>
 
         <form id="bowlerForm" onsubmit="saveBowler(event)" class="p-4 space-y-5">
@@ -365,10 +398,11 @@
                 lblVideo: "Release Video", btnSave: "SAVE PROFILE", btnDelete: "DELETE",
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
                 dirYUp: "↑ Up (FWD)", dirYDown: "↓ Down (REV)", dirXLeft: "← Left", dirXRight: "→ Right",
-                menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search...",
-                layoutTitle: "Layout Expert", layoutDesc: "Generate Dual Angle Layouts based on bowler specs.",
-                lblCalcSpeed: "Bowler Speed (mph)", lblCalcRevs: "Revolutions (RPM)", lblCalcTilt: "Axis Tilt (deg)", lblCalcRot: "Axis Rotation (deg)", 
+                menuBowlers: "🎳 My Bowlers", menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search...",
+                layoutTitle: "Layout Expert", layoutDesc: "Generate Dual Angle Layouts based on bowler & ball specs.",
+                lblCalcSpeed: "Speed (mph)", lblCalcRevs: "Revs (RPM)", lblCalcTilt: "Axis Tilt (deg)", lblCalcRot: "Rotation (deg)", 
                 lblCalcMovement: "Desired Ball Movement", lblCalcBall: "Ball Type", lblRecLayout: "Recommended Layout",
+                lblCalcRG: "RG", lblCalcDiff: "Diff", lblCalcIntDiff: "Int. Diff",
                 lblOutDrill: "Drilling Angle", lblOutPin: "Pin to PAP", lblOutVal: "VAL Angle", lblOutSum: "Total Sum of Angles", lblOutFinal: "Final Layout",
                 optAsym: "Asymmetric", optSym: "Symmetric", optMov1: "Continuous hook Strong", optMov2: "Continuous hook Medium", optMov3: "Continuous hook Weak",
                 optMov4: "Deep and In Strong", optMov5: "Deep and In Medium", optMov6: "Deep and In Weak", optMov7: "Early roll Strong", optMov8: "Early roll Medium", optMov9: "Early roll Weak"
@@ -386,13 +420,14 @@
                 lblVideo: "Video de Lanzamiento", btnSave: "GUARDAR PERFIL", btnDelete: "ELIMINAR",
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
                 dirYUp: "↑ Adelante (FWD)", dirYDown: "↓ Atrás (REV)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha",
-                menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...",
-                layoutTitle: "Experto en Layouts", layoutDesc: "Genera diseños Dual Angle basados en especificaciones del jugador.",
-                lblCalcSpeed: "Velocidad (mph)", lblCalcRevs: "Revoluciones (RPM)", lblCalcTilt: "Tilt de Eje (grados)", lblCalcRot: "Rotación de Eje (grados)", 
+                menuBowlers: "🎳 Mis Jugadores", menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...",
+                layoutTitle: "Experto en Layouts", layoutDesc: "Genera diseños Dual Angle basados en especificaciones del jugador y la bola.",
+                lblCalcSpeed: "Velocidad (mph)", lblCalcRevs: "Revoluciones (RPM)", lblCalcTilt: "Tilt de Eje (deg)", lblCalcRot: "Rotación (deg)", 
                 lblCalcMovement: "Movimiento Deseado", lblCalcBall: "Tipo de Bola", lblRecLayout: "Diseño Recomendado",
+                lblCalcRG: "Radio Giro (RG)", lblCalcDiff: "Diferencial", lblCalcIntDiff: "Diferencial Int.",
                 lblOutDrill: "Ángulo de Perforación", lblOutPin: "Distancia Pin a PAP", lblOutVal: "Ángulo VAL", lblOutSum: "Suma Total de Ángulos", lblOutFinal: "Diseño Final",
                 optAsym: "Asimétrica", optSym: "Simétrica", optMov1: "Gancho Continuo (Fuerte)", optMov2: "Gancho Continuo (Medio)", optMov3: "Gancho Continuo (Débil)",
-                optMov4: "Profundo y Adentro (Fuerte)", optMov5: "Profundo y Adentro (Medio)", optMov6: "Profundo y Adentro (Débil)", optMov7: "Temprano (Fuerte)", optMov8: "Temprano (Medio)", optMov9: "Temprano (Débil)"
+                optMov4: "Profundo y Adentro (Fuerte)", optMov5: "Profundo y Adentro (Medio)", optMov6: "Profundo y Adentro (Débil)", optMov7: "Rodamiento Temprano (Fuerte)", optMov8: "Rodamiento Temprano (Medio)", optMov9: "Rodamiento Temprano (Débil)"
             }
         };
 
@@ -403,7 +438,7 @@
             document.getElementById('appContainer').classList.remove('hidden');
             
             const t = translations[lang];
-            ['txtHeaderVault','btnNew','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutDrill','lblOutPin','lblOutVal','lblOutSum','lblOutFinal','optAsym','optSym','optMov1','optMov2','optMov3','optMov4','optMov5','optMov6','optMov7','optMov8','optMov9'].forEach(id => {
+            ['txtHeaderVault','btnNew','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','btnMenuBowlers','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutDrill','lblOutPin','lblOutVal','lblOutSum','lblOutFinal','optAsym','optSym','optMov1','optMov2','optMov3','optMov4','optMov5','optMov6','optMov7','optMov8','optMov9','lblCalcRG','lblCalcDiff','lblCalcIntDiff'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
@@ -440,8 +475,17 @@
             menu.classList.toggle('flex');
         }
 
+        function switchView(view) {
+            if(view === 'bowlers') {
+                document.getElementById('viewBowlers').classList.remove('hidden');
+                document.getElementById('searchContainer').classList.add('hidden'); 
+                document.getElementById('btnNew').classList.remove('hidden'); 
+            }
+        }
+
         function toggleSearch() {
             toggleMenu();
+            switchView('bowlers');
             const sc = document.getElementById('searchContainer');
             sc.classList.remove('hidden');
             document.getElementById('searchInput').focus();
@@ -483,7 +527,6 @@
             e.target.value = ''; 
         }
 
-        // Layout Expert Calculator
         function openLayoutModal() {
             document.getElementById('layoutModal').classList.remove('hidden');
             calculateLayout();
@@ -500,6 +543,10 @@
             let rot = parseFloat(document.getElementById('calcRot').value) || 45;
             let movement = document.getElementById('calcMovement').value;
             let ballType = document.getElementById('calcBall').value;
+            
+            let rg = parseFloat(document.getElementById('calcRG').value) || 2.50;
+            let diff = parseFloat(document.getElementById('calcDiff').value) || 0.050;
+            let intDiff = parseFloat(document.getElementById('calcIntDiff').value) || 0.000;
 
             let baseSum = 0, baseRatio = 1, basePin = 4.5;
             if(movement === 'Continuous hook Strong') { baseSum = 70; baseRatio = 1.0; basePin = 4.5; }
@@ -513,16 +560,30 @@
             else if(movement === 'Early roll Weak') { baseSum = 120; baseRatio = 0.5; basePin = 5.0; }
 
             let calcSum = baseSum - (speed - 16)*5 + (revs - 300)*0.15;
+            
+            // Physics Core Modification: Adjusting sum based on RG
+            let rgAdj = (2.50 - rg) * 100;
+            calcSum += rgAdj;
+
             let maxSum = revs < 300 ? 150 : 180;
             let cappedSum = Math.max(30, Math.min(calcSum, maxSum));
             let targetSum = Math.round(cappedSum / 5) * 5;
 
-            let adjRatio = baseRatio * (15 / Math.max(1, tilt)) * (45 / Math.max(1, rot));
+            // Physics Core Modification: Adjusting ratio based on Int Diff
+            let ratioAdj = (intDiff - 0.010) * 10;
+            let adjRatio = (baseRatio - ratioAdj) * (15 / Math.max(1, tilt)) * (45 / Math.max(1, rot));
+            adjRatio = Math.max(0.1, adjRatio);
+
             let drillAngleRaw = targetSum * (adjRatio / (adjRatio + 1));
             let drillAngle = Math.round(Math.max(10, Math.min(90, drillAngleRaw)) / 5) * 5;
             let valAngle = Math.round(Math.max(20, Math.min(90, targetSum - drillAngle)) / 5) * 5;
 
+            // Physics Core Modification: Override Pin distance if Differential is very low
             let adjPin = (ballType === 'Symmetric') ? basePin * 0.9 : basePin;
+            if (diff < 0.035) {
+                adjPin = (ballType === 'Symmetric') ? 3.375 : 3.0;
+            }
+            
             let finalPinDecimal = Math.round(adjPin * 16) / 16;
             let finalPinStr = decimalToFractionStr(finalPinDecimal);
             if(finalPinStr === "0") finalPinStr = "0";
