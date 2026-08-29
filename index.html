@@ -64,7 +64,7 @@
 
     <!-- Main App Structure -->
     <div id="appContainer" class="hidden">
-        <header class="bg-card border-b border-gray-800 sticky top-0 z-40 px-4 py-3 shadow-lg flex justify-between items-center">
+        <header class="bg-card border-b border-gray-800 sticky top-0 z-30 px-4 py-3 shadow-lg flex justify-between items-center relative">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="30 20 350 120" class="h-10 w-auto">
                 <circle cx="60" cy="60" r="50" fill="none" stroke="#1E293B" stroke-width="3"/>
                 <path d="M 35 40 C 50 35 65 42 60 55 C 55 68 35 65 35 80 C 35 90 50 90 60 85" fill="none" stroke="#38BDF8" stroke-width="6" stroke-linecap="round"/>
@@ -77,10 +77,25 @@
                 <text x="246" y="69" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="800" letter-spacing="2" fill="#38BDF8">PRO</text>
                 <text x="132" y="106" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="600" letter-spacing="5" fill="#64748B" id="txtHeaderVault">BOWLER SPECS VAULT</text>
             </svg>
-            <button onclick="openForm()" class="bg-primary hover:bg-primaryHover text-white px-3 py-1.5 rounded text-sm font-bold shadow-md transition" id="btnNew">+ NEW</button>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleMenu()" class="text-gray-300 hover:text-white px-2 py-1.5 rounded text-2xl transition">⋮</button>
+                <button onclick="openForm()" class="bg-primary hover:bg-primaryHover text-white px-3 py-1.5 rounded text-sm font-bold shadow-md transition" id="btnNew">+ NEW</button>
+            </div>
+            
+            <!-- Dropdown Menu -->
+            <div id="mainMenu" class="absolute top-16 right-4 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
+                <button onclick="toggleSearch()" id="btnMenuSearch" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🔍 Search Bowlers</button>
+                <button onclick="exportBackup()" id="btnMenuExport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">💾 Backup & Export</button>
+                <button onclick="document.getElementById('importInput').click(); toggleMenu();" id="btnMenuImport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">📂 Upload Backup</button>
+                <button onclick="showLanguageScreen()" id="btnMenuLang" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800">🌐 Change Language</button>
+            </div>
+            <input type="file" id="importInput" accept=".json" class="hidden" onchange="importBackup(event)">
         </header>
 
         <main class="p-4 w-full max-w-lg mx-auto">
+            <div id="searchContainer" class="hidden mb-4">
+                <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
+            </div>
             <div id="bowlerList" class="space-y-3"></div>
             <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
                 <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -89,6 +104,7 @@
         </main>
     </div>
 
+    <!-- Bowler Form / Detail Modal -->
     <div id="formModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
         <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10">
             <h2 id="formTitle" class="text-lg font-bold text-white">Bowler Profile</h2>
@@ -243,21 +259,17 @@
     </div>
 
     <script>
-        // Custom App Icon SVG Injected directly into the Manifest
         const appIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#0B0F19"/><circle cx="60" cy="60" r="50" fill="none" stroke="#1E293B" stroke-width="4"/><path d="M 35 40 C 50 35 65 42 60 55 C 55 68 35 65 35 80 C 35 90 50 90 60 85" fill="none" stroke="#38BDF8" stroke-width="7" stroke-linecap="round"/><path d="M 60 40 L 75 85 L 90 40" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="30" r="5" fill="#38BDF8" /><circle cx="62" cy="25" r="5" fill="#38BDF8" /><circle cx="50" cy="50" r="6" fill="#38BDF8" /></svg>`;
 
         const manifest = {
-            name: "BSV Pro", 
-            short_name: "BSV Pro", 
-            display: "standalone", 
-            background_color: "#0B0F19", 
-            theme_color: "#0B0F19", 
-            start_url: location.href, 
+            name: "BSV Pro", short_name: "BSV Pro", display: "standalone", background_color: "#0B0F19", theme_color: "#0B0F19", start_url: location.href, 
             icons: [{"src": "data:image/svg+xml;charset=utf-8," + encodeURIComponent(appIconSvg), "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable"}]
         };
         document.getElementById('manifest').href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
 
         let currentLang = 'en';
+        let allBowlers = [];
+
         const translations = {
             en: {
                 txtHeaderVault: "BOWLER SPECS VAULT", btnNew: "+ NEW", txtEmpty: "No bowlers found.<br>Tap + NEW to create a profile.",
@@ -271,7 +283,8 @@
                 btnGenerate: "GENERATE CUTS", lblPhoto: "Physical Spec Sheet Photo (Optional)", lblArsenal: "Arsenal (9 Balls Max)",
                 lblVideo: "Release Video", btnSave: "SAVE PROFILE", btnDelete: "DELETE",
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
-                dirYUp: "↑ Up (FWD)", dirYDown: "↓ Down (REV)", dirXLeft: "← Left", dirXRight: "→ Right"
+                dirYUp: "↑ Up (FWD)", dirYDown: "↓ Down (REV)", dirXLeft: "← Left", dirXRight: "→ Right",
+                menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search..."
             },
             es: {
                 txtHeaderVault: "BÓVEDA DE MEDIDAS", btnNew: "+ NUEVO", txtEmpty: "No se encontraron jugadores.<br>Toca + NUEVO para crear un perfil.",
@@ -285,7 +298,8 @@
                 btnGenerate: "GENERAR CORTES", lblPhoto: "Foto de Hoja Física (Opcional)", lblArsenal: "Arsenal (Máx 9 Bolas)",
                 lblVideo: "Video de Lanzamiento", btnSave: "GUARDAR PERFIL", btnDelete: "ELIMINAR",
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
-                dirYUp: "↑ Adelante (FWD)", dirYDown: "↓ Atrás (REV)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha"
+                dirYUp: "↑ Adelante (FWD)", dirYDown: "↓ Atrás (REV)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha",
+                menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar..."
             }
         };
 
@@ -300,22 +314,80 @@
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
+            document.getElementById('btnMenuSearch').innerHTML = t.menuSearch;
+            document.getElementById('btnMenuExport').innerHTML = t.menuExport;
+            document.getElementById('btnMenuImport').innerHTML = t.menuImport;
+            document.getElementById('btnMenuLang').innerHTML = t.menuLang;
+            document.getElementById('searchInput').placeholder = t.searchPh;
+
             document.getElementById('statRevs').placeholder = t.statRevs;
             document.getElementById('statAvg').placeholder = t.statAvg;
             document.getElementById('statSpeed').placeholder = t.statSpeed;
 
             document.querySelectorAll('.dir-y').forEach(el => {
-                let val = el.value;
-                el.innerHTML = `<option value="↑">${t.dirYUp}</option><option value="↓">${t.dirYDown}</option>`;
-                el.value = val || '↑';
+                let val = el.value; el.innerHTML = `<option value="↑">${t.dirYUp}</option><option value="↓">${t.dirYDown}</option>`; el.value = val || '↑';
             });
             document.querySelectorAll('.dir-x').forEach(el => {
-                let val = el.value;
-                el.innerHTML = `<option value="←">${t.dirXLeft}</option><option value="→">${t.dirXRight}</option>`;
-                el.value = val || '←';
+                let val = el.value; el.innerHTML = `<option value="←">${t.dirXLeft}</option><option value="→">${t.dirXRight}</option>`; el.value = val || '←';
             });
             
             loadList(); 
+        }
+
+        function showLanguageScreen() {
+            toggleMenu();
+            document.getElementById('languageOverlay').classList.remove('hidden');
+            document.getElementById('appContainer').classList.add('hidden');
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('mainMenu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        }
+
+        function toggleSearch() {
+            toggleMenu();
+            const sc = document.getElementById('searchContainer');
+            sc.classList.toggle('hidden');
+            if(!sc.classList.contains('hidden')) document.getElementById('searchInput').focus();
+            else { document.getElementById('searchInput').value = ''; renderBowlers(allBowlers); }
+        }
+
+        function filterBowlers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allBowlers.filter(b => b.name.toLowerCase().includes(query));
+            renderBowlers(filtered);
+        }
+
+        function exportBackup() {
+            toggleMenu();
+            const tx = db.transaction("bowlers", "readonly");
+            tx.objectStore("bowlers").getAll().onsuccess = (e) => {
+                const data = JSON.stringify(e.target.result);
+                const blob = new Blob([data], {type: "application/json"});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `bsv_backup_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+            };
+        }
+
+        function importBackup(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const bowlers = JSON.parse(event.target.result);
+                    const tx = db.transaction("bowlers", "readwrite");
+                    const store = tx.objectStore("bowlers");
+                    bowlers.forEach(b => store.put(b));
+                    tx.oncomplete = () => { alert("Backup restored successfully."); loadList(); };
+                } catch (err) { alert("Invalid backup file format."); }
+            };
+            reader.readAsText(file);
+            e.target.value = ''; // reset input
         }
 
         const fractionsArr = ['','1/16','1/8','3/16','1/4','5/16','3/8','7/16','1/2','9/16','5/8','11/16','3/4','13/16','7/8','15/16'];
@@ -431,16 +503,13 @@
             let diff = parseFraction(endStr) - parseFraction(startStr);
             if(diff <= 0) { alert(translations[currentLang].alertEndSize); return; }
 
-            // Chart: Thumb Reverse = Positive, Thumb Forward = Negative
             let baseY = parseFraction(document.getElementById('thP1').value);
             if (document.getElementById('thD1').value === '↑') baseY *= -1;
 
-            // Chart: Left = Positive, Right = Negative
             let baseX = parseFraction(document.getElementById('thP2').value);
             if (document.getElementById('thD2').value === '→') baseX *= -1;
 
             let rad = angle * Math.PI / 180;
-            
             let totalX = diff * Math.cos(rad);
             let totalY = diff * Math.sin(rad);
 
@@ -506,35 +575,38 @@
         function loadList() {
             if(!db) return;
             const tx = db.transaction("bowlers", "readonly");
-            const req = tx.objectStore("bowlers").getAll();
-            req.onsuccess = () => {
-                const bowlers = req.result;
-                const list = document.getElementById('bowlerList');
-                const empty = document.getElementById('emptyState');
-                if(bowlers.length === 0) {
-                    list.innerHTML = ''; empty.classList.remove('hidden');
-                } else {
-                    empty.classList.add('hidden');
-                    list.innerHTML = bowlers.map(b => {
-                        let profImg = b.profilePhoto ? `<img src="${b.profilePhoto}" class="w-12 h-12 rounded-full object-cover border border-gray-700">` : `<div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xl">👤</div>`;
-                        let styleBadge = b.style === 'no_thumb' ? '2H' : (b.style === 'left' ? 'LH' : 'RH');
-                        return `
-                        <div onclick="openForm('${b.id}')" class="bg-card p-3 rounded-xl border border-gray-700 shadow flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
-                            <div class="flex items-center gap-3">
-                                ${profImg}
-                                <div>
-                                    <h3 class="font-bold text-white text-lg">${b.name} <span class="text-[10px] bg-primary text-dark px-1.5 py-0.5 rounded ml-1 font-bold">${styleBadge}</span></h3>
-                                    <div class="text-xs text-gray-400 mt-0.5 flex gap-2">
-                                        <span>Avg: <strong class="text-gray-200">${b.avg || '-'}</strong></span>
-                                        <span>Spd: <strong class="text-gray-200">${b.speed ? b.speed : '-'}</strong></span>
-                                    </div>
+            tx.objectStore("bowlers").getAll().onsuccess = (e) => {
+                allBowlers = e.target.result;
+                renderBowlers(allBowlers);
+            };
+        }
+
+        function renderBowlers(bowlersArray) {
+            const list = document.getElementById('bowlerList');
+            const empty = document.getElementById('emptyState');
+            if(bowlersArray.length === 0) {
+                list.innerHTML = ''; empty.classList.remove('hidden');
+            } else {
+                empty.classList.add('hidden');
+                list.innerHTML = bowlersArray.map(b => {
+                    let profImg = b.profilePhoto ? `<img src="${b.profilePhoto}" class="w-12 h-12 rounded-full object-cover border border-gray-700">` : `<div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xl">👤</div>`;
+                    let styleBadge = b.style === 'no_thumb' ? '2H' : (b.style === 'left' ? 'LH' : 'RH');
+                    return `
+                    <div onclick="openForm('${b.id}')" class="bg-card p-3 rounded-xl border border-gray-700 shadow flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
+                        <div class="flex items-center gap-3">
+                            ${profImg}
+                            <div>
+                                <h3 class="font-bold text-white text-lg">${b.name} <span class="text-[10px] bg-primary text-dark px-1.5 py-0.5 rounded ml-1 font-bold">${styleBadge}</span></h3>
+                                <div class="text-xs text-gray-400 mt-0.5 flex gap-2">
+                                    <span>Avg: <strong class="text-gray-200">${b.avg || '-'}</strong></span>
+                                    <span>Spd: <strong class="text-gray-200">${b.speed ? b.speed : '-'}</strong></span>
                                 </div>
                             </div>
-                            <div class="text-primary font-bold">›</div>
                         </div>
-                    `}).join('');
-                }
-            };
+                        <div class="text-primary font-bold">›</div>
+                    </div>
+                `}).join('');
+            }
         }
 
         function openForm(id = null) {
