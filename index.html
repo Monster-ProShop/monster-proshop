@@ -84,8 +84,6 @@
             
             <!-- Dropdown Menu -->
             <div id="mainMenu" class="absolute top-16 right-4 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
-                <button onclick="switchView('bowlers'); toggleMenu();" id="btnMenuBowlers" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🎳 My Bowlers</button>
-                <button onclick="switchView('layout'); toggleMenu();" id="btnMenuLayout" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">📐 Layout Expert</button>
                 <button onclick="toggleSearch()" id="btnMenuSearch" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🔍 Search Bowlers</button>
                 <button onclick="exportBackup()" id="btnMenuExport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">💾 Backup & Export</button>
                 <button onclick="document.getElementById('importInput').click(); toggleMenu();" id="btnMenuImport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">📂 Upload Backup</button>
@@ -94,96 +92,97 @@
             <input type="file" id="importInput" accept=".json" class="hidden" onchange="importBackup(event)">
         </header>
 
-        <main class="w-full max-w-lg mx-auto" id="mainContentView">
-            
-            <!-- Bowlers View -->
-            <div id="viewBowlers" class="p-4 block">
-                <div id="searchContainer" class="hidden mb-4">
-                    <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
-                </div>
-                <div id="bowlerList" class="space-y-3"></div>
-                <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
-                    <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    <p id="txtEmpty">No bowlers found.<br>Tap + NEW to create a profile.</p>
-                </div>
+        <main class="p-4 w-full max-w-lg mx-auto">
+            <div id="searchContainer" class="hidden mb-4">
+                <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
             </div>
-
-            <!-- Layout Expert View -->
-            <div id="viewLayout" class="hidden p-4 space-y-4 pb-12">
-                <div>
-                    <h2 id="layoutTitle" class="text-2xl font-black text-white">Layout Expert</h2>
-                    <p id="layoutDesc" class="text-sm text-gray-400">Generate Dual Angle Layouts based on bowler specs.</p>
-                </div>
-                
-                <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
-                    <div>
-                        <label id="lblCalcSpeed" class="block text-xs font-bold text-primary mb-1 uppercase">Bowler Speed (mph)</label>
-                        <input type="number" id="calcSpeed" value="16" step="0.1" class="pitch-input font-bold" oninput="calculateLayout()">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label id="lblCalcRevs" class="block text-xs font-bold text-primary mb-1 uppercase">Revolutions (RPM)</label>
-                            <input type="number" id="calcRevs" value="350" class="pitch-input" oninput="calculateLayout()">
-                        </div>
-                        <div>
-                            <label id="lblCalcTilt" class="block text-xs font-bold text-primary mb-1 uppercase">Axis Tilt (deg)</label>
-                            <input type="number" id="calcTilt" value="12" class="pitch-input" oninput="calculateLayout()">
-                        </div>
-                    </div>
-                    <div>
-                        <label id="lblCalcRot" class="block text-xs font-bold text-primary mb-1 uppercase">Axis Rotation (deg)</label>
-                        <input type="number" id="calcRot" value="45" class="pitch-input" oninput="calculateLayout()">
-                    </div>
-                    <div>
-                        <label id="lblCalcMovement" class="block text-xs font-bold text-primary mb-1 uppercase">Desired Ball Movement</label>
-                        <select id="calcMovement" class="pitch-input text-sm" onchange="calculateLayout()">
-                            <option value="Continuous hook Strong" id="optMov1">Continuous hook Strong</option>
-                            <option value="Continuous hook Medium" id="optMov2">Continuous hook Medium</option>
-                            <option value="Continuous hook Weak" id="optMov3">Continuous hook Weak</option>
-                            <option value="Deep and In Strong" id="optMov4">Deep and In Strong</option>
-                            <option value="Deep and In Medium" id="optMov5">Deep and In Medium</option>
-                            <option value="Deep and In Weak" id="optMov6">Deep and In Weak</option>
-                            <option value="Early roll Strong" id="optMov7">Early roll Strong</option>
-                            <option value="Early roll Medium" id="optMov8" selected>Early roll Medium</option>
-                            <option value="Early roll Weak" id="optMov9">Early roll Weak</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label id="lblCalcBall" class="block text-xs font-bold text-primary mb-1 uppercase">Ball Type</label>
-                        <select id="calcBall" class="pitch-input text-sm" onchange="calculateLayout()">
-                            <option value="Asymmetric" id="optAsym">Asymmetric</option>
-                            <option value="Symmetric" id="optSym">Symmetric</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="bg-gray-900 p-5 rounded-xl border border-primary space-y-3">
-                    <h3 id="lblRecLayout" class="text-sm font-bold text-primary uppercase text-center border-b border-gray-800 pb-2">Recommended Layout</h3>
-                    
-                    <div class="flex justify-between items-center text-sm mt-3">
-                        <span id="lblOutDrill" class="text-gray-400">Drilling Angle</span>
-                        <strong id="outDrillAngle" class="text-white text-lg">40°</strong>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <span id="lblOutPin" class="text-gray-400">Pin to PAP</span>
-                        <strong id="outPin" class="text-white text-lg">4 1/2"</strong>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <span id="lblOutVal" class="text-gray-400">VAL Angle</span>
-                        <strong id="outVal" class="text-white text-lg">65°</strong>
-                    </div>
-                    <div class="flex justify-between items-center text-sm border-t border-gray-800 pt-2">
-                        <span id="lblOutSum" class="text-gray-400">Total Sum of Angles</span>
-                        <strong id="outTotalSum" class="text-white text-lg">105°</strong>
-                    </div>
-                    
-                    <div class="mt-4 pt-3 border-t border-gray-800 text-center">
-                        <span id="lblOutFinal" class="text-xs font-bold text-gray-500 uppercase block mb-1">Final Layout</span>
-                        <div id="outLayoutString" class="text-2xl md:text-3xl font-black text-primary tracking-wide">40° x 4 1/2" x 65°</div>
-                    </div>
-                </div>
+            <div id="bowlerList" class="space-y-3"></div>
+            <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
+                <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <p id="txtEmpty">No bowlers found.<br>Tap + NEW to create a profile.</p>
             </div>
         </main>
+
+        <!-- Layout Expert Floating Bubble -->
+        <button onclick="openLayoutModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primaryHover text-dark rounded-full shadow-[0_0_15px_rgba(56,189,248,0.4)] flex items-center justify-center text-2xl z-30 transition-transform active:scale-95">
+            📐
+        </button>
+    </div>
+
+    <!-- Layout Expert Modal -->
+    <div id="layoutModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
+        <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10">
+            <h2 id="layoutTitle" class="text-lg font-bold text-white">Layout Expert</h2>
+            <button onclick="closeLayoutModal()" class="text-gray-400 hover:text-white font-bold text-xl">&times;</button>
+        </div>
+        <div class="p-4 space-y-4 pb-12">
+            <p id="layoutDesc" class="text-sm text-gray-400">Generate Dual Angle Layouts based on bowler specs.</p>
+            <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
+                <div>
+                    <label id="lblCalcSpeed" class="block text-xs font-bold text-primary mb-1 uppercase">Bowler Speed (mph)</label>
+                    <input type="number" id="calcSpeed" value="16" step="0.1" class="pitch-input font-bold" oninput="calculateLayout()">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label id="lblCalcRevs" class="block text-xs font-bold text-primary mb-1 uppercase">Revolutions (RPM)</label>
+                        <input type="number" id="calcRevs" value="350" class="pitch-input" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcTilt" class="block text-xs font-bold text-primary mb-1 uppercase">Axis Tilt (deg)</label>
+                        <input type="number" id="calcTilt" value="12" class="pitch-input" oninput="calculateLayout()">
+                    </div>
+                </div>
+                <div>
+                    <label id="lblCalcRot" class="block text-xs font-bold text-primary mb-1 uppercase">Axis Rotation (deg)</label>
+                        <input type="number" id="calcRot" value="45" class="pitch-input" oninput="calculateLayout()">
+                </div>
+                <div>
+                    <label id="lblCalcMovement" class="block text-xs font-bold text-primary mb-1 uppercase">Desired Ball Movement</label>
+                    <select id="calcMovement" class="pitch-input text-sm" onchange="calculateLayout()">
+                        <option value="Continuous hook Strong" id="optMov1">Continuous hook Strong</option>
+                        <option value="Continuous hook Medium" id="optMov2">Continuous hook Medium</option>
+                        <option value="Continuous hook Weak" id="optMov3">Continuous hook Weak</option>
+                        <option value="Deep and In Strong" id="optMov4">Deep and In Strong</option>
+                        <option value="Deep and In Medium" id="optMov5">Deep and In Medium</option>
+                        <option value="Deep and In Weak" id="optMov6">Deep and In Weak</option>
+                        <option value="Early roll Strong" id="optMov7">Early roll Strong</option>
+                        <option value="Early roll Medium" id="optMov8" selected>Early roll Medium</option>
+                        <option value="Early roll Weak" id="optMov9">Early roll Weak</option>
+                    </select>
+                </div>
+                <div>
+                    <label id="lblCalcBall" class="block text-xs font-bold text-primary mb-1 uppercase">Ball Type</label>
+                    <select id="calcBall" class="pitch-input text-sm" onchange="calculateLayout()">
+                        <option value="Asymmetric" id="optAsym">Asymmetric</option>
+                        <option value="Symmetric" id="optSym">Symmetric</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-gray-900 p-5 rounded-xl border border-primary space-y-3">
+                <h3 id="lblRecLayout" class="text-sm font-bold text-primary uppercase text-center border-b border-gray-800 pb-2">Recommended Layout</h3>
+                <div class="flex justify-between items-center text-sm mt-3">
+                    <span id="lblOutDrill" class="text-gray-400">Drilling Angle</span>
+                    <strong id="outDrillAngle" class="text-white text-lg">40°</strong>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                    <span id="lblOutPin" class="text-gray-400">Pin to PAP</span>
+                    <strong id="outPin" class="text-white text-lg">4 1/2"</strong>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                    <span id="lblOutVal" class="text-gray-400">VAL Angle</span>
+                    <strong id="outVal" class="text-white text-lg">65°</strong>
+                </div>
+                <div class="flex justify-between items-center text-sm border-t border-gray-800 pt-2">
+                    <span id="lblOutSum" class="text-gray-400">Total Sum of Angles</span>
+                    <strong id="outTotalSum" class="text-white text-lg">105°</strong>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-800 text-center">
+                    <span id="lblOutFinal" class="text-xs font-bold text-gray-500 uppercase block mb-1">Final Layout</span>
+                    <div id="outLayoutString" class="text-2xl md:text-3xl font-black text-primary tracking-wide">40° x 4 1/2" x 65°</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bowler Form / Detail Modal -->
@@ -366,7 +365,6 @@
                 lblVideo: "Release Video", btnSave: "SAVE PROFILE", btnDelete: "DELETE",
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
                 dirYUp: "↑ Up (FWD)", dirYDown: "↓ Down (REV)", dirXLeft: "← Left", dirXRight: "→ Right",
-                menuBowlers: "🎳 My Bowlers", menuLayout: "📐 Layout Expert",
                 menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search...",
                 layoutTitle: "Layout Expert", layoutDesc: "Generate Dual Angle Layouts based on bowler specs.",
                 lblCalcSpeed: "Bowler Speed (mph)", lblCalcRevs: "Revolutions (RPM)", lblCalcTilt: "Axis Tilt (deg)", lblCalcRot: "Axis Rotation (deg)", 
@@ -388,14 +386,13 @@
                 lblVideo: "Video de Lanzamiento", btnSave: "GUARDAR PERFIL", btnDelete: "ELIMINAR",
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
                 dirYUp: "↑ Adelante (FWD)", dirYDown: "↓ Atrás (REV)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha",
-                menuBowlers: "🎳 Mis Jugadores", menuLayout: "📐 Experto en Layouts",
                 menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...",
                 layoutTitle: "Experto en Layouts", layoutDesc: "Genera diseños Dual Angle basados en especificaciones del jugador.",
                 lblCalcSpeed: "Velocidad (mph)", lblCalcRevs: "Revoluciones (RPM)", lblCalcTilt: "Tilt de Eje (grados)", lblCalcRot: "Rotación de Eje (grados)", 
                 lblCalcMovement: "Movimiento Deseado", lblCalcBall: "Tipo de Bola", lblRecLayout: "Diseño Recomendado",
                 lblOutDrill: "Ángulo de Perforación", lblOutPin: "Distancia Pin a PAP", lblOutVal: "Ángulo VAL", lblOutSum: "Suma Total de Ángulos", lblOutFinal: "Diseño Final",
                 optAsym: "Asimétrica", optSym: "Simétrica", optMov1: "Gancho Continuo (Fuerte)", optMov2: "Gancho Continuo (Medio)", optMov3: "Gancho Continuo (Débil)",
-                optMov4: "Profundo y Adentro (Fuerte)", optMov5: "Profundo y Adentro (Medio)", optMov6: "Profundo y Adentro (Débil)", optMov7: "Rodamiento Temprano (Fuerte)", optMov8: "Rodamiento Temprano (Medio)", optMov9: "Rodamiento Temprano (Débil)"
+                optMov4: "Profundo y Adentro (Fuerte)", optMov5: "Profundo y Adentro (Medio)", optMov6: "Profundo y Adentro (Débil)", optMov7: "Temprano (Fuerte)", optMov8: "Temprano (Medio)", optMov9: "Temprano (Débil)"
             }
         };
 
@@ -406,7 +403,7 @@
             document.getElementById('appContainer').classList.remove('hidden');
             
             const t = translations[lang];
-            ['txtHeaderVault','btnNew','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','btnMenuBowlers','btnMenuLayout','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutDrill','lblOutPin','lblOutVal','lblOutSum','lblOutFinal','optAsym','optSym','optMov1','optMov2','optMov3','optMov4','optMov5','optMov6','optMov7','optMov8','optMov9'].forEach(id => {
+            ['txtHeaderVault','btnNew','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutDrill','lblOutPin','lblOutVal','lblOutSum','lblOutFinal','optAsym','optSym','optMov1','optMov2','optMov3','optMov4','optMov5','optMov6','optMov7','optMov8','optMov9'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
@@ -443,24 +440,8 @@
             menu.classList.toggle('flex');
         }
 
-        function switchView(view) {
-            if(view === 'bowlers') {
-                document.getElementById('viewBowlers').classList.remove('hidden');
-                document.getElementById('viewLayout').classList.add('hidden');
-                document.getElementById('searchContainer').classList.add('hidden'); 
-                document.getElementById('btnNew').classList.remove('hidden'); 
-            } else if(view === 'layout') {
-                document.getElementById('viewBowlers').classList.add('hidden');
-                document.getElementById('viewLayout').classList.remove('hidden');
-                document.getElementById('searchContainer').classList.add('hidden');
-                document.getElementById('btnNew').classList.add('hidden');
-                calculateLayout();
-            }
-        }
-
         function toggleSearch() {
             toggleMenu();
-            switchView('bowlers');
             const sc = document.getElementById('searchContainer');
             sc.classList.remove('hidden');
             document.getElementById('searchInput').focus();
@@ -500,6 +481,16 @@
             };
             reader.readAsText(file);
             e.target.value = ''; 
+        }
+
+        // Layout Expert Calculator
+        function openLayoutModal() {
+            document.getElementById('layoutModal').classList.remove('hidden');
+            calculateLayout();
+        }
+
+        function closeLayoutModal() {
+            document.getElementById('layoutModal').classList.add('hidden');
         }
 
         function calculateLayout() {
