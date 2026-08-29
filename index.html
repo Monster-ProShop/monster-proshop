@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Monster ProShop</title>
-    
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" id="manifest">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,7 +15,7 @@
                     colors: {
                         dark: '#0f172a',
                         card: '#1e293b',
-                        primary: '#10b981', // Monster Green
+                        primary: '#10b981',
                         primaryHover: '#059669'
                     }
                 }
@@ -25,23 +23,22 @@
         }
     </script>
     <style>
-        /* Hide scrollbars for cleaner mobile look */
         ::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
+        .pitch-input { width: 100%; bg-gray-900; border: 1px solid #374151; border-radius: 4px; padding: 4px 8px; color: white; font-size: 0.875rem; outline: none; }
+        .pitch-input:focus { border-color: #10b981; }
+        .dir-select { background-color: #1f2937; color: white; border: 1px solid #374151; border-radius: 4px; padding: 4px; font-size: 0.875rem; outline: none; }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased pb-20">
 
     <header class="bg-card border-b border-gray-800 sticky top-0 z-40 px-4 py-4 shadow-lg flex justify-between items-center">
         <h1 class="text-xl font-black tracking-widest text-primary uppercase">Monster<span class="text-white">ProShop</span></h1>
-        <button onclick="openForm()" class="bg-primary hover:bg-primaryHover text-white px-3 py-1.5 rounded text-sm font-bold shadow-md transition">
-            + NEW
-        </button>
+        <button onclick="openForm()" class="bg-primary hover:bg-primaryHover text-white px-3 py-1.5 rounded text-sm font-bold shadow-md transition">+ NEW</button>
     </header>
 
     <main class="p-4 w-full max-w-lg mx-auto" id="mainView">
-        <div id="bowlerList" class="space-y-4">
-            </div>
+        <div id="bowlerList" class="space-y-4"></div>
         <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
             <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             <p>No bowlers found.<br>Tap + NEW to create a profile.</p>
@@ -59,49 +56,102 @@
 
             <div>
                 <label class="block text-xs font-bold text-primary mb-1 uppercase">Bowler Name</label>
-                <input type="text" id="bName" required class="w-full bg-gray-900 border border-gray-700 rounded p-3 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+                <input type="text" id="bName" required class="pitch-input !p-3">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-card p-3 rounded-lg border border-gray-800">
                     <label class="block text-xs font-bold text-primary mb-2 uppercase">PAP</label>
                     <div class="flex gap-2">
-                        <input type="text" id="papX" placeholder="X (e.g. 5 3/8)" class="w-1/2 bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
-                        <input type="text" id="papY" placeholder="Y (e.g. ^1)" class="w-1/2 bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="papX" placeholder="X" class="pitch-input">
+                        <input type="text" id="papY" placeholder="Y" class="pitch-input">
                     </div>
                 </div>
                 <div class="bg-card p-3 rounded-lg border border-gray-800">
                     <label class="block text-xs font-bold text-primary mb-2 uppercase">Stats</label>
                     <div class="grid grid-cols-1 gap-2">
-                        <input type="text" id="statRevs" placeholder="Revs (RPM)" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
-                        <input type="number" id="statAvg" placeholder="Average" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
-                        <input type="number" id="statSpeed" placeholder="Speed (MPH)" step="0.1" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
+                        <input type="text" id="statRevs" placeholder="Revs (RPM)" class="pitch-input">
+                        <input type="number" id="statAvg" placeholder="Average" class="pitch-input">
+                        <input type="number" id="statSpeed" placeholder="Speed (MPH)" step="0.1" class="pitch-input">
                     </div>
                 </div>
             </div>
 
-            <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-3">
-                <label class="block text-xs font-bold text-primary uppercase">Drill Sheet</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="spanLeft" placeholder="Left Span" class="bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
-                    <input type="text" id="spanRight" placeholder="Right Span" class="bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
-                    <input type="text" id="pitchFinger" placeholder="Finger Pitches" class="bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
-                    <input type="text" id="pitchThumb" placeholder="Thumb Pitches" class="bg-gray-900 border border-gray-700 rounded p-2 text-sm text-white">
+            <!-- Enhanced Drill Sheet -->
+            <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-4">
+                <label class="block text-xs font-bold text-primary uppercase">Drill Sheet / Pitches</label>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="spanLeft" placeholder="Left Span" class="pitch-input">
+                    <input type="text" id="spanRight" placeholder="Right Span" class="pitch-input">
                 </div>
+
+                <!-- Left Finger -->
+                <div class="bg-gray-900 p-2 rounded border border-gray-700">
+                    <span class="text-xs font-bold text-gray-400 block mb-1">Left Finger</span>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="lfP1" placeholder="Pitch" class="pitch-input">
+                        <select id="lfD1" class="dir-select"><option value="↑">↑ Up</option><option value="↓">↓ Down</option></select>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="lfP2" placeholder="Pitch" class="pitch-input">
+                        <select id="lfD2" class="dir-select"><option value="←">← Left</option><option value="→">→ Right</option></select>
+                    </div>
+                </div>
+
+                <!-- Right Finger -->
+                <div class="bg-gray-900 p-2 rounded border border-gray-700">
+                    <span class="text-xs font-bold text-gray-400 block mb-1">Right Finger</span>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="rfP1" placeholder="Pitch" class="pitch-input">
+                        <select id="rfD1" class="dir-select"><option value="↑">↑ Up</option><option value="↓">↓ Down</option></select>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="rfP2" placeholder="Pitch" class="pitch-input">
+                        <select id="rfD2" class="dir-select"><option value="←">← Left</option><option value="→">→ Right</option></select>
+                    </div>
+                </div>
+
+                <!-- Thumb -->
+                <div class="bg-gray-900 p-2 rounded border border-gray-700">
+                    <span class="text-xs font-bold text-gray-400 block mb-1">Thumb</span>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="thP1" placeholder="Pitch" class="pitch-input">
+                        <select id="thD1" class="dir-select"><option value="↑">↑ Up</option><option value="↓">↓ Down</option></select>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="thP2" placeholder="Pitch" class="pitch-input">
+                        <select id="thD2" class="dir-select"><option value="←">← Left</option><option value="→">→ Right</option></select>
+                    </div>
+                </div>
+
+                <!-- Thumb Oval Calculator -->
+                <div class="bg-gray-800 p-3 rounded mt-2 border border-gray-700">
+                    <span class="text-xs font-bold text-primary block mb-2 uppercase">Thumb Oval Generator</span>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="text" id="thumbStart" placeholder="Start (53/64)" class="pitch-input text-center">
+                        <input type="number" id="thumbOval" placeholder="Deg (60)" class="pitch-input text-center">
+                        <input type="text" id="thumbEnd" placeholder="End (61/64)" class="pitch-input text-center">
+                    </div>
+                    <button type="button" onclick="generateCuts()" class="w-full mt-3 bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold py-2 rounded transition">GENERATE CUTS</button>
+                    <div id="cutsOutput" class="mt-3 text-sm text-green-400 font-mono space-y-1 text-center bg-black rounded py-2 hidden"></div>
+                </div>
+
                 <div>
-                    <label class="block text-xs text-gray-400 mt-2 mb-1">Photo / Image</label>
+                    <label class="block text-xs text-gray-400 mt-3 mb-1">Photo / Image</label>
                     <input type="file" accept="image/*" onchange="handleFile(event, 'drillPhoto')" class="text-sm text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-800 file:text-white">
                     <input type="hidden" id="drillPhotoData">
                     <img id="drillPhotoPreview" class="hidden mt-2 max-h-40 rounded border border-gray-700 w-full object-contain bg-gray-900">
                 </div>
             </div>
 
+            <!-- Arsenal -->
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-2">
                 <label class="block text-xs font-bold text-primary uppercase mb-2">Arsenal (9 Balls Max)</label>
-                <div id="arsenalContainer" class="space-y-3">
-                    </div>
+                <div id="arsenalContainer" class="space-y-3"></div>
             </div>
 
+            <!-- Video -->
             <div class="bg-card p-4 rounded-lg border border-gray-800">
                 <label class="block text-xs font-bold text-primary uppercase mb-1">Release Video</label>
                 <input type="file" accept="video/*" onchange="handleFile(event, 'video')" class="text-sm text-gray-400 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-800 file:text-white w-full">
@@ -117,7 +167,6 @@
     </div>
 
     <script>
-        // --- 1. PWA Setup (Manifest & Inline Service Worker) ---
         const manifest = {
             name: "Monster ProShop",
             short_name: "ProShop",
@@ -135,14 +184,13 @@
             navigator.serviceWorker.register(URL.createObjectURL(blob));
         }
 
-        // --- 2. Arsenal Setup ---
         const finishes = ['500','500P','1000','1000P','1500','1500P','2000','2000P','3000','3000P','4000','4000P'];
         const arsenalDiv = document.getElementById('arsenalContainer');
         for(let i=0; i<9; i++) {
             arsenalDiv.innerHTML += `
                 <div class="flex gap-2 items-center bg-gray-900 p-2 rounded border border-gray-800">
                     <span class="text-xs text-gray-500 font-bold w-4">${i+1}</span>
-                    <input type="text" id="ball_name_${i}" placeholder="Brand / Name" class="flex-1 bg-transparent border-b border-gray-700 text-sm text-white focus:border-primary outline-none py-1">
+                    <input type="text" id="ball_name_${i}" placeholder="Brand/Name" class="flex-1 bg-transparent border-b border-gray-700 text-sm text-white focus:border-primary outline-none py-1">
                     <input type="text" id="ball_layout_${i}" placeholder="Layout" class="w-1/4 bg-transparent border-b border-gray-700 text-sm text-white focus:border-primary outline-none py-1">
                     <select id="ball_finish_${i}" class="bg-gray-800 border border-gray-700 rounded text-xs text-white p-1">
                         <option value="">Finish</option>
@@ -152,33 +200,68 @@
             `;
         }
 
-        // --- 3. IndexedDB Setup (For large file storage) ---
         let db;
-        const request = indexedDB.open("MonsterProShopDB", 1);
-        
+        const request = indexedDB.open("MonsterProShopDB", 2);
         request.onupgradeneeded = (e) => {
             db = e.target.result;
-            if (!db.objectStoreNames.contains("bowlers")) {
-                db.createObjectStore("bowlers", { keyPath: "id" });
-            }
+            if (!db.objectStoreNames.contains("bowlers")) db.createObjectStore("bowlers", { keyPath: "id" });
         };
-        
-        request.onsuccess = (e) => {
-            db = e.target.result;
-            loadList();
-        };
+        request.onsuccess = (e) => { db = e.target.result; loadList(); };
 
-        // --- 4. Logic & UI ---
+        // Fraction Parser
+        function parseFraction(str) {
+            str = str.trim();
+            if(str.includes('/')) {
+                let parts = str.split('/');
+                return parseFloat(parts[0]) / parseFloat(parts[1]);
+            }
+            return parseFloat(str);
+        }
+
+        // Oval Cut Generator
+        function generateCuts() {
+            let startStr = document.getElementById('thumbStart').value;
+            let endStr = document.getElementById('thumbEnd').value;
+            let angle = parseFloat(document.getElementById('thumbOval').value);
+
+            if(!startStr || !endStr || isNaN(angle)) return;
+
+            let start = parseFraction(startStr);
+            let end = parseFraction(endStr);
+            let diff = end - start;
+
+            if(diff <= 0) {
+                alert("End size must be larger than start size");
+                return;
+            }
+
+            let rad = angle * Math.PI / 180;
+            let xTotal = diff * Math.cos(rad);
+            let yTotal = diff * Math.sin(rad);
+
+            // Dividing by 0.030 limits maximum step increment to safe Pro Shop dial values
+            let steps = Math.ceil(Math.max(xTotal, yTotal) / 0.030);
+            if (steps < 1) steps = 1;
+
+            let cutsDiv = document.getElementById('cutsOutput');
+            let html = '';
+            for(let i = 1; i <= steps; i++) {
+                let currentX = (xTotal / steps * i).toFixed(3).replace(/^0+/, '');
+                let currentY = (yTotal / steps * i).toFixed(3).replace(/^0+/, '');
+                html += `<div>Step ${i}: ${currentX} / ${currentY}</div>`;
+            }
+            cutsDiv.innerHTML = html;
+            cutsDiv.classList.remove('hidden');
+        }
+
         function loadList() {
             const tx = db.transaction("bowlers", "readonly");
             const store = tx.objectStore("bowlers");
             const req = store.getAll();
-            
             req.onsuccess = () => {
                 const bowlers = req.result;
                 const list = document.getElementById('bowlerList');
                 const empty = document.getElementById('emptyState');
-                
                 if(bowlers.length === 0) {
                     list.innerHTML = '';
                     empty.classList.remove('hidden');
@@ -209,14 +292,12 @@
                 const b64 = event.target.result;
                 if(targetId === 'drillPhoto') {
                     document.getElementById('drillPhotoData').value = b64;
-                    const img = document.getElementById('drillPhotoPreview');
-                    img.src = b64;
-                    img.classList.remove('hidden');
+                    document.getElementById('drillPhotoPreview').src = b64;
+                    document.getElementById('drillPhotoPreview').classList.remove('hidden');
                 } else if(targetId === 'video') {
                     document.getElementById('videoData').value = b64;
-                    const vid = document.getElementById('videoPreview');
-                    vid.src = b64;
-                    vid.classList.remove('hidden');
+                    document.getElementById('videoPreview').src = b64;
+                    document.getElementById('videoPreview').classList.remove('hidden');
                 }
             };
             reader.readAsDataURL(file);
@@ -226,6 +307,7 @@
             document.getElementById('bowlerForm').reset();
             document.getElementById('drillPhotoPreview').classList.add('hidden');
             document.getElementById('videoPreview').classList.add('hidden');
+            document.getElementById('cutsOutput').classList.add('hidden');
             document.getElementById('drillPhotoData').value = '';
             document.getElementById('videoData').value = '';
             
@@ -234,21 +316,42 @@
                 document.getElementById('deleteBtn').classList.remove('hidden');
                 
                 const tx = db.transaction("bowlers", "readonly");
-                const req = tx.objectStore("bowlers").get(id);
-                req.onsuccess = () => {
-                    const b = req.result;
+                tx.objectStore("bowlers").get(id).onsuccess = (e) => {
+                    const b = e.target.result;
                     document.getElementById('bowlerId').value = b.id;
-                    document.getElementById('bName').value = b.name;
-                    document.getElementById('papX').value = b.papX;
-                    document.getElementById('papY').value = b.papY;
-                    document.getElementById('statRevs').value = b.revs;
-                    document.getElementById('statAvg').value = b.avg;
-                    document.getElementById('statSpeed').value = b.speed;
-                    document.getElementById('spanLeft').value = b.spanLeft;
-                    document.getElementById('spanRight').value = b.spanRight;
-                    document.getElementById('pitchFinger').value = b.pitchFinger;
-                    document.getElementById('pitchThumb').value = b.pitchThumb;
+                    document.getElementById('bName').value = b.name || '';
+                    document.getElementById('papX').value = b.papX || '';
+                    document.getElementById('papY').value = b.papY || '';
+                    document.getElementById('statRevs').value = b.revs || '';
+                    document.getElementById('statAvg').value = b.avg || '';
+                    document.getElementById('statSpeed').value = b.speed || '';
                     
+                    document.getElementById('spanLeft').value = b.spanLeft || '';
+                    document.getElementById('spanRight').value = b.spanRight || '';
+                    
+                    document.getElementById('lfP1').value = b.lfP1 || '';
+                    document.getElementById('lfD1').value = b.lfD1 || '↑';
+                    document.getElementById('lfP2').value = b.lfP2 || '';
+                    document.getElementById('lfD2').value = b.lfD2 || '←';
+                    
+                    document.getElementById('rfP1').value = b.rfP1 || '';
+                    document.getElementById('rfD1').value = b.rfD1 || '↑';
+                    document.getElementById('rfP2').value = b.rfP2 || '';
+                    document.getElementById('rfD2').value = b.rfD2 || '←';
+                    
+                    document.getElementById('thP1').value = b.thP1 || '';
+                    document.getElementById('thD1').value = b.thD1 || '↑';
+                    document.getElementById('thP2').value = b.thP2 || '';
+                    document.getElementById('thD2').value = b.thD2 || '←';
+                    
+                    document.getElementById('thumbStart').value = b.thumbStart || '';
+                    document.getElementById('thumbOval').value = b.thumbOval || '';
+                    document.getElementById('thumbEnd').value = b.thumbEnd || '';
+
+                    if(b.cutsOutput) {
+                        document.getElementById('cutsOutput').innerHTML = b.cutsOutput;
+                        document.getElementById('cutsOutput').classList.remove('hidden');
+                    }
                     if(b.photo) {
                         document.getElementById('drillPhotoData').value = b.photo;
                         document.getElementById('drillPhotoPreview').src = b.photo;
@@ -260,31 +363,30 @@
                         document.getElementById('videoPreview').classList.remove('hidden');
                     }
 
-                    b.arsenal.forEach((ball, i) => {
-                        document.getElementById(`ball_name_${i}`).value = ball.name;
-                        document.getElementById(`ball_layout_${i}`).value = ball.layout;
-                        document.getElementById(`ball_finish_${i}`).value = ball.finish;
-                    });
+                    if(b.arsenal) {
+                        b.arsenal.forEach((ball, i) => {
+                            document.getElementById(`ball_name_${i}`).value = ball.name;
+                            document.getElementById(`ball_layout_${i}`).value = ball.layout;
+                            document.getElementById(`ball_finish_${i}`).value = ball.finish;
+                        });
+                    }
                 };
             } else {
                 document.getElementById('formTitle').innerText = "New Bowler";
                 document.getElementById('bowlerId').value = Date.now().toString();
                 document.getElementById('deleteBtn').classList.add('hidden');
             }
-            
             document.getElementById('formModal').classList.remove('hidden');
         }
 
         function closeForm() {
             document.getElementById('formModal').classList.add('hidden');
-            // Stop video playing if closed
             document.getElementById('videoPreview').pause(); 
         }
 
         function saveBowler(e) {
             e.preventDefault();
             const id = document.getElementById('bowlerId').value;
-            
             let arsenal = [];
             for(let i=0; i<9; i++) {
                 arsenal.push({
@@ -304,8 +406,19 @@
                 speed: document.getElementById('statSpeed').value,
                 spanLeft: document.getElementById('spanLeft').value,
                 spanRight: document.getElementById('spanRight').value,
-                pitchFinger: document.getElementById('pitchFinger').value,
-                pitchThumb: document.getElementById('pitchThumb').value,
+                
+                lfP1: document.getElementById('lfP1').value, lfD1: document.getElementById('lfD1').value,
+                lfP2: document.getElementById('lfP2').value, lfD2: document.getElementById('lfD2').value,
+                rfP1: document.getElementById('rfP1').value, rfD1: document.getElementById('rfD1').value,
+                rfP2: document.getElementById('rfP2').value, rfD2: document.getElementById('rfD2').value,
+                thP1: document.getElementById('thP1').value, thD1: document.getElementById('thD1').value,
+                thP2: document.getElementById('thP2').value, thD2: document.getElementById('thD2').value,
+                
+                thumbStart: document.getElementById('thumbStart').value,
+                thumbOval: document.getElementById('thumbOval').value,
+                thumbEnd: document.getElementById('thumbEnd').value,
+                cutsOutput: document.getElementById('cutsOutput').innerHTML,
+
                 photo: document.getElementById('drillPhotoData').value,
                 video: document.getElementById('videoData').value,
                 arsenal: arsenal
@@ -313,21 +426,14 @@
 
             const tx = db.transaction("bowlers", "readwrite");
             tx.objectStore("bowlers").put(bowler);
-            tx.oncomplete = () => {
-                closeForm();
-                loadList();
-            };
+            tx.oncomplete = () => { closeForm(); loadList(); };
         }
 
         function deleteProfile() {
-            const id = document.getElementById('bowlerId').value;
-            if(confirm("Delete this bowler profile? This cannot be undone.")) {
+            if(confirm("Delete this bowler profile?")) {
                 const tx = db.transaction("bowlers", "readwrite");
-                tx.objectStore("bowlers").delete(id);
-                tx.oncomplete = () => {
-                    closeForm();
-                    loadList();
-                };
+                tx.objectStore("bowlers").delete(document.getElementById('bowlerId').value);
+                tx.oncomplete = () => { closeForm(); loadList(); };
             }
         }
     </script>
