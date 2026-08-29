@@ -211,7 +211,7 @@
                             <input type="text" id="thumbEnd" placeholder="End" class="pitch-input text-center text-xs">
                         </div>
                         <button type="button" id="btnGenerate" onclick="generateCuts()" class="w-full mt-3 bg-gray-700 hover:bg-gray-600 text-white text-xs font-bold py-2 rounded transition">GENERATE CUTS</button>
-                        <div id="cutsOutput" class="mt-3 text-sm text-primary font-mono space-y-1 text-center bg-black rounded py-2 hidden border border-gray-700"></div>
+                        <div id="cutsOutput" class="mt-3 text-sm text-primary font-mono space-y-1 text-center bg-black rounded py-3 hidden border border-gray-700"></div>
                     </div>
                 </div>
 
@@ -306,12 +306,11 @@
                 el.value = val || '←';
             });
             
-            loadList(); // re-render list with translations
+            loadList(); 
         }
 
         const fractionsArr = ['','1/16','1/8','3/16','1/4','5/16','3/8','7/16','1/2','9/16','5/8','11/16','3/4','13/16','7/8','15/16'];
         
-        // Generate Pitches (0 to 2)
         let pitchOptions = '<option value="0">0</option>';
         for(let whole = 0; whole <= 2; whole++) {
             for(let frac of fractionsArr) {
@@ -323,7 +322,6 @@
         }
         ['lfP1','lfP2','rfP1','rfP2','thP1','thP2'].forEach(id => document.getElementById(id).innerHTML = pitchOptions);
 
-        // Generate Spans (3 to 7)
         let spanOptions = '<option value="">-</option>';
         for(let whole = 3; whole <= 7; whole++) {
             for(let frac of fractionsArr) {
@@ -334,7 +332,6 @@
         }
         document.getElementById('spanLeft').innerHTML = spanOptions; document.getElementById('spanRight').innerHTML = spanOptions;
 
-        // Setup Arsenal
         const finishes = ['500','500P','1000','1000P','1500','1500P','2000','2000P','3000','3000P','4000','4000P'];
         const arsenalDiv = document.getElementById('arsenalContainer');
         for(let i=0; i<9; i++) {
@@ -425,40 +422,45 @@
             let diff = parseFraction(endStr) - parseFraction(startStr);
             if(diff <= 0) { alert(translations[currentLang].alertEndSize); return; }
 
-            // Get Base Pitch Coordinates
+            // Apply specific Chart Rules for Base Coordinate Digital Readings
+            // FWD/REV (Y axis). Chart: Thumb Reverse = Positive, Thumb Forward = Negative
             let baseY = parseFraction(document.getElementById('thP1').value);
-            if(document.getElementById('thD1').value === '↓') baseY *= -1;
+            if (document.getElementById('thD1').value === '↑') baseY *= -1;
 
+            // LFT/RGT (X axis). Chart: Left = Positive, Right = Negative
             let baseX = parseFraction(document.getElementById('thP2').value);
-            if(document.getElementById('thD2').value === '←') baseX *= -1;
+            if (document.getElementById('thD2').value === '→') baseX *= -1;
 
             let rad = angle * Math.PI / 180;
-            // Deriving exact table movement limits
-            let xTravel = diff * Math.cos(rad); 
-            let yTravel = diff * Math.sin(rad);
+            
+            // Apply specific Chart Trigonometry distribution 
+            let totalX = diff * Math.cos(rad);
+            let totalY = diff * Math.sin(rad);
 
-            let stepsCount = Math.ceil(Math.max(xTravel, yTravel) / 0.030);
-            if (stepsCount < 1) stepsCount = 1;
+            // Establish cut direction map based on standard mechanics matching the chart
+            let signY = 1; 
+            let signX = (style === 'left') ? 1 : -1;
 
-            // RH moves Right(+) and Reverse(-). LH moves Left(-) and Reverse(-).
-            let signX = style === 'left' ? -1 : 1; 
-            let signY = -1;
+            let stepsCount = Math.max(1, Math.round(diff / 0.040));
+            if (stepsCount < 3 && diff >= 0.100) stepsCount = 3; 
 
             let cutsDiv = document.getElementById('cutsOutput');
-            let html = '';
+            let html = '<div class="text-xs mb-2 text-gray-400 font-sans tracking-wide">DIGITAL READING (Y / X)</div>';
 
             let formatNum = (num) => {
                 let s = num.toFixed(3);
-                if(s.startsWith('0.')) return s.substring(1);
-                if(s.startsWith('-0.')) return '-' + s.substring(2);
+                if (s === '-0.000') s = '0.000';
+                if(s.startsWith('0.')) return '.' + s.substring(2);
+                if(s.startsWith('-0.')) return '-.' + s.substring(3);
                 return s;
             };
 
             for(let i = 0; i <= stepsCount; i++) {
-                let currentY = baseY + (yTravel / stepsCount * i * signY);
-                let currentX = baseX + (xTravel / stepsCount * i * signX);
-                html += `<div>Step ${i+1}: ${formatNum(currentY)} / ${formatNum(currentX)}</div>`;
+                let currentY = baseY + (totalY / stepsCount * i * signY);
+                let currentX = baseX + (totalX / stepsCount * i * signX);
+                html += `<div>${formatNum(currentY)} / ${formatNum(currentX)}</div>`;
             }
+            
             cutsDiv.innerHTML = html;
             cutsDiv.classList.remove('hidden');
         }
