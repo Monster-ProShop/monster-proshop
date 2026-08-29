@@ -10,6 +10,8 @@
     <link rel="manifest" id="manifest">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <script>
         tailwind.config = {
             theme: {
@@ -31,6 +33,13 @@
         .pitch-input:focus { border-color: #38BDF8; }
         .dir-select { background-color: #1f2937; color: white; border: 1px solid #374151; border-radius: 4px; padding: 8px; font-size: 0.875rem; outline: none; }
         .dir-select:focus { border-color: #38BDF8; }
+        
+        /* PDF Specific Print Styles to ensure text is black and background is white when rendered */
+        #pdfExportContainer { background: white; color: black; padding: 20px; font-family: sans-serif; display: none; }
+        .pdf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .pdf-box { border: 1px solid #ccc; padding: 10px; border-radius: 4px; }
+        .pdf-title { font-size: 10px; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 4px; }
+        .pdf-val { font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased pb-20 overflow-x-hidden">
@@ -100,7 +109,11 @@
                 <div id="searchContainer" class="hidden mb-4">
                     <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
                 </div>
+                
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-4">Swipe Right to PDF • Swipe Left to Delete</div>
+                
                 <div id="bowlerList" class="space-y-3"></div>
+                
                 <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
                     <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     <p id="txtEmpty">No bowlers found.<br>Tap + NEW to create a profile.</p>
@@ -119,6 +132,47 @@
         </button>
     </div>
 
+    <!-- Hidden PDF Export Template -->
+    <div id="pdfExportContainer">
+        <h1 style="font-size: 24px; font-weight: 900; margin-bottom: 5px;" id="pdfName">Bowler Name</h1>
+        <div style="font-size: 12px; color: #666; margin-bottom: 20px;" id="pdfStyle">Right Handed</div>
+        
+        <div class="pdf-grid">
+            <div class="pdf-box">
+                <div class="pdf-title">PAP</div>
+                <div class="pdf-val" id="pdfPap">--</div>
+            </div>
+            <div class="pdf-box">
+                <div class="pdf-title">Stats</div>
+                <div class="pdf-val" id="pdfStats">--</div>
+            </div>
+        </div>
+
+        <div class="pdf-grid">
+            <div class="pdf-box">
+                <div class="pdf-title">Left Finger</div>
+                <div class="pdf-val" id="pdfLeftF">--</div>
+                <div class="pdf-title" style="margin-top:8px;">Span</div>
+                <div class="pdf-val" id="pdfLeftS">--</div>
+            </div>
+            <div class="pdf-box">
+                <div class="pdf-title">Right Finger</div>
+                <div class="pdf-val" id="pdfRightF">--</div>
+                <div class="pdf-title" style="margin-top:8px;">Span</div>
+                <div class="pdf-val" id="pdfRightS">--</div>
+            </div>
+        </div>
+
+        <div class="pdf-box" style="margin-bottom: 15px;" id="pdfThumbBox">
+            <div class="pdf-title">Thumb</div>
+            <div class="pdf-val" id="pdfThumb">--</div>
+            <div class="pdf-title" style="margin-top:8px;" id="pdfOvalTitle">Oval Cuts</div>
+            <div style="font-size: 11px; font-family: monospace;" id="pdfCuts">--</div>
+        </div>
+        
+        <div class="pdf-title">Generated via BSV Pro</div>
+    </div>
+
     <!-- Layout Expert Modal -->
     <div id="layoutModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
         <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10 shadow-lg">
@@ -128,7 +182,6 @@
         <div class="p-4 space-y-4 pb-12">
             <p id="layoutDesc" class="text-sm text-gray-400">Generate Dual Angle Layouts based on bowler and ball specs.</p>
             
-            <!-- Bowler Specs -->
             <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
                 <h3 class="text-xs font-bold text-white uppercase border-b border-gray-800 pb-1">Bowler Specs</h3>
                 <div class="grid grid-cols-2 gap-3">
@@ -165,7 +218,6 @@
                 </div>
             </div>
 
-            <!-- Ball Specs -->
             <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
                 <h3 class="text-xs font-bold text-white uppercase border-b border-gray-800 pb-1">Ball Specs</h3>
                 <div>
@@ -191,7 +243,6 @@
                 </div>
             </div>
 
-            <!-- Recommended Layout Output -->
             <div class="bg-gray-900 p-5 rounded-xl border border-primary space-y-3">
                 <h3 id="lblRecLayout" class="text-sm font-bold text-primary uppercase text-center border-b border-gray-800 pb-2">Recommended Layout</h3>
                 <div class="flex justify-between items-center text-sm mt-3">
@@ -427,7 +478,7 @@
                 lblCalcRG: "Radio Giro (RG)", lblCalcDiff: "Diferencial", lblCalcIntDiff: "Diferencial Int.",
                 lblOutDrill: "Ángulo de Perforación", lblOutPin: "Distancia Pin a PAP", lblOutVal: "Ángulo VAL", lblOutSum: "Suma Total de Ángulos", lblOutFinal: "Diseño Final",
                 optAsym: "Asimétrica", optSym: "Simétrica", optMov1: "Gancho Continuo (Fuerte)", optMov2: "Gancho Continuo (Medio)", optMov3: "Gancho Continuo (Débil)",
-                optMov4: "Profundo y Adentro (Fuerte)", optMov5: "Profundo y Adentro (Medio)", optMov6: "Profundo y Adentro (Débil)", optMov7: "Rodamiento Temprano (Fuerte)", optMov8: "Rodamiento Temprano (Medio)", optMov9: "Rodamiento Temprano (Débil)"
+                optMov4: "Profundo y Adentro (Fuerte)", optMov5: "Profundo y Adentro (Medio)", optMov6: "Profundo y Adentro (Débil)", optMov7: "Temprano (Fuerte)", optMov8: "Temprano (Medio)", optMov9: "Temprano (Débil)"
             }
         };
 
@@ -560,16 +611,11 @@
             else if(movement === 'Early roll Weak') { baseSum = 120; baseRatio = 0.5; basePin = 5.0; }
 
             let calcSum = baseSum - (speed - 16)*5 + (revs - 300)*0.15;
-            
-            // Physics Core Modification: Adjusting sum based on RG
-            let rgAdj = (2.50 - rg) * 100;
-            calcSum += rgAdj;
-
+            let rgAdj = (2.50 - rg) * 100; calcSum += rgAdj;
             let maxSum = revs < 300 ? 150 : 180;
             let cappedSum = Math.max(30, Math.min(calcSum, maxSum));
             let targetSum = Math.round(cappedSum / 5) * 5;
 
-            // Physics Core Modification: Adjusting ratio based on Int Diff
             let ratioAdj = (intDiff - 0.010) * 10;
             let adjRatio = (baseRatio - ratioAdj) * (15 / Math.max(1, tilt)) * (45 / Math.max(1, rot));
             adjRatio = Math.max(0.1, adjRatio);
@@ -578,11 +624,8 @@
             let drillAngle = Math.round(Math.max(10, Math.min(90, drillAngleRaw)) / 5) * 5;
             let valAngle = Math.round(Math.max(20, Math.min(90, targetSum - drillAngle)) / 5) * 5;
 
-            // Physics Core Modification: Override Pin distance if Differential is very low
             let adjPin = (ballType === 'Symmetric') ? basePin * 0.9 : basePin;
-            if (diff < 0.035) {
-                adjPin = (ballType === 'Symmetric') ? 3.375 : 3.0;
-            }
+            if (diff < 0.035) adjPin = (ballType === 'Symmetric') ? 3.375 : 3.0;
             
             let finalPinDecimal = Math.round(adjPin * 16) / 16;
             let finalPinStr = decimalToFractionStr(finalPinDecimal);
@@ -805,7 +848,13 @@
             touchCurrentX = e.touches[0].clientX;
             let diff = touchCurrentX - touchStartX;
             if (Math.abs(diff) > 15) isSwiping = true; 
-            if (diff < 0) swipingElement.style.transform = `translateX(${Math.max(diff, -100)}px)`;
+            
+            // Swipe Left (Delete) or Right (PDF Export)
+            if (diff < 0) {
+                swipingElement.style.transform = `translateX(${Math.max(diff, -100)}px)`;
+            } else if (diff > 0) {
+                swipingElement.style.transform = `translateX(${Math.min(diff, 100)}px)`;
+            }
         }
 
         function handleTouchEnd(e, id) {
@@ -815,6 +864,8 @@
             swipingElement = null;
             
             el.style.transition = 'transform 0.3s ease-out';
+            
+            // Delete Trigger
             if (diff < -60) {
                 el.style.transform = `translateX(-100px)`;
                 setTimeout(() => {
@@ -827,10 +878,69 @@
                         setTimeout(() => { isSwiping = false; }, 50); 
                     }
                 }, 300);
-            } else {
+            } 
+            // PDF Trigger
+            else if (diff > 60) {
+                el.style.transform = `translateX(100px)`;
+                setTimeout(() => {
+                    generatePDF(id);
+                    el.style.transform = `translateX(0px)`;
+                    setTimeout(() => { isSwiping = false; }, 300); 
+                }, 300);
+            }
+            // Reset
+            else {
                 el.style.transform = `translateX(0px)`;
                 setTimeout(() => { isSwiping = false; }, 50);
             }
+        }
+
+        function generatePDF(id) {
+            db.transaction("bowlers", "readonly").objectStore("bowlers").get(id).onsuccess = (e) => {
+                const b = e.target.result;
+                if(!b) return;
+
+                document.getElementById('pdfName').innerText = b.name;
+                document.getElementById('pdfStyle').innerText = b.style === 'no_thumb' ? '2-Handed (No Thumb)' : (b.style === 'left' ? 'Left Handed' : 'Right Handed');
+                document.getElementById('pdfPap').innerText = `X: ${b.papX || '0'} ${b.papXDir || ''} / Y: ${b.papY || '0'} ${b.papYDir || ''}`;
+                document.getElementById('pdfStats').innerText = `Spd: ${b.speed || '-'} | Rev: ${b.revs || '-'} | Avg: ${b.avg || '-'}`;
+                
+                document.getElementById('pdfLeftF').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''} / ${b.lfP2 || '0'} ${b.lfD2 || ''}`;
+                document.getElementById('pdfLeftS').innerText = b.spanLeft || '-';
+                
+                document.getElementById('pdfRightF').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''} / ${b.rfP2 || '0'} ${b.rfD2 || ''}`;
+                document.getElementById('pdfRightS').innerText = b.spanRight || '-';
+
+                if(b.style === 'no_thumb') {
+                    document.getElementById('pdfThumbBox').style.display = 'none';
+                } else {
+                    document.getElementById('pdfThumbBox').style.display = 'block';
+                    document.getElementById('pdfThumb').innerText = `${b.thP1 || '0'} ${b.thD1 || ''} / ${b.thP2 || '0'} ${b.thD2 || ''}`;
+                    if (b.cutsOutput) {
+                        document.getElementById('pdfCuts').innerHTML = b.cutsOutput.replace(/<div class="text-xs[^>]*>.*?<\/div>/g, '');
+                        document.getElementById('pdfOvalTitle').style.display = 'block';
+                        document.getElementById('pdfCuts').style.display = 'block';
+                    } else {
+                        document.getElementById('pdfOvalTitle').style.display = 'none';
+                        document.getElementById('pdfCuts').style.display = 'none';
+                    }
+                }
+
+                const element = document.getElementById('pdfExportContainer');
+                element.style.display = 'block';
+                
+                const opt = {
+                    margin: 0.5,
+                    filename: `${b.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_bsv_specs.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    element.style.display = 'none';
+                });
+            };
         }
 
         function renderBowlers(bowlersArray) {
@@ -845,9 +955,15 @@
                     let styleBadge = b.style === 'no_thumb' ? '2H' : (b.style === 'left' ? 'LH' : 'RH');
                     return `
                     <div class="relative rounded-xl overflow-hidden mb-3 bg-red-600">
+                        <!-- Left Swipe Underlay (Delete) -->
                         <div class="absolute inset-y-0 right-0 w-24 flex items-center justify-center font-bold text-white text-2xl">
                             🗑️
                         </div>
+                        <!-- Right Swipe Underlay (PDF) -->
+                        <div class="absolute inset-y-0 left-0 w-24 flex items-center justify-center font-bold text-white text-2xl bg-blue-600">
+                            📄
+                        </div>
+                        
                         <div onclick="openForm('${b.id}')" 
                              ontouchstart="handleTouchStart(event, this)" 
                              ontouchmove="handleTouchMove(event)" 
