@@ -33,7 +33,7 @@
         .dir-select:focus { border-color: #38BDF8; }
     </style>
 </head>
-<body class="bg-dark text-gray-200 font-sans antialiased pb-20">
+<body class="bg-dark text-gray-200 font-sans antialiased pb-20 overflow-x-hidden">
 
     <!-- Language Selection Overlay -->
     <div id="languageOverlay" class="fixed inset-0 bg-dark z-50 flex flex-col items-center justify-center p-6">
@@ -387,7 +387,7 @@
                 } catch (err) { alert("Invalid backup file format."); }
             };
             reader.readAsText(file);
-            e.target.value = ''; // reset input
+            e.target.value = ''; 
         }
 
         const fractionsArr = ['','1/16','1/8','3/16','1/4','5/16','3/8','7/16','1/2','9/16','5/8','11/16','3/4','13/16','7/8','15/16'];
@@ -581,6 +581,57 @@
             };
         }
 
+        // Swipe-to-Delete Implementation
+        let touchStartX = 0;
+        let touchCurrentX = 0;
+        let swipingElement = null;
+        let isSwiping = false;
+
+        function handleTouchStart(e, el) {
+            touchStartX = e.touches[0].clientX;
+            touchCurrentX = touchStartX;
+            swipingElement = el;
+            el.style.transition = 'none';
+            isSwiping = false;
+        }
+
+        function handleTouchMove(e) {
+            if (!swipingElement) return;
+            touchCurrentX = e.touches[0].clientX;
+            let diff = touchCurrentX - touchStartX;
+            
+            if (Math.abs(diff) > 15) isSwiping = true; 
+            
+            if (diff < 0) {
+                swipingElement.style.transform = `translateX(${Math.max(diff, -100)}px)`;
+            }
+        }
+
+        function handleTouchEnd(e, id) {
+            if (!swipingElement) return;
+            let diff = touchCurrentX - touchStartX;
+            let el = swipingElement;
+            swipingElement = null;
+            
+            el.style.transition = 'transform 0.3s ease-out';
+            if (diff < -60) {
+                el.style.transform = `translateX(-100px)`;
+                setTimeout(() => {
+                    if(confirm(translations[currentLang].confirmDelete)) {
+                        const tx = db.transaction("bowlers", "readwrite");
+                        tx.objectStore("bowlers").delete(id);
+                        tx.oncomplete = () => { loadList(); };
+                    } else {
+                        el.style.transform = `translateX(0px)`;
+                        setTimeout(() => { isSwiping = false; }, 50); 
+                    }
+                }, 300);
+            } else {
+                el.style.transform = `translateX(0px)`;
+                setTimeout(() => { isSwiping = false; }, 50);
+            }
+        }
+
         function renderBowlers(bowlersArray) {
             const list = document.getElementById('bowlerList');
             const empty = document.getElementById('emptyState');
@@ -592,24 +643,38 @@
                     let profImg = b.profilePhoto ? `<img src="${b.profilePhoto}" class="w-12 h-12 rounded-full object-cover border border-gray-700">` : `<div class="w-12 h-12 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xl">👤</div>`;
                     let styleBadge = b.style === 'no_thumb' ? '2H' : (b.style === 'left' ? 'LH' : 'RH');
                     return `
-                    <div onclick="openForm('${b.id}')" class="bg-card p-3 rounded-xl border border-gray-700 shadow flex justify-between items-center cursor-pointer active:scale-95 transition-transform">
-                        <div class="flex items-center gap-3">
-                            ${profImg}
-                            <div>
-                                <h3 class="font-bold text-white text-lg">${b.name} <span class="text-[10px] bg-primary text-dark px-1.5 py-0.5 rounded ml-1 font-bold">${styleBadge}</span></h3>
-                                <div class="text-xs text-gray-400 mt-0.5 flex gap-2">
-                                    <span>Avg: <strong class="text-gray-200">${b.avg || '-'}</strong></span>
-                                    <span>Spd: <strong class="text-gray-200">${b.speed ? b.speed : '-'}</strong></span>
+                    <div class="relative rounded-xl overflow-hidden mb-3 bg-red-600">
+                        <div class="absolute inset-y-0 right-0 w-24 flex items-center justify-center font-bold text-white text-2xl">
+                            🗑️
+                        </div>
+                        <div onclick="openForm('${b.id}')" 
+                             ontouchstart="handleTouchStart(event, this)" 
+                             ontouchmove="handleTouchMove(event)" 
+                             ontouchend="handleTouchEnd(event, '${b.id}')"
+                             class="relative bg-card p-3 rounded-xl border border-gray-700 shadow flex justify-between items-center cursor-pointer z-10 w-full active:scale-[0.98] transition-transform">
+                            <div class="flex items-center gap-3 pointer-events-none">
+                                ${profImg}
+                                <div>
+                                    <h3 class="font-bold text-white text-lg">${b.name} <span class="text-[10px] bg-primary text-dark px-1.5 py-0.5 rounded ml-1 font-bold">${styleBadge}</span></h3>
+                                    <div class="text-xs text-gray-400 mt-0.5 flex gap-2">
+                                        <span>Avg: <strong class="text-gray-200">${b.avg || '-'}</strong></span>
+                                        <span>Spd: <strong class="text-gray-200">${b.speed ? b.speed : '-'}</strong></span>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="text-primary font-bold pointer-events-none">›</div>
                         </div>
-                        <div class="text-primary font-bold">›</div>
                     </div>
                 `}).join('');
             }
         }
 
         function openForm(id = null) {
+            if (isSwiping && id) {
+                isSwiping = false; 
+                return;
+            }
+
             document.getElementById('bowlerForm').reset();
             ['profilePreview', 'drillPhotoPreview', 'videoPreview', 'cutsOutput'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('profileIcon').classList.remove('hidden');
