@@ -25,9 +25,10 @@
     <style>
         ::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
-        .pitch-input { width: 100%; bg-gray-900; border: 1px solid #374151; border-radius: 4px; padding: 4px 8px; color: white; font-size: 0.875rem; outline: none; }
+        /* Fixed CSS background-color */
+        .pitch-input { width: 100%; background-color: #111827; border: 1px solid #374151; border-radius: 4px; padding: 8px; color: white; font-size: 0.875rem; outline: none; }
         .pitch-input:focus { border-color: #10b981; }
-        .dir-select { background-color: #1f2937; color: white; border: 1px solid #374151; border-radius: 4px; padding: 4px; font-size: 0.875rem; outline: none; }
+        .dir-select { background-color: #1f2937; color: white; border: 1px solid #374151; border-radius: 4px; padding: 8px; font-size: 0.875rem; outline: none; }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased pb-20">
@@ -56,17 +57,29 @@
 
             <div>
                 <label class="block text-xs font-bold text-primary mb-1 uppercase">Bowler Name</label>
-                <input type="text" id="bName" required class="pitch-input !p-3">
+                <input type="text" id="bName" required class="pitch-input">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
+                <!-- Updated PAP Section -->
                 <div class="bg-card p-3 rounded-lg border border-gray-800">
                     <label class="block text-xs font-bold text-primary mb-2 uppercase">PAP</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="papX" placeholder="Distance" class="pitch-input">
+                        <select id="papXDir" class="dir-select">
+                            <option value="→">→ Right</option>
+                            <option value="←">← Left</option>
+                        </select>
+                    </div>
                     <div class="flex gap-2">
-                        <input type="text" id="papX" placeholder="X" class="pitch-input">
-                        <input type="text" id="papY" placeholder="Y" class="pitch-input">
+                        <input type="text" id="papY" placeholder="Distance" class="pitch-input">
+                        <select id="papYDir" class="dir-select">
+                            <option value="↑">↑ Up</option>
+                            <option value="↓">↓ Down</option>
+                        </select>
                     </div>
                 </div>
+                
                 <div class="bg-card p-3 rounded-lg border border-gray-800">
                     <label class="block text-xs font-bold text-primary mb-2 uppercase">Stats</label>
                     <div class="grid grid-cols-1 gap-2">
@@ -77,7 +90,7 @@
                 </div>
             </div>
 
-            <!-- Enhanced Drill Sheet -->
+            <!-- Drill Sheet -->
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-4">
                 <label class="block text-xs font-bold text-primary uppercase">Drill Sheet / Pitches</label>
                 
@@ -208,7 +221,6 @@
         };
         request.onsuccess = (e) => { db = e.target.result; loadList(); };
 
-        // Fraction Parser
         function parseFraction(str) {
             str = str.trim();
             if(str.includes('/')) {
@@ -218,7 +230,6 @@
             return parseFloat(str);
         }
 
-        // Oval Cut Generator
         function generateCuts() {
             let startStr = document.getElementById('thumbStart').value;
             let endStr = document.getElementById('thumbEnd').value;
@@ -239,7 +250,6 @@
             let xTotal = diff * Math.cos(rad);
             let yTotal = diff * Math.sin(rad);
 
-            // Dividing by 0.030 limits maximum step increment to safe Pro Shop dial values
             let steps = Math.ceil(Math.max(xTotal, yTotal) / 0.030);
             if (steps < 1) steps = 1;
 
@@ -320,8 +330,12 @@
                     const b = e.target.result;
                     document.getElementById('bowlerId').value = b.id;
                     document.getElementById('bName').value = b.name || '';
+                    
                     document.getElementById('papX').value = b.papX || '';
+                    document.getElementById('papXDir').value = b.papXDir || '→';
                     document.getElementById('papY').value = b.papY || '';
+                    document.getElementById('papYDir').value = b.papYDir || '↑';
+                    
                     document.getElementById('statRevs').value = b.revs || '';
                     document.getElementById('statAvg').value = b.avg || '';
                     document.getElementById('statSpeed').value = b.speed || '';
@@ -399,8 +413,12 @@
             const bowler = {
                 id: id,
                 name: document.getElementById('bName').value,
+                
                 papX: document.getElementById('papX').value,
+                papXDir: document.getElementById('papXDir').value,
                 papY: document.getElementById('papY').value,
+                papYDir: document.getElementById('papYDir').value,
+                
                 revs: document.getElementById('statRevs').value,
                 avg: document.getElementById('statAvg').value,
                 speed: document.getElementById('statSpeed').value,
