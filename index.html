@@ -243,8 +243,17 @@
     </div>
 
     <script>
+        // Custom App Icon SVG Injected directly into the Manifest
+        const appIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#0B0F19"/><circle cx="60" cy="60" r="50" fill="none" stroke="#1E293B" stroke-width="4"/><path d="M 35 40 C 50 35 65 42 60 55 C 55 68 35 65 35 80 C 35 90 50 90 60 85" fill="none" stroke="#38BDF8" stroke-width="7" stroke-linecap="round"/><path d="M 60 40 L 75 85 L 90 40" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="30" r="5" fill="#38BDF8" /><circle cx="62" cy="25" r="5" fill="#38BDF8" /><circle cx="50" cy="50" r="6" fill="#38BDF8" /></svg>`;
+
         const manifest = {
-            name: "BSV Pro", short_name: "BSV Pro", display: "standalone", background_color: "#0B0F19", theme_color: "#0B0F19", start_url: location.href, icons: [{"src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎳</text></svg>", "sizes": "192x192", "type": "image/svg+xml"}]
+            name: "BSV Pro", 
+            short_name: "BSV Pro", 
+            display: "standalone", 
+            background_color: "#0B0F19", 
+            theme_color: "#0B0F19", 
+            start_url: location.href, 
+            icons: [{"src": "data:image/svg+xml;charset=utf-8," + encodeURIComponent(appIconSvg), "sizes": "512x512", "type": "image/svg+xml", "purpose": "any maskable"}]
         };
         document.getElementById('manifest').href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
 
@@ -422,22 +431,19 @@
             let diff = parseFraction(endStr) - parseFraction(startStr);
             if(diff <= 0) { alert(translations[currentLang].alertEndSize); return; }
 
-            // Apply specific Chart Rules for Base Coordinate Digital Readings
-            // FWD/REV (Y axis). Chart: Thumb Reverse = Positive, Thumb Forward = Negative
+            // Chart: Thumb Reverse = Positive, Thumb Forward = Negative
             let baseY = parseFraction(document.getElementById('thP1').value);
             if (document.getElementById('thD1').value === '↑') baseY *= -1;
 
-            // LFT/RGT (X axis). Chart: Left = Positive, Right = Negative
+            // Chart: Left = Positive, Right = Negative
             let baseX = parseFraction(document.getElementById('thP2').value);
             if (document.getElementById('thD2').value === '→') baseX *= -1;
 
             let rad = angle * Math.PI / 180;
             
-            // Apply specific Chart Trigonometry distribution 
             let totalX = diff * Math.cos(rad);
             let totalY = diff * Math.sin(rad);
 
-            // Establish cut direction map based on standard mechanics matching the chart
             let signY = 1; 
             let signX = (style === 'left') ? 1 : -1;
 
