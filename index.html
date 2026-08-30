@@ -34,14 +34,10 @@
         .dir-select { background-color: #1f2937; color: white; border: 1px solid #374151; border-radius: 4px; padding: 8px; font-size: 0.875rem; outline: none; }
         .dir-select:focus { border-color: #38BDF8; }
         
-        #pdfExportContainer { background: white; color: black; padding: 20px; font-family: sans-serif; display: none; }
-        .pdf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .pdf-box { border: 1px solid #ccc; padding: 10px; border-radius: 4px; }
-        .pdf-title { font-size: 10px; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 4px; }
-        .pdf-val { font-size: 14px; font-weight: bold; }
+        #pdfExportContainer { background: white; color: black; padding: 20px; font-family: sans-serif; display: none; box-sizing: border-box; width: 7.5in; }
     </style>
 </head>
-<body class="bg-dark text-gray-200 font-sans antialiased pb-24 overflow-x-hidden">
+<body class="bg-dark text-gray-200 font-sans antialiased pb-20 overflow-x-hidden">
 
     <!-- Language Selection Overlay -->
     <div id="languageOverlay" class="fixed inset-0 bg-dark z-50 flex flex-col items-center justify-center p-6">
@@ -85,15 +81,14 @@
                 <text x="132" y="106" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="600" letter-spacing="5" fill="#64748B" id="txtHeaderVault">BOWLER SPECS VAULT</text>
             </svg>
             
-            <!-- Menu Icon (Hamburger in a square) -->
             <button onclick="toggleMenu()" class="text-gray-300 hover:text-white p-1.5 border border-gray-600 rounded bg-gray-800 transition active:scale-95">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             </button>
             
-            <!-- Dropdown Menu -->
             <div id="mainMenu" class="absolute top-16 right-4 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
+                <button onclick="switchView('bowlers'); toggleMenu();" id="btnMenuBowlers" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🎳 My Bowlers</button>
                 <button onclick="toggleSearch()" id="btnMenuSearch" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🔍 Search Bowlers</button>
                 <button onclick="exportBackup()" id="btnMenuExport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">💾 Backup & Export</button>
                 <button onclick="document.getElementById('importInput').click(); toggleMenu();" id="btnMenuImport" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">📂 Upload Backup</button>
@@ -102,77 +97,150 @@
             <input type="file" id="importInput" accept=".json" class="hidden" onchange="importBackup(event)">
         </header>
 
-        <main class="w-full max-w-lg mx-auto p-4" id="mainContentView">
-            <div id="searchContainer" class="hidden mb-4">
-                <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
+        <main class="w-full max-w-lg mx-auto" id="mainContentView">
+            
+            <div id="viewBowlers" class="p-4 block">
+                
+                <div class="flex justify-end mb-4 relative z-20">
+                    <button onclick="openForm()" class="bg-blue-600 hover:bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-2xl shadow-lg transition transform active:scale-95 border-2 border-blue-400">
+                        +
+                    </button>
+                </div>
+
+                <div id="searchContainer" class="hidden mb-4">
+                    <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
+                </div>
+                
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-4" id="txtSwipeHint">Swipe Right to PDF • Swipe Left to Delete</div>
+                
+                <div id="bowlerList" class="space-y-3"></div>
+                
+                <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
+                    <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <p id="txtEmpty">No bowlers found.<br>Tap the + button to create a profile.</p>
+                </div>
             </div>
-            
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-4" id="txtSwipeHint">Swipe Right to PDF • Swipe Left to Delete</div>
-            
-            <div id="bowlerList" class="space-y-3"></div>
-            
-            <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
-                <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                <p id="txtEmpty">No bowlers found.<br>Tap the green + button below to create a profile.</p>
-            </div>
+
         </main>
 
-        <!-- Floating Action Buttons (Bottom Right): Green New Bowler (+) & Red Layout Expert -->
-        <div class="fixed bottom-6 right-6 flex items-center gap-3 z-30">
-            <!-- New Bowler Button (+ Green, Same size as Layout Expert) -->
-            <button onclick="openForm()" class="w-14 h-14 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] flex items-center justify-center text-3xl transition-transform active:scale-95 border border-emerald-400 font-black">
-                +
-            </button>
-            <!-- Layout Expert Button -->
-            <button onclick="openLayoutModal()" class="w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center justify-center transition-transform active:scale-95 border border-red-400">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-9 h-9">
-                    <circle cx="40" cy="30" r="7" fill="#7F1D1D"/>
-                    <circle cx="60" cy="25" r="7" fill="#7F1D1D"/>
-                    <circle cx="50" cy="55" r="9" fill="#7F1D1D"/>
-                </svg>
-            </button>
-        </div>
+        <button onclick="openLayoutModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center justify-center z-30 transition-transform active:scale-95 border border-red-400">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-9 h-9">
+                <circle cx="40" cy="30" r="7" fill="#7F1D1D"/>
+                <circle cx="60" cy="25" r="7" fill="#7F1D1D"/>
+                <circle cx="50" cy="55" r="9" fill="#7F1D1D"/>
+            </svg>
+        </button>
     </div>
 
-    <!-- Hidden PDF Export Template -->
+    <!-- Upright Custom Drill Sheet PDF Export Template -->
     <div id="pdfExportContainer">
-        <h1 style="font-size: 24px; font-weight: 900; margin-bottom: 5px;" id="pdfName">Bowler Name</h1>
-        <div style="font-size: 12px; color: #666; margin-bottom: 20px;" id="pdfStyle">Right Handed</div>
-        
-        <div class="pdf-grid">
-            <div class="pdf-box">
-                <div class="pdf-title">PAP</div>
-                <div class="pdf-val" id="pdfPap">--</div>
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+            <div>
+                <h1 style="font-size: 22px; font-weight: 900; margin: 0; text-transform: uppercase;" id="pdfName">Bowler Name</h1>
+                <div style="font-size: 12px; font-weight: bold; color: #444; margin-top: 2px;" id="pdfStyle">Right Handed (1-Hand)</div>
             </div>
-            <div class="pdf-box">
-                <div class="pdf-title">Stats</div>
-                <div class="pdf-val" id="pdfStats">--</div>
+            <div style="text-align: right;">
+                <div style="font-size: 14px; font-weight: 900; color: #000;">MONSTER PRO SHOP</div>
+                <div style="font-size: 9px; color: #666;">BSV PRO SPEC SHEET</div>
             </div>
         </div>
 
-        <div class="pdf-grid">
-            <div class="pdf-box">
-                <div class="pdf-title">Left Finger</div>
-                <div class="pdf-val" id="pdfLeftF">--</div>
-                <div class="pdf-title" style="margin-top:8px;">Span</div>
-                <div class="pdf-val" id="pdfLeftS">--</div>
+        <!-- Main Grid matching Drill Sheet Structure -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <!-- Left Box: Stats & PAP -->
+            <div style="border: 2px solid #000; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bowler Specs & Stats</div>
+                <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 4px 0; font-weight: bold; color: #333;">VEL (Speed):</td>
+                        <td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfVel">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0; font-weight: bold; color: #333;">REV (Revs):</td>
+                        <td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfRev">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0; font-weight: bold; color: #333;">TILT:</td>
+                        <td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfTilt">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0; font-weight: bold; color: #333;">ROT:</td>
+                        <td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfRot">-</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px 0; font-weight: bold; color: #333;">AVG:</td>
+                        <td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfAvg">-</td>
+                    </tr>
+                </table>
+                <div style="margin-top: 10px; border-top: 1px dashed #000; padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: 900;">PAP:</span>
+                    <span style="font-size: 13px; font-weight: bold; border: 1px solid #000; padding: 2px 8px; border-radius: 4px;" id="pdfPap">--</span>
+                </div>
             </div>
-            <div class="pdf-box">
-                <div class="pdf-title">Right Finger</div>
-                <div class="pdf-val" id="pdfRightF">--</div>
-                <div class="pdf-title" style="margin-top:8px;">Span</div>
-                <div class="pdf-val" id="pdfRightS">--</div>
+
+            <!-- Right Box: Bridge / Spans -->
+            <div style="border: 2px solid #000; padding: 12px; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bridge & Spans</div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span style="font-weight: bold;">Left Span:</span>
+                        <span style="font-weight: bold;" id="pdfLeftSpan">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span style="font-weight: bold;">Right Span:</span>
+                        <span style="font-weight: bold;" id="pdfRightSpan">-</span>
+                    </div>
+                </div>
+                <div style="background: #eee; text-align: center; padding: 6px; font-weight: 900; font-size: 11px; border: 1px solid #000; border-radius: 4px;">
+                    PUENTE (BRIDGE)
+                </div>
             </div>
         </div>
 
-        <div class="pdf-box" style="margin-bottom: 15px;" id="pdfThumbBox">
-            <div class="pdf-title">Thumb</div>
-            <div class="pdf-val" id="pdfThumb">--</div>
-            <div class="pdf-title" style="margin-top:8px;" id="pdfOvalTitle">Oval Cuts</div>
-            <div style="font-size: 11px; font-family: monospace;" id="pdfCuts">--</div>
+        <!-- Pitches Grid: Left Finger, Right Finger, Thumb -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Left Finger</div>
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Pitch 1 (Y): <span id="pdfLf1" style="font-family: monospace;">-</span></div>
+                <div style="font-size: 12px; font-weight: bold;">Pitch 2 (X): <span id="pdfLf2" style="font-family: monospace;">-</span></div>
+            </div>
+            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Right Finger</div>
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Pitch 1 (Y): <span id="pdfRf1" style="font-family: monospace;">-</span></div>
+                <div style="font-size: 12px; font-weight: bold;">Pitch 2 (X): <span id="pdfRf2" style="font-family: monospace;">-</span></div>
+            </div>
+            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;" id="pdfThumbContainer">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb</div>
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Pitch 1 (Y): <span id="pdfTh1" style="font-family: monospace;">-</span></div>
+                <div style="font-size: 12px; font-weight: bold;">Pitch 2 (X): <span id="pdfTh2" style="font-family: monospace;">-</span></div>
+            </div>
+        </div>
+
+        <!-- Thumb Oval Cuts Section -->
+        <div style="border: 2px solid #000; padding: 10px; border-radius: 6px; margin-bottom: 15px;" id="pdfOvalBox">
+            <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb Oval Cuts / Digital Readings</div>
+            <div style="font-size: 11px; font-family: monospace; white-space: pre-line;" id="pdfCuts">--</div>
+        </div>
+
+        <!-- Arsenal Summary Table -->
+        <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
+            <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Arsenal Summary</div>
+            <table style="width: 100%; font-size: 11px; border-collapse: collapse;" id="pdfArsenalTable">
+                <thead>
+                    <tr style="border-bottom: 1px solid #000;">
+                        <th style="text-align: left; padding: 2px;">#</th>
+                        <th style="text-align: left; padding: 2px;">Ball Name</th>
+                        <th style="text-align: left; padding: 2px;">Layout</th>
+                        <th style="text-align: left; padding: 2px;">Finish</th>
+                    </tr>
+                </thead>
+                <tbody id="pdfArsenalBody">
+                </tbody>
+            </table>
         </div>
         
-        <div class="pdf-title">Generated via BSV Pro</div>
+        <div style="text-align: right; font-size: 9px; color: #666; margin-top: 10px;">Generated via BSV Pro • www.monsterproshop.mx</div>
     </div>
 
     <!-- Master Layout Expert Modal -->
@@ -204,30 +272,29 @@
                         <input type="number" id="calcRot" value="45" class="pitch-input" oninput="calculateLayout()">
                     </div>
                 </div>
-                <div>
-                    <label id="lblCalcMovement" class="block text-xs font-bold text-primary mb-1 uppercase">Desired Ball Movement</label>
-                    <select id="calcMovement" class="pitch-input text-sm" onchange="calculateLayout()">
-                        <option value="Continuous hook Strong" id="optMov1">Continuous hook Strong</option>
-                        <option value="Continuous hook Medium" id="optMov2">Continuous hook Medium</option>
-                        <option value="Continuous hook Weak" id="optMov3">Continuous hook Weak</option>
-                        <option value="Deep and In Strong" id="optMov4">Deep and In Strong</option>
-                        <option value="Deep and In Medium" id="optMov5">Deep and In Medium</option>
-                        <option value="Deep and In Weak" id="optMov6">Deep and In Weak</option>
-                        <option value="Early roll Strong" id="optMov7">Early roll Strong</option>
-                        <option value="Early roll Medium" id="optMov8" selected>Early roll Medium</option>
-                        <option value="Early roll Weak" id="optMov9">Early roll Weak</option>
-                    </select>
-                </div>
             </div>
 
             <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
                 <h3 class="text-xs font-bold text-white uppercase border-b border-gray-800 pb-1">Ball Specs</h3>
                 <div>
-                    <label id="lblCalcBall" class="block text-xs font-bold text-primary mb-1 uppercase">Ball Type</label>
-                    <select id="calcBall" class="pitch-input text-sm" onchange="calculateLayout()">
-                        <option value="Asymmetric" id="optAsym">Asymmetric</option>
-                        <option value="Symmetric" id="optSym">Symmetric</option>
-                    </select>
+                    <label id="lblCalcBall" class="block text-xs font-bold text-primary mb-1 uppercase">Ball Type & Movement</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="calcBall" class="pitch-input text-sm" onchange="calculateLayout()">
+                            <option value="Asymmetric" id="optAsym">Asymmetric</option>
+                            <option value="Symmetric" id="optSym">Symmetric</option>
+                        </select>
+                        <select id="calcMovement" class="pitch-input text-sm" onchange="calculateLayout()">
+                            <option value="Continuous hook Strong" id="optMov1">Cont. Strong</option>
+                            <option value="Continuous hook Medium" id="optMov2">Cont. Medium</option>
+                            <option value="Continuous hook Weak" id="optMov3">Cont. Weak</option>
+                            <option value="Deep and In Strong" id="optMov4">Deep In Strong</option>
+                            <option value="Deep and In Medium" id="optMov5">Deep In Medium</option>
+                            <option value="Deep and In Weak" id="optMov6">Deep In Weak</option>
+                            <option value="Early roll Strong" id="optMov7">Early Strong</option>
+                            <option value="Early roll Medium" id="optMov8" selected>Early Medium</option>
+                            <option value="Early roll Weak" id="optMov9">Early Weak</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="grid grid-cols-3 gap-2">
                     <div>
@@ -473,7 +540,7 @@
 
         const translations = {
             en: {
-                txtHeaderVault: "BOWLER SPECS VAULT", txtEmpty: "No bowlers found.<br>Tap the green + button below to create a profile.",
+                txtHeaderVault: "BOWLER SPECS VAULT", txtEmpty: "No bowlers found.<br>Tap the + button to create a profile.",
                 formTitleNew: "New Bowler", formTitleEdit: "Edit Profile", lblBowlerName: "Bowler Name", lblBowlingStyle: "Bowling Style",
                 optStyleRight: "Right Handed (1-Hand)", optStyleLeft: "Left Handed (1-Hand)", optStyleNoThumb: "No Thumb (2-Handed)",
                 optPapRight: "→ R", optPapLeft: "← L", optPapUp: "↑ Up", optPapDown: "↓ Dn",
@@ -485,7 +552,7 @@
                 lblVideo: "Release Video", btnSave: "SAVE PROFILE", btnDelete: "DELETE",
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
                 dirYUp: "↑ Up (FWD)", dirYDown: "↓ Down (REV)", dirXLeft: "← Left", dirXRight: "→ Right",
-                menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search...", txtSwipeHint: "Swipe Right to PDF • Swipe Left to Delete",
+                menuBowlers: "🎳 My Bowlers", menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search...", txtSwipeHint: "Swipe Right to PDF • Swipe Left to Delete",
                 layoutTitle: "Layout Expert", layoutDesc: "Generate Dual Angle Layouts based on bowler & ball specs.",
                 lblCalcSpeed: "Speed (mph)", lblCalcRevs: "Revs (RPM)", lblCalcTilt: "Axis Tilt (deg)", lblCalcRot: "Rotation (deg)", 
                 lblCalcMovement: "Desired Ball Movement", lblCalcBall: "Ball Type", lblRecLayout: "Recommended Layout",
@@ -495,7 +562,7 @@
                 lblProfileLayout: "Ball Layout Recommender", btnGenLayoutProfile: "GET LAYOUT", alertStatsReq: "Please enter Speed, Revs, Tilt, and Rotation in Stats first."
             },
             es: {
-                txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón verde + abajo para crear un perfil.",
+                txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón + para crear un perfil.",
                 formTitleNew: "Nuevo Jugador", formTitleEdit: "Editar Perfil", lblBowlerName: "Nombre del Jugador", lblBowlingStyle: "Estilo de Juego",
                 optStyleRight: "Diestro (1 Mano)", optStyleLeft: "Zurdo (1 Mano)", optStyleNoThumb: "Sin Pulgar (2 Manos)",
                 optPapRight: "→ Der", optPapLeft: "← Izq", optPapUp: "↑ Arr", optPapDown: "↓ Aba",
@@ -507,7 +574,7 @@
                 lblVideo: "Video de Lanzamiento", btnSave: "GUARDAR PERFIL", btnDelete: "ELIMINAR",
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
                 dirYUp: "↑ Adelante (FWD)", dirYDown: "↓ Atrás (REV)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha",
-                menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...", txtSwipeHint: "Desliza Derecha para PDF • Izquierda para Borrar",
+                menuBowlers: "🎳 Mis Jugadores", menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...", txtSwipeHint: "Desliza Derecha para PDF • Izquierda para Borrar",
                 layoutTitle: "Experto en Layouts", layoutDesc: "Genera diseños Dual Angle basados en especificaciones del jugador y la bola.",
                 lblCalcSpeed: "Velocidad (mph)", lblCalcRevs: "Revoluciones (RPM)", lblCalcTilt: "Tilt de Eje (deg)", lblCalcRot: "Rotación (deg)", 
                 lblCalcMovement: "Movimiento Deseado", lblCalcBall: "Tipo de Bola", lblRecLayout: "Diseño Recomendado",
@@ -525,7 +592,7 @@
             document.getElementById('appContainer').classList.remove('hidden');
             
             const t = translations[lang];
-            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutDrill','lblOutPin','lblOutVal','lblOutSum','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym'].forEach(id => {
+            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','btnMenuBowlers','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutDrill','lblOutPin','lblOutVal','lblOutSum','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
@@ -552,7 +619,7 @@
 
         function showLanguageScreen() {
             toggleMenu();
-            document.getElementById('languageOverlay').classList.add('hidden');
+            document.getElementById('languageOverlay').classList.remove('hidden');
             document.getElementById('appContainer').classList.add('hidden');
         }
 
@@ -562,8 +629,16 @@
             menu.classList.toggle('flex');
         }
 
+        function switchView(view) {
+            if(view === 'bowlers') {
+                document.getElementById('viewBowlers').classList.remove('hidden');
+                document.getElementById('searchContainer').classList.add('hidden'); 
+            }
+        }
+
         function toggleSearch() {
             toggleMenu();
+            switchView('bowlers');
             const sc = document.getElementById('searchContainer');
             sc.classList.remove('hidden');
             document.getElementById('searchInput').focus();
@@ -951,37 +1026,70 @@
                 if(!b) return;
 
                 document.getElementById('pdfName').innerText = b.name;
-                document.getElementById('pdfStyle').innerText = b.style === 'no_thumb' ? '2-Handed (No Thumb)' : (b.style === 'left' ? 'Left Handed' : 'Right Handed');
+                document.getElementById('pdfStyle').innerText = b.style === 'no_thumb' ? '2-Handed (No Thumb)' : (b.style === 'left' ? 'Left Handed (1-Hand)' : 'Right Handed (1-Hand)');
+                
+                document.getElementById('pdfVel').innerText = b.speed ? `${b.speed} mph` : '-';
+                document.getElementById('pdfRev').innerText = b.revs ? `${b.revs} rpm` : '-';
+                document.getElementById('pdfTilt').innerText = b.tilt ? `${b.tilt}°` : '-';
+                document.getElementById('pdfRot').innerText = b.rot ? `${b.rot}°` : '-';
+                document.getElementById('pdfAvg').innerText = b.avg || '-';
+                
                 document.getElementById('pdfPap').innerText = `X: ${b.papX || '0'} ${b.papXDir || ''} / Y: ${b.papY || '0'} ${b.papYDir || ''}`;
-                document.getElementById('pdfStats').innerText = `Spd: ${b.speed || '-'} | Rev: ${b.revs || '-'} | Tilt: ${b.tilt || '-'} | Rot: ${b.rot || '-'}`;
                 
-                document.getElementById('pdfLeftF').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''} / ${b.lfP2 || '0'} ${b.lfD2 || ''}`;
-                document.getElementById('pdfLeftS').innerText = b.spanLeft || '-';
+                document.getElementById('pdfLeftSpan').innerText = b.spanLeft || '-';
+                document.getElementById('pdfRightSpan').innerText = b.spanRight || '-';
+
+                document.getElementById('pdfLf1').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''}`;
+                document.getElementById('pdfLf2').innerText = `${b.lfP2 || '0'} ${b.lfD2 || ''}`;
                 
-                document.getElementById('pdfRightF').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''} / ${b.rfP2 || '0'} ${b.rfD2 || ''}`;
-                document.getElementById('pdfRightS').innerText = b.spanRight || '-';
+                document.getElementById('pdfRf1').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''}`;
+                document.getElementById('pdfRf2').innerText = `${b.rfP2 || '0'} ${b.rfD2 || ''}`;
 
                 if(b.style === 'no_thumb') {
-                    document.getElementById('pdfThumbBox').style.display = 'none';
+                    document.getElementById('pdfThumbContainer').style.display = 'none';
+                    document.getElementById('pdfOvalBox').style.display = 'none';
                 } else {
-                    document.getElementById('pdfThumbBox').style.display = 'block';
-                    document.getElementById('pdfThumb').innerText = `${b.thP1 || '0'} ${b.thD1 || ''} / ${b.thP2 || '0'} ${b.thD2 || ''}`;
+                    document.getElementById('pdfThumbContainer').style.display = 'block';
+                    document.getElementById('pdfOvalBox').style.display = 'block';
+                    document.getElementById('pdfTh1').innerText = `${b.thP1 || '0'} ${b.thD1 || ''}`;
+                    document.getElementById('pdfTh2').innerText = `${b.thP2 || '0'} ${b.thD2 || ''}`;
                     if (b.cutsOutput) {
-                        document.getElementById('pdfCuts').innerHTML = b.cutsOutput.replace(/<div class="text-xs[^>]*>.*?<\/div>/g, '');
-                        document.getElementById('pdfOvalTitle').style.display = 'block';
-                        document.getElementById('pdfCuts').style.display = 'block';
+                        let tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = b.cutsOutput;
+                        let textCuts = Array.from(tempDiv.querySelectorAll('div')).map(div => div.innerText).join('\n');
+                        document.getElementById('pdfCuts').innerText = textCuts || '--';
                     } else {
-                        document.getElementById('pdfOvalTitle').style.display = 'none';
-                        document.getElementById('pdfCuts').style.display = 'none';
+                        document.getElementById('pdfCuts').innerText = '--';
                     }
+                }
+
+                // Populate Arsenal
+                const arsenalBody = document.getElementById('pdfArsenalBody');
+                arsenalBody.innerHTML = '';
+                if(b.arsenal && b.arsenal.length > 0) {
+                    b.arsenal.forEach((ball, idx) => {
+                        if(ball.name || ball.layout || ball.finish) {
+                            arsenalBody.innerHTML += `
+                                <tr style="border-bottom: 1px solid #ddd;">
+                                    <td style="padding: 2px;">${idx + 1}</td>
+                                    <td style="padding: 2px; font-weight: bold;">${ball.name || '-'}</td>
+                                    <td style="padding: 2px;">${ball.layout || '-'}</td>
+                                    <td style="padding: 2px;">${ball.finish || '-'}</td>
+                                </tr>
+                            `;
+                        }
+                    });
+                }
+                if(arsenalBody.innerHTML === '') {
+                    arsenalBody.innerHTML = `<tr><td colspan="4" style="padding: 4px; text-align: center; color: #666;">No balls in arsenal</td></tr>`;
                 }
 
                 const element = document.getElementById('pdfExportContainer');
                 element.style.display = 'block';
                 
                 const opt = {
-                    margin: 0.5,
-                    filename: `${b.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_bsv_specs.pdf`,
+                    margin: 0.4,
+                    filename: `${b.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_drill_sheet.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -1005,9 +1113,11 @@
                     let styleBadge = b.style === 'no_thumb' ? '2H' : (b.style === 'left' ? 'LH' : 'RH');
                     return `
                     <div class="relative rounded-xl overflow-hidden mb-3 bg-red-600">
+                        <!-- Left Swipe Underlay (Delete) -->
                         <div class="absolute inset-y-0 right-0 w-24 flex items-center justify-center font-bold text-white text-2xl">
                             🗑️
                         </div>
+                        <!-- Right Swipe Underlay (PDF) -->
                         <div class="absolute inset-y-0 left-0 w-24 flex items-center justify-center font-bold text-white text-2xl bg-blue-600">
                             📄
                         </div>
