@@ -250,7 +250,7 @@
             <button onclick="closeLayoutModal()" class="text-gray-400 hover:text-white font-bold text-2xl">&times;</button>
         </div>
         <div class="p-4 space-y-4 pb-12">
-            <p id="layoutDesc" class="text-sm text-gray-400">Generate Dual Angle Layouts based on bowler and ball specs.</p>
+            <p id="layoutDesc" class="text-sm text-gray-400">Generate Layouts based on bowler and ball specs.</p>
             
             <div class="bg-card p-4 rounded-xl border border-gray-700 space-y-3">
                 <h3 class="text-xs font-bold text-white uppercase border-b border-gray-800 pb-1">Bowler Specs</h3>
@@ -313,20 +313,29 @@
             </div>
 
             <div class="bg-gray-900 p-5 rounded-xl border border-primary space-y-3">
+                <div class="flex flex-col items-center border-b border-gray-800 pb-3 mb-2">
+                    <label id="lblCalcSystem" class="block text-xs font-bold text-gray-400 uppercase mb-1">Layout System</label>
+                    <select id="calcSystem" class="pitch-input text-center text-sm font-bold bg-black" onchange="calculateLayout()">
+                        <option value="dual" id="optSysDual">Dual Angle System</option>
+                        <option value="vls" id="optSysVLS">Vector Layout System (VLS)</option>
+                        <option value="2ls" id="optSys2LS">2LS System (No-Thumb)</option>
+                    </select>
+                </div>
+                
                 <h3 id="lblRecLayout" class="text-sm font-bold text-primary uppercase text-center border-b border-gray-800 pb-2">Recommended Layout</h3>
                 <div class="flex justify-between items-center text-sm mt-3">
-                    <span id="lblOutDrill" class="text-gray-400">Drilling Angle</span>
-                    <strong id="outDrillAngle" class="text-white text-lg">40°</strong>
+                    <span id="lblOut1" class="text-gray-400">Drilling Angle</span>
+                    <strong id="outVal1" class="text-white text-lg">40°</strong>
                 </div>
                 <div class="flex justify-between items-center text-sm">
-                    <span id="lblOutPin" class="text-gray-400">Pin to PAP</span>
-                    <strong id="outPin" class="text-white text-lg">4 1/2"</strong>
+                    <span id="lblOut2" class="text-gray-400">Pin to PAP</span>
+                    <strong id="outVal2" class="text-white text-lg">4 1/2"</strong>
                 </div>
                 <div class="flex justify-between items-center text-sm">
-                    <span id="lblOutVal" class="text-gray-400">VAL Angle</span>
-                    <strong id="outVal" class="text-white text-lg">65°</strong>
+                    <span id="lblOut3" class="text-gray-400">VAL Angle</span>
+                    <strong id="outVal3" class="text-white text-lg">65°</strong>
                 </div>
-                <div class="flex justify-between items-center text-sm border-t border-gray-800 pt-2">
+                <div class="flex justify-between items-center text-sm border-t border-gray-800 pt-2" id="outRowSum">
                     <span id="lblOutSum" class="text-gray-400">Total Sum of Angles</span>
                     <strong id="outTotalSum" class="text-white text-lg">105°</strong>
                 </div>
@@ -400,10 +409,19 @@
 
             <!-- Profile Specific Layout Expert -->
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-3 shadow-[0_0_10px_rgba(56,189,248,0.1)]">
-                <div class="flex items-center gap-2 mb-2 border-b border-gray-700 pb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-5 h-5"><circle cx="40" cy="30" r="7" fill="#38BDF8"/><circle cx="60" cy="25" r="7" fill="#38BDF8"/><circle cx="50" cy="55" r="9" fill="#38BDF8"/></svg>
-                    <label id="lblProfileLayout" class="block text-xs font-bold text-primary uppercase">Ball Layout Recommender</label>
+                <div class="flex items-center justify-between mb-2 border-b border-gray-700 pb-2">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-5 h-5"><circle cx="40" cy="30" r="7" fill="#38BDF8"/><circle cx="60" cy="25" r="7" fill="#38BDF8"/><circle cx="50" cy="55" r="9" fill="#38BDF8"/></svg>
+                        <label id="lblProfileLayout" class="block text-xs font-bold text-primary uppercase">Ball Layout</label>
+                    </div>
                 </div>
+                
+                <select id="profCalcSystem" class="pitch-input text-xs font-bold text-center w-full mb-2 bg-black">
+                    <option value="dual" id="optProfSysDual">Dual Angle System</option>
+                    <option value="vls" id="optProfSysVLS">Vector Layout System (VLS)</option>
+                    <option value="2ls" id="optProfSys2LS">2LS System (No-Thumb)</option>
+                </select>
+
                 <div class="grid grid-cols-2 gap-2">
                     <select id="profCalcBall" class="pitch-input text-xs text-center p-1">
                         <option value="Asymmetric" id="optProfAsym">Asymmetric</option>
@@ -553,13 +571,16 @@
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
                 dirYUp: "↑ Up (FWD)", dirYDown: "↓ Down (REV)", dirXLeft: "← Left", dirXRight: "→ Right",
                 menuBowlers: "🎳 My Bowlers", menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search...", txtSwipeHint: "Swipe Right to PDF • Swipe Left to Delete",
-                layoutTitle: "Layout Expert", layoutDesc: "Generate Dual Angle Layouts based on bowler & ball specs.",
+                layoutTitle: "Layout Expert", layoutDesc: "Generate Layouts based on bowler & ball specs.",
                 lblCalcSpeed: "Speed (mph)", lblCalcRevs: "Revs (RPM)", lblCalcTilt: "Axis Tilt (deg)", lblCalcRot: "Rotation (deg)", 
                 lblCalcMovement: "Desired Ball Movement", lblCalcBall: "Ball Type", lblRecLayout: "Recommended Layout",
                 lblCalcRG: "RG", lblCalcDiff: "Diff", lblCalcIntDiff: "Int. Diff",
+                lblCalcSystem: "Layout System", optSysDual: "Dual Angle System", optSysVLS: "Vector Layout System (VLS)", optSys2LS: "2LS System (No-Thumb)",
+                optProfSysDual: "Dual Angle System", optProfSysVLS: "Vector Layout System (VLS)", optProfSys2LS: "2LS System (No-Thumb)",
                 lblOutDrill: "Drilling Angle", lblOutPin: "Pin to PAP", lblOutVal: "VAL Angle", lblOutSum: "Total Sum of Angles", lblOutFinal: "Final Layout",
+                lblPinPAP: "Pin to PAP", lblPSAPAP: "PSA to PAP", lblPinBuffer: "Pin Buffer", lblPinCG: "Pin to CG", lblOut1: "Drilling Angle", lblOut2: "Pin to PAP", lblOut3: "VAL Angle",
                 optAsym: "Asymmetric", optSym: "Symmetric", optProfAsym: "Asymmetric", optProfSym: "Symmetric",
-                lblProfileLayout: "Ball Layout Recommender", btnGenLayoutProfile: "GET LAYOUT", alertStatsReq: "Please enter Speed, Revs, Tilt, and Rotation in Stats first."
+                lblProfileLayout: "Ball Layout", btnGenLayoutProfile: "GET LAYOUT", alertStatsReq: "Please enter Speed, Revs, Tilt, and Rotation in Stats first."
             },
             es: {
                 txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón + para crear un perfil.",
@@ -575,11 +596,14 @@
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
                 dirYUp: "↑ Adelante (FWD)", dirYDown: "↓ Atrás (REV)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha",
                 menuBowlers: "🎳 Mis Jugadores", menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...", txtSwipeHint: "Desliza Derecha para PDF • Izquierda para Borrar",
-                layoutTitle: "Experto en Layouts", layoutDesc: "Genera diseños Dual Angle basados en especificaciones del jugador y la bola.",
+                layoutTitle: "Experto en Layouts", layoutDesc: "Genera diseños basados en especificaciones del jugador y la bola.",
                 lblCalcSpeed: "Velocidad (mph)", lblCalcRevs: "Revoluciones (RPM)", lblCalcTilt: "Tilt de Eje (deg)", lblCalcRot: "Rotación (deg)", 
                 lblCalcMovement: "Movimiento Deseado", lblCalcBall: "Tipo de Bola", lblRecLayout: "Diseño Recomendado",
                 lblCalcRG: "Radio Giro (RG)", lblCalcDiff: "Diferencial", lblCalcIntDiff: "Diferencial Int.",
+                lblCalcSystem: "Sistema de Layout", optSysDual: "Sistema Dual Angle", optSysVLS: "Sistema Vector Layout (VLS)", optSys2LS: "Sistema 2LS (Sin Pulgar)",
+                optProfSysDual: "Sistema Dual Angle", optProfSysVLS: "Sistema Vector Layout (VLS)", optProfSys2LS: "Sistema 2LS (Sin Pulgar)",
                 lblOutDrill: "Ángulo de Perforación", lblOutPin: "Distancia Pin a PAP", lblOutVal: "Ángulo VAL", lblOutSum: "Suma Total de Ángulos", lblOutFinal: "Diseño Final",
+                lblPinPAP: "Pin a PAP", lblPSAPAP: "PSA a PAP", lblPinBuffer: "Pin Buffer", lblPinCG: "Pin a CG", lblOut1: "Ángulo de Perforación", lblOut2: "Distancia Pin a PAP", lblOut3: "Ángulo VAL",
                 optAsym: "Asimétrica", optSym: "Simétrica", optProfAsym: "Asimétrica", optProfSym: "Simétrica",
                 lblProfileLayout: "Recomendador de Layouts", btnGenLayoutProfile: "OBTENER LAYOUT", alertStatsReq: "Por favor ingresa Velocidad, Revs, Tilt y Rotación en Estadísticas primero."
             }
@@ -592,7 +616,7 @@
             document.getElementById('appContainer').classList.remove('hidden');
             
             const t = translations[lang];
-            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','btnMenuBowlers','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutDrill','lblOutPin','lblOutVal','lblOutSum','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym'].forEach(id => {
+            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','btnMenuBowlers','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
@@ -642,12 +666,6 @@
             const sc = document.getElementById('searchContainer');
             sc.classList.remove('hidden');
             document.getElementById('searchInput').focus();
-        }
-
-        function filterBowlers() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allBowlers.filter(b => b.name.toLowerCase().includes(query));
-            renderBowlers(filtered);
         }
 
         function exportBackup() {
@@ -722,7 +740,18 @@
             let finalPinStr = decimalToFractionStr(finalPinDecimal);
             if(finalPinStr === "0") finalPinStr = "0";
 
-            return {drillAngle, valAngle, finalPinStr};
+            let psaToPapDec = Math.max(1, Math.min(6, (drillAngle / 20) + 1.5));
+            let pinBufferDec = Math.max(1, Math.min(5, (valAngle / 25) + 0.5));
+            
+            let psaToPapStr = decimalToFractionStr(Math.round(psaToPapDec * 8) / 8) || "0";
+            let pinBufferStr = decimalToFractionStr(Math.round(pinBufferDec * 8) / 8) || "0";
+            let cgToPapStr = decimalToFractionStr(Math.round(pinBufferDec * 8) / 8) || "0";
+
+            let dualAngle = drillAngle + "° x " + finalPinStr + '\" x ' + valAngle + "°";
+            let vls = finalPinStr + '\" x ' + psaToPapStr + '\" x ' + pinBufferStr + '\"';
+            let twoLS = finalPinStr + '\" x ' + psaToPapStr + '\" x ' + cgToPapStr + '\"';
+
+            return { drillAngle, valAngle, finalPinStr, psaToPapStr, pinBufferStr, cgToPapStr, dualAngle, vls, twoLS };
         }
 
         function calculateLayout() {
@@ -735,14 +764,41 @@
             let rg = parseFloat(document.getElementById('calcRG').value) || 2.50;
             let diff = parseFloat(document.getElementById('calcDiff').value) || 0.050;
             let intDiff = parseFloat(document.getElementById('calcIntDiff').value) || 0.000;
+            let system = document.getElementById('calcSystem').value;
 
             let result = layoutMathCore(speed, revs, tilt, rot, movement, ballType, rg, diff, intDiff);
 
-            document.getElementById('outDrillAngle').innerText = result.drillAngle + "°";
-            document.getElementById('outPin').innerText = result.finalPinStr + '"';
-            document.getElementById('outVal').innerText = result.valAngle + "°";
-            document.getElementById('outTotalSum').innerText = (result.drillAngle + result.valAngle) + "°";
-            document.getElementById('outLayoutString').innerText = result.drillAngle + "° x " + result.finalPinStr + '" x ' + result.valAngle + "°";
+            let outRowSum = document.getElementById('outRowSum');
+
+            if (system === 'dual') {
+                document.getElementById('lblOut1').innerText = translations[currentLang].lblOut1 || "Drilling Angle";
+                document.getElementById('outVal1').innerText = result.drillAngle + "°";
+                document.getElementById('lblOut2').innerText = translations[currentLang].lblOut2 || "Pin to PAP";
+                document.getElementById('outVal2').innerText = result.finalPinStr + '"';
+                document.getElementById('lblOut3').innerText = translations[currentLang].lblOut3 || "VAL Angle";
+                document.getElementById('outVal3').innerText = result.valAngle + "°";
+                outRowSum.style.display = 'flex';
+                document.getElementById('outTotalSum').innerText = (result.drillAngle + result.valAngle) + "°";
+                document.getElementById('outLayoutString').innerText = result.dualAngle;
+            } else if (system === 'vls') {
+                document.getElementById('lblOut1').innerText = translations[currentLang].lblPinPAP || "Pin to PAP";
+                document.getElementById('outVal1').innerText = result.finalPinStr + '"';
+                document.getElementById('lblOut2').innerText = translations[currentLang].lblPSAPAP || "PSA to PAP";
+                document.getElementById('outVal2').innerText = result.psaToPapStr + '"';
+                document.getElementById('lblOut3').innerText = translations[currentLang].lblPinBuffer || "Pin Buffer";
+                document.getElementById('outVal3').innerText = result.pinBufferStr + '"';
+                outRowSum.style.display = 'none';
+                document.getElementById('outLayoutString').innerText = result.vls;
+            } else if (system === '2ls') {
+                document.getElementById('lblOut1').innerText = translations[currentLang].lblPinPAP || "Pin to PAP";
+                document.getElementById('outVal1').innerText = result.finalPinStr + '"';
+                document.getElementById('lblOut2').innerText = translations[currentLang].lblPSAPAP || "PSA to PAP";
+                document.getElementById('outVal2').innerText = result.psaToPapStr + '"';
+                document.getElementById('lblOut3').innerText = translations[currentLang].lblPinCG || "Pin to CG";
+                document.getElementById('outVal3').innerText = result.cgToPapStr + '"';
+                outRowSum.style.display = 'none';
+                document.getElementById('outLayoutString').innerText = result.twoLS;
+            }
         }
 
         function calculateProfileLayout() {
@@ -760,10 +816,16 @@
             let rg = parseFloat(document.getElementById('profCalcRG').value) || 2.50;
             let diff = parseFloat(document.getElementById('profCalcDiff').value) || 0.050;
             let intDiff = parseFloat(document.getElementById('profCalcIntDiff').value) || 0.000;
+            let system = document.getElementById('profCalcSystem').value;
 
             let result = layoutMathCore(speed, revs, tilt, rot, movement, ballType, rg, diff, intDiff);
             
-            document.getElementById('profileLayoutOutput').innerText = result.drillAngle + "° x " + result.finalPinStr + '" x ' + result.valAngle + "°";
+            let layoutStr = "";
+            if (system === 'dual') layoutStr = result.dualAngle;
+            else if (system === 'vls') layoutStr = result.vls;
+            else if (system === '2ls') layoutStr = result.twoLS;
+
+            document.getElementById('profileLayoutOutput').innerText = layoutStr;
             document.getElementById('profileLayoutOutput').classList.remove('hidden');
         }
 
@@ -922,8 +984,15 @@
             const style = document.getElementById('bowlerStyle').value;
             const spanSec = document.getElementById('spanSection');
             const thumbSec = document.getElementById('thumbFeaturesSection');
-            if (style === 'no_thumb') { spanSec.classList.add('hidden'); thumbSec.classList.add('hidden'); } 
-            else { spanSec.classList.remove('hidden'); thumbSec.classList.remove('hidden'); }
+            const profSys = document.getElementById('profCalcSystem');
+            if (style === 'no_thumb') { 
+                spanSec.classList.add('hidden'); thumbSec.classList.add('hidden'); 
+                if(profSys) profSys.value = '2ls';
+            } 
+            else { 
+                spanSec.classList.remove('hidden'); thumbSec.classList.remove('hidden'); 
+                if(profSys && profSys.value === '2ls') profSys.value = 'dual';
+            }
         }
 
         function handleFile(e, targetId) {
