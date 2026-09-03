@@ -11,6 +11,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         tailwind.config = {
@@ -37,7 +38,7 @@
         #pdfExportContainer { background: white; color: black; padding: 20px; font-family: sans-serif; display: none; box-sizing: border-box; width: 7.5in; }
     </style>
 </head>
-<body class="bg-dark text-gray-200 font-sans antialiased pb-24 overflow-x-hidden">
+<body class="bg-dark text-gray-200 font-sans antialiased pb-20 overflow-x-hidden">
 
     <!-- Language Selection Overlay -->
     <div id="languageOverlay" class="fixed inset-0 bg-dark z-50 flex flex-col items-center justify-center p-6">
@@ -87,7 +88,6 @@
                 </svg>
             </button>
             
-            <!-- Dropdown Menu -->
             <div id="mainMenu" class="absolute top-16 right-4 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
                 <button onclick="switchView('bowlers'); toggleMenu();" id="btnMenuBowlers" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🎳 My Bowlers</button>
                 <button onclick="toggleSearch()" id="btnMenuSearch" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🔍 Search Bowlers</button>
@@ -98,39 +98,42 @@
             <input type="file" id="importInput" accept=".json" class="hidden" onchange="importBackup(event)">
         </header>
 
-        <main class="w-full max-w-lg mx-auto p-4" id="mainContentView">
-            <div id="searchContainer" class="hidden mb-4">
-                <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
+        <main class="w-full max-w-lg mx-auto" id="mainContentView">
+            
+            <div id="viewBowlers" class="p-4 block">
+                
+                <div class="flex justify-end mb-4 relative z-20">
+                    <button onclick="openForm()" class="bg-blue-600 hover:bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-2xl shadow-lg transition transform active:scale-95 border-2 border-blue-400">
+                        +
+                    </button>
+                </div>
+
+                <div id="searchContainer" class="hidden mb-4">
+                    <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search...">
+                </div>
+                
+                <div class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-4" id="txtSwipeHint">Swipe Right to PDF • Swipe Left to Delete</div>
+                
+                <div id="bowlerList" class="space-y-3"></div>
+                
+                <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
+                    <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <p id="txtEmpty">No bowlers found.<br>Tap the + button to create a profile.</p>
+                </div>
             </div>
-            
-            <div class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-4" id="txtSwipeHint">Swipe Right to PDF • Swipe Left to Delete</div>
-            
-            <div id="bowlerList" class="space-y-3"></div>
-            
-            <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
-                <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                <p id="txtEmpty">No bowlers found.<br>Tap the green + button below to create a profile.</p>
-            </div>
+
         </main>
 
-        <!-- Floating Action Buttons (Bottom Right): Green New Bowler (+) & Red Layout Expert -->
-        <div class="fixed bottom-6 right-6 flex items-center gap-3 z-30">
-            <!-- New Bowler Button (+ Green, Same size as Layout Expert) -->
-            <button onclick="openForm()" class="w-14 h-14 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-[0_0_15px_rgba(16,185,129,0.5)] flex items-center justify-center text-3xl transition-transform active:scale-95 border border-emerald-400 font-black">
-                +
-            </button>
-            <!-- Layout Expert Button -->
-            <button onclick="openLayoutModal()" class="w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center justify-center transition-transform active:scale-95 border border-red-400">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-9 h-9">
-                    <circle cx="40" cy="30" r="7" fill="#7F1D1D"/>
-                    <circle cx="60" cy="25" r="7" fill="#7F1D1D"/>
-                    <circle cx="50" cy="55" r="9" fill="#7F1D1D"/>
-                </svg>
-            </button>
-        </div>
+        <button onclick="openLayoutModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center justify-center z-30 transition-transform active:scale-95 border border-red-400">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-9 h-9">
+                <circle cx="40" cy="30" r="7" fill="#7F1D1D"/>
+                <circle cx="60" cy="25" r="7" fill="#7F1D1D"/>
+                <circle cx="50" cy="55" r="9" fill="#7F1D1D"/>
+            </svg>
+        </button>
     </div>
 
-    <!-- Hidden PDF Export Template -->
+    <!-- Upright Custom Drill Sheet PDF Export Template -->
     <div id="pdfExportContainer">
         <!-- Header -->
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
@@ -146,6 +149,7 @@
 
         <!-- Main Grid matching Drill Sheet Structure -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <!-- Left Box: Stats & PAP -->
             <div style="border: 2px solid #000; padding: 12px; border-radius: 6px;">
                 <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bowler Specs & Stats</div>
                 <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
@@ -176,6 +180,7 @@
                 </div>
             </div>
 
+            <!-- Right Box: Bridge / Spans -->
             <div style="border: 2px solid #000; padding: 12px; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bridge & Spans</div>
@@ -194,6 +199,7 @@
             </div>
         </div>
 
+        <!-- Pitches Grid: Left Finger, Right Finger, Thumb -->
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
             <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
                 <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Left Finger</div>
@@ -212,11 +218,13 @@
             </div>
         </div>
 
+        <!-- Thumb Oval Cuts Section -->
         <div style="border: 2px solid #000; padding: 10px; border-radius: 6px; margin-bottom: 15px;" id="pdfOvalBox">
             <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb Oval Cuts / Digital Readings</div>
             <div style="font-size: 11px; font-family: monospace; white-space: pre-line;" id="pdfCuts">--</div>
         </div>
 
+        <!-- Arsenal Summary Table -->
         <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
             <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Arsenal Summary</div>
             <table style="width: 100%; font-size: 11px; border-collapse: collapse;" id="pdfArsenalTable">
@@ -538,6 +546,10 @@
     </div>
 
     <script>
+        const SUPABASE_URL = "https://fbcovchdphwngjcyfxgs.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZiY292Y2hkcGh3bmdqY3lmeGdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MDU2MzQsImV4cCI6MjEwMzk4MTYzNH0.k42L8YN0Q1BZLM_qrKfxmp-sFXK0LYqJKhZuO-x5iJU";
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         const appIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#0B0F19"/><circle cx="60" cy="60" r="50" fill="none" stroke="#1E293B" stroke-width="4"/><path d="M 35 40 C 50 35 65 42 60 55 C 55 68 35 65 35 80 C 35 90 50 90 60 85" fill="none" stroke="#38BDF8" stroke-width="7" stroke-linecap="round"/><path d="M 60 40 L 75 85 L 90 40" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="30" r="5" fill="#38BDF8" /><circle cx="62" cy="25" r="5" fill="#38BDF8" /><circle cx="50" cy="50" r="6" fill="#38BDF8" /></svg>`;
 
         const manifest = {
@@ -551,7 +563,7 @@
 
         const translations = {
             en: {
-                txtHeaderVault: "BOWLER SPECS VAULT", txtEmpty: "No bowlers found.<br>Tap the green + button below to create a profile.",
+                txtHeaderVault: "BOWLER SPECS VAULT", txtEmpty: "No bowlers found.<br>Tap the + button to create a profile.",
                 formTitleNew: "New Bowler", formTitleEdit: "Edit Profile", lblBowlerName: "Bowler Name", lblBowlingStyle: "Bowling Style",
                 optStyleRight: "Right Handed (1-Hand)", optStyleLeft: "Left Handed (1-Hand)", optStyleNoThumb: "No Thumb (2-Handed)",
                 optPapRight: "→ R", optPapLeft: "← L", optPapUp: "↑ Up", optPapDown: "↓ Dn",
@@ -563,7 +575,7 @@
                 lblVideo: "Release Video", btnSave: "SAVE PROFILE", btnDelete: "DELETE",
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
                 dirYUp: "↑ Up (FWD)", dirYDown: "↓ Down (REV)", dirXLeft: "← Left", dirXRight: "→ Right",
-                btnMenuBowlers: "🎳 My Bowlers", btnMenuSearch: "🔍 Search Bowlers", btnMenuExport: "💾 Backup & Export", btnMenuImport: "📂 Upload Backup", btnMenuLang: "🌐 Change Language", searchPh: "Search...", txtSwipeHint: "Swipe Right to PDF • Swipe Left to Delete",
+                menuBowlers: "🎳 My Bowlers", menuSearch: "🔍 Search Bowlers", menuExport: "💾 Backup & Export", menuImport: "📂 Upload Backup", menuLang: "🌐 Change Language", searchPh: "Search...", txtSwipeHint: "Swipe Right to PDF • Swipe Left to Delete",
                 layoutTitle: "Layout Expert", layoutDesc: "Generate Layouts based on bowler & ball specs.",
                 lblCalcSpeed: "Speed (mph)", lblCalcRevs: "Revs (RPM)", lblCalcTilt: "Axis Tilt (deg)", lblCalcRot: "Rotation (deg)", 
                 lblCalcMovement: "Desired Ball Movement", lblCalcBall: "Ball Type", lblRecLayout: "Recommended Layout",
@@ -576,7 +588,7 @@
                 lblProfileLayout: "Ball Layout", btnGenLayoutProfile: "GET LAYOUT", alertStatsReq: "Please enter Speed, Revs, Tilt, and Rotation in Stats first."
             },
             es: {
-                txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón verde + abajo para crear un perfil.",
+                txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón + para crear un perfil.",
                 formTitleNew: "Nuevo Jugador", formTitleEdit: "Editar Perfil", lblBowlerName: "Nombre del Jugador", lblBowlingStyle: "Estilo de Juego",
                 optStyleRight: "Diestro (1 Mano)", optStyleLeft: "Zurdo (1 Mano)", optStyleNoThumb: "Sin Pulgar (2 Manos)",
                 optPapRight: "→ Der", optPapLeft: "← Izq", optPapUp: "↑ Arr", optPapDown: "↓ Aba",
@@ -588,7 +600,7 @@
                 lblVideo: "Video de Lanzamiento", btnSave: "GUARDAR PERFIL", btnDelete: "ELIMINAR",
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
                 dirYUp: "↑ Adelante (FWD)", dirYDown: "↓ Atrás (REV)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha",
-                btnMenuBowlers: "🎳 Mis Jugadores", btnMenuSearch: "🔍 Buscar Jugadores", btnMenuExport: "💾 Respaldar y Exportar", btnMenuImport: "📂 Subir Respaldo", btnMenuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...", txtSwipeHint: "Desliza Derecha para PDF • Izquierda para Borrar",
+                menuBowlers: "🎳 Mis Jugadores", menuSearch: "🔍 Buscar Jugadores", menuExport: "💾 Respaldar y Exportar", menuImport: "📂 Subir Respaldo", menuLang: "🌐 Cambiar Idioma", searchPh: "Buscar...", txtSwipeHint: "Desliza Derecha para PDF • Izquierda para Borrar",
                 layoutTitle: "Experto en Layouts", layoutDesc: "Genera diseños basados en especificaciones del jugador y la bola.",
                 lblCalcSpeed: "Velocidad (mph)", lblCalcRevs: "Revoluciones (RPM)", lblCalcTilt: "Tilt de Eje (deg)", lblCalcRot: "Rotación (deg)", 
                 lblCalcMovement: "Movimiento Deseado", lblCalcBall: "Tipo de Bola", lblRecLayout: "Diseño Recomendado",
@@ -609,11 +621,16 @@
             document.getElementById('appContainer').classList.remove('hidden');
             
             const t = translations[lang];
-            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','btnMenuBowlers','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS','btnMenuSearch','btnMenuExport','btnMenuImport','btnMenuLang'].forEach(id => {
+            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','btnMenuBowlers','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
+            document.getElementById('btnMenuSearch').innerHTML = t.menuSearch;
+            document.getElementById('btnMenuExport').innerHTML = t.menuExport;
+            document.getElementById('btnMenuImport').innerHTML = t.menuImport;
+            document.getElementById('btnMenuLang').innerHTML = t.menuLang;
             document.getElementById('searchInput').placeholder = t.searchPh;
+
             document.getElementById('statRevs').placeholder = t.statRevs;
             document.getElementById('statAvg').placeholder = t.statAvg;
             document.getElementById('statSpeed').placeholder = t.statSpeed;
@@ -631,7 +648,7 @@
 
         function showLanguageScreen() {
             toggleMenu();
-            document.getElementById('languageOverlay').classList.add('hidden');
+            document.getElementById('languageOverlay').classList.remove('hidden');
             document.getElementById('appContainer').classList.add('hidden');
         }
 
@@ -650,6 +667,7 @@
 
         function toggleSearch() {
             toggleMenu();
+            switchView('bowlers');
             const sc = document.getElementById('searchContainer');
             sc.classList.remove('hidden');
             document.getElementById('searchInput').focus();
@@ -657,29 +675,30 @@
 
         function exportBackup() {
             toggleMenu();
-            const tx = db.transaction("bowlers", "readonly");
-            tx.objectStore("bowlers").getAll().onsuccess = (e) => {
-                const data = JSON.stringify(e.target.result);
-                const blob = new Blob([data], {type: "application/json"});
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `bsv_backup_${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-            };
+            const data = JSON.stringify(allBowlers);
+            const blob = new Blob([data], {type: "application/json"});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bsv_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
         }
 
         function importBackup(e) {
             const file = e.target.files[0];
             if(!file) return;
             const reader = new FileReader();
-            reader.onload = (event) => {
+            reader.onload = async (event) => {
                 try {
                     const bowlers = JSON.parse(event.target.result);
-                    const tx = db.transaction("bowlers", "readwrite");
-                    const store = tx.objectStore("bowlers");
-                    bowlers.forEach(b => store.put(b));
-                    tx.oncomplete = () => { alert("Backup restored successfully."); loadList(); };
-                } catch (err) { alert("Invalid backup file format."); }
+                    const upserts = bowlers.map(b => ({
+                        id: b.id,
+                        profile_data: b
+                    }));
+                    const { error } = await db.from('bowlers').upsert(upserts);
+                    if (error) throw error;
+                    alert("Backup restored successfully."); 
+                    loadList();
+                } catch (err) { alert("Invalid backup file format or upload failed."); }
             };
             reader.readAsText(file);
             e.target.value = ''; 
@@ -855,18 +874,20 @@
             `;
         }
 
-        let db;
-        const request = indexedDB.open("BSVProShopDB", 2);
-        request.onupgradeneeded = (e) => {
-            db = e.target.result;
-            if (!db.objectStoreNames.contains("bowlers")) db.createObjectStore("bowlers", { keyPath: "id" });
-        };
-        request.onsuccess = (e) => { 
-            db = e.target.result; 
+        async function initSupabase() {
             let savedLang = localStorage.getItem('bsv_lang');
-            if(savedLang) { setLanguage(savedLang); }
-            else { loadList(); calculateLayout(); }
-        };
+            if (savedLang) setLanguage(savedLang);
+            else { await loadList(); calculateLayout(); }
+
+            // Real-time sync across devices
+            db.channel('bowler_updates')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'bowlers' }, payload => {
+                    loadList();
+                }).subscribe();
+        }
+        
+        // Boot up cloud database
+        initSupabase();
 
         function parseFraction(str) {
             str = str.trim();
@@ -1006,13 +1027,12 @@
             reader.readAsDataURL(file);
         }
 
-        function loadList() {
-            if(!db) return;
-            const tx = db.transaction("bowlers", "readonly");
-            tx.objectStore("bowlers").getAll().onsuccess = (e) => {
-                allBowlers = e.target.result;
+        async function loadList() {
+            const { data, error } = await db.from('bowlers').select('profile_data');
+            if (!error && data) {
+                allBowlers = data.map(row => row.profile_data);
                 renderBowlers(allBowlers);
-            };
+            }
         }
 
         let touchStartX = 0;
@@ -1053,9 +1073,9 @@
                 el.style.transform = `translateX(-100px)`;
                 setTimeout(() => {
                     if(confirm(translations[currentLang].confirmDelete)) {
-                        const tx = db.transaction("bowlers", "readwrite");
-                        tx.objectStore("bowlers").delete(id);
-                        tx.oncomplete = () => { loadList(); };
+                        db.from("bowlers").delete().eq('id', id).then(() => {
+                            loadList();
+                        });
                     } else {
                         el.style.transform = `translateX(0px)`;
                         setTimeout(() => { isSwiping = false; }, 50); 
@@ -1077,83 +1097,82 @@
         }
 
         function generatePDF(id) {
-            db.transaction("bowlers", "readonly").objectStore("bowlers").get(id).onsuccess = (e) => {
-                const b = e.target.result;
-                if(!b) return;
+            const b = allBowlers.find(x => x.id === id);
+            if(!b) return;
 
-                document.getElementById('pdfName').innerText = b.name;
-                document.getElementById('pdfStyle').innerText = b.style === 'no_thumb' ? '2-Handed (No Thumb)' : (b.style === 'left' ? 'Left Handed (1-Hand)' : 'Right Handed (1-Hand)');
-                
-                document.getElementById('pdfVel').innerText = b.speed ? `${b.speed} mph` : '-';
-                document.getElementById('pdfRev').innerText = b.revs ? `${b.revs} rpm` : '-';
-                document.getElementById('pdfTilt').innerText = b.tilt ? `${b.tilt}°` : '-';
-                document.getElementById('pdfRot').innerText = b.rot ? `${b.rot}°` : '-';
-                document.getElementById('pdfAvg').innerText = b.avg || '-';
-                
-                document.getElementById('pdfPap').innerText = `X: ${b.papX || '0'} ${b.papXDir || ''} / Y: ${b.papY || '0'} ${b.papYDir || ''}`;
-                
-                document.getElementById('pdfLeftSpan').innerText = b.spanLeft || '-';
-                document.getElementById('pdfRightSpan').innerText = b.spanRight || '-';
+            document.getElementById('pdfName').innerText = b.name;
+            document.getElementById('pdfStyle').innerText = b.style === 'no_thumb' ? '2-Handed (No Thumb)' : (b.style === 'left' ? 'Left Handed (1-Hand)' : 'Right Handed (1-Hand)');
+            
+            document.getElementById('pdfVel').innerText = b.speed ? `${b.speed} mph` : '-';
+            document.getElementById('pdfRev').innerText = b.revs ? `${b.revs} rpm` : '-';
+            document.getElementById('pdfTilt').innerText = b.tilt ? `${b.tilt}°` : '-';
+            document.getElementById('pdfRot').innerText = b.rot ? `${b.rot}°` : '-';
+            document.getElementById('pdfAvg').innerText = b.avg || '-';
+            
+            document.getElementById('pdfPap').innerText = `X: ${b.papX || '0'} ${b.papXDir || ''} / Y: ${b.papY || '0'} ${b.papYDir || ''}`;
+            
+            document.getElementById('pdfLeftSpan').innerText = b.spanLeft || '-';
+            document.getElementById('pdfRightSpan').innerText = b.spanRight || '-';
 
-                document.getElementById('pdfLf1').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''}`;
-                document.getElementById('pdfLf2').innerText = `${b.lfP2 || '0'} ${b.lfD2 || ''}`;
-                
-                document.getElementById('pdfRf1').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''}`;
-                document.getElementById('pdfRf2').innerText = `${b.rfP2 || '0'} ${b.rfD2 || ''}`;
+            document.getElementById('pdfLf1').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''}`;
+            document.getElementById('pdfLf2').innerText = `${b.lfP2 || '0'} ${b.lfD2 || ''}`;
+            
+            document.getElementById('pdfRf1').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''}`;
+            document.getElementById('pdfRf2').innerText = `${b.rfP2 || '0'} ${b.rfD2 || ''}`;
 
-                if(b.style === 'no_thumb') {
-                    document.getElementById('pdfThumbContainer').style.display = 'none';
-                    document.getElementById('pdfOvalBox').style.display = 'none';
+            if(b.style === 'no_thumb') {
+                document.getElementById('pdfThumbContainer').style.display = 'none';
+                document.getElementById('pdfOvalBox').style.display = 'none';
+            } else {
+                document.getElementById('pdfThumbContainer').style.display = 'block';
+                document.getElementById('pdfOvalBox').style.display = 'block';
+                document.getElementById('pdfTh1').innerText = `${b.thP1 || '0'} ${b.thD1 || ''}`;
+                document.getElementById('pdfTh2').innerText = `${b.thP2 || '0'} ${b.thD2 || ''}`;
+                if (b.cutsOutput) {
+                    let tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = b.cutsOutput;
+                    let textCuts = Array.from(tempDiv.querySelectorAll('div')).map(div => div.innerText).join('\n');
+                    document.getElementById('pdfCuts').innerText = textCuts || '--';
                 } else {
-                    document.getElementById('pdfThumbContainer').style.display = 'block';
-                    document.getElementById('pdfOvalBox').style.display = 'block';
-                    document.getElementById('pdfTh1').innerText = `${b.thP1 || '0'} ${b.thD1 || ''}`;
-                    document.getElementById('pdfTh2').innerText = `${b.thP2 || '0'} ${b.thD2 || ''}`;
-                    if (b.cutsOutput) {
-                        let tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = b.cutsOutput;
-                        let textCuts = Array.from(tempDiv.querySelectorAll('div')).map(div => div.innerText).join('\n');
-                        document.getElementById('pdfCuts').innerText = textCuts || '--';
-                    } else {
-                        document.getElementById('pdfCuts').innerText = '--';
+                    document.getElementById('pdfCuts').innerText = '--';
+                }
+            }
+
+            // Populate Arsenal
+            const arsenalBody = document.getElementById('pdfArsenalBody');
+            arsenalBody.innerHTML = '';
+            if(b.arsenal && b.arsenal.length > 0) {
+                b.arsenal.forEach((ball, idx) => {
+                    if(ball.name || ball.layout || ball.finish) {
+                        arsenalBody.innerHTML += `
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <td style="padding: 2px;">${idx + 1}</td>
+                                <td style="padding: 2px; font-weight: bold;">${ball.name || '-'}</td>
+                                <td style="padding: 2px;">${ball.layout || '-'}</td>
+                                <td style="padding: 2px;">${ball.finish || '-'}</td>
+                            </tr>
+                        `;
                     }
-                }
-
-                const arsenalBody = document.getElementById('pdfArsenalBody');
-                arsenalBody.innerHTML = '';
-                if(b.arsenal && b.arsenal.length > 0) {
-                    b.arsenal.forEach((ball, idx) => {
-                        if(ball.name || ball.layout || ball.finish) {
-                            arsenalBody.innerHTML += `
-                                <tr style="border-bottom: 1px solid #ddd;">
-                                    <td style="padding: 2px;">${idx + 1}</td>
-                                    <td style="padding: 2px; font-weight: bold;">${ball.name || '-'}</td>
-                                    <td style="padding: 2px;">${ball.layout || '-'}</td>
-                                    <td style="padding: 2px;">${ball.finish || '-'}</td>
-                                </tr>
-                            `;
-                        }
-                    });
-                }
-                if(arsenalBody.innerHTML === '') {
-                    arsenalBody.innerHTML = `<tr><td colspan="4" style="padding: 4px; text-align: center; color: #666;">No balls in arsenal</td></tr>`;
-                }
-
-                const element = document.getElementById('pdfExportContainer');
-                element.style.display = 'block';
-                
-                const opt = {
-                    margin: 0.4,
-                    filename: `${b.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_drill_sheet.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-
-                html2pdf().set(opt).from(element).save().then(() => {
-                    element.style.display = 'none';
                 });
+            }
+            if(arsenalBody.innerHTML === '') {
+                arsenalBody.innerHTML = `<tr><td colspan="4" style="padding: 4px; text-align: center; color: #666;">No balls in arsenal</td></tr>`;
+            }
+
+            const element = document.getElementById('pdfExportContainer');
+            element.style.display = 'block';
+            
+            const opt = {
+                margin: 0.4,
+                filename: `${b.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_drill_sheet.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.display = 'none';
+            });
         }
 
         function renderBowlers(bowlersArray) {
@@ -1168,9 +1187,11 @@
                     let styleBadge = b.style === 'no_thumb' ? '2H' : (b.style === 'left' ? 'LH' : 'RH');
                     return `
                     <div class="relative rounded-xl overflow-hidden mb-3 bg-red-600">
+                        <!-- Left Swipe Underlay (Delete) -->
                         <div class="absolute inset-y-0 right-0 w-24 flex items-center justify-center font-bold text-white text-2xl">
                             🗑️
                         </div>
+                        <!-- Right Swipe Underlay (PDF) -->
                         <div class="absolute inset-y-0 left-0 w-24 flex items-center justify-center font-bold text-white text-2xl bg-blue-600">
                             📄
                         </div>
@@ -1211,8 +1232,8 @@
                 document.getElementById('formTitle').innerText = t.formTitleEdit;
                 document.getElementById('btnDelete').classList.remove('hidden');
                 
-                db.transaction("bowlers", "readonly").objectStore("bowlers").get(id).onsuccess = (e) => {
-                    const b = e.target.result;
+                const b = allBowlers.find(x => x.id === id);
+                if (b) {
                     document.getElementById('bowlerId').value = b.id;
                     document.getElementById('bName').value = b.name || '';
                     document.getElementById('bowlerStyle').value = b.style || 'right';
@@ -1244,7 +1265,7 @@
                         });
                     }
                     toggleThumbSections();
-                };
+                }
             } else {
                 document.getElementById('formTitle').innerText = t.formTitleNew;
                 document.getElementById('bowlerId').value = Date.now().toString();
@@ -1261,7 +1282,7 @@
             document.getElementById('videoPreview').pause(); 
         }
 
-        function saveBowler(e) {
+        async function saveBowler(e) {
             e.preventDefault();
             let arsenal = [];
             for(let i=0; i<9; i++) {
@@ -1279,15 +1300,31 @@
                 thumbStart: document.getElementById('thumbStart').value, thumbOval: document.getElementById('thumbOval').value, thumbEnd: document.getElementById('thumbEnd').value, cutsOutput: document.getElementById('cutsOutput').innerHTML,
                 profilePhoto: document.getElementById('profilePhotoData').value, photo: document.getElementById('drillPhotoData').value, video: document.getElementById('videoData').value, arsenal: arsenal
             };
-            const tx = db.transaction("bowlers", "readwrite"); tx.objectStore("bowlers").put(bowler); tx.oncomplete = () => { closeForm(); loadList(); };
+            
+            const { error } = await db.from('bowlers').upsert({
+                id: bowler.id,
+                profile_data: bowler
+            });
+            
+            if (!error) { 
+                closeForm(); 
+                loadList(); 
+            }
         }
 
-        function deleteProfile() {
+        async function deleteProfile() {
             if(confirm(translations[currentLang].confirmDelete)) {
-                const tx = db.transaction("bowlers", "readwrite");
-                tx.objectStore("bowlers").delete(document.getElementById('bowlerId').value);
-                tx.oncomplete = () => { closeForm(); loadList(); };
+                const id = document.getElementById('bowlerId').value;
+                await db.from('bowlers').delete().eq('id', id);
+                closeForm(); 
+                loadList();
             }
+        }
+
+        function filterBowlers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allBowlers.filter(b => b.name.toLowerCase().includes(query));
+            renderBowlers(filtered);
         }
     </script>
 </body>
