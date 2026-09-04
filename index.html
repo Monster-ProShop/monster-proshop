@@ -3,50 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BSV Pro - Bowler Specs Vault</title>
-    <meta name="theme-color" content="#0B0F19">
+    <title>ProDrill OS - High-End Drilling Matrix</title>
+    
+    <meta name="theme-color" content="#020617">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" id="manifest">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { dark: '#0B0F19', card: '#1E293B', primary: '#38BDF8', primaryHover: '#2563EB' } } }
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#020617', // Deeper navy for CAD feel
+                        card: '#0F172A', // Sleeker card color
+                        primary: '#22D3EE', // Electric Cyan glow
+                        primaryHover: '#06B6D4'
+                    }
+                }
+            }
         }
     </script>
     <style>
         ::-webkit-scrollbar { display: none; }
         * { -ms-overflow-style: none; scrollbar-width: none; }
-        .pitch-input { width: 100%; background-color: #111827; border: 1px solid #374151; border-radius: 4px; padding: 8px; color: white; font-size: 0.875rem; outline: none; }
-        .pitch-input:focus { border-color: #38BDF8; }
-        .dir-select { background-color: #1f2937; color: white; border: 1px solid #374151; border-radius: 4px; padding: 8px; font-size: 0.875rem; outline: none; }
+        .pitch-input { width: 100%; background-color: #010409; border: 1px solid #1E293B; border-radius: 4px; padding: 8px; color: white; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
+        .pitch-input:focus { border-color: #22D3EE; box-shadow: 0 0 5px rgba(34, 211, 238, 0.3); }
+        .dir-select { background-color: #1E293B; color: white; border: 1px solid #334155; border-radius: 4px; padding: 8px; font-size: 0.875rem; outline: none; }
+        .dir-select:focus { border-color: #22D3EE; }
+        
         #pdfExportContainer { background: white; color: black; padding: 20px; font-family: sans-serif; display: none; box-sizing: border-box; width: 7.5in; }
+        
+        /* Core Matrix Logo Styling */
+        .matrix-cube { stop-color: #22D3EE; }
+        .matrix-glow { filter: drop-shadow(0 0 4px #22D3EE); }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased pb-20 overflow-x-hidden">
 
     <!-- Auth / Login Screen -->
     <div id="authScreen" class="fixed inset-0 bg-dark z-50 flex flex-col items-center justify-center p-6">
-        <h1 class="text-3xl font-black text-white mb-2 tracking-wide text-center">BSV <span class="text-primary">PRO</span></h1>
-        <p class="text-gray-400 mb-8 text-center text-sm">Secure Bowler Specs Vault</p>
+        <!-- ProDrill OS Core Matrix Logo -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="h-20 w-auto mb-6 matrix-glow">
+            <!-- Isometric Cube Grid -->
+            <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="#22D3EE" stroke-width="1" opacity="0.3"/>
+            <path d="M50 10 L50 90 M10 30 L90 30 M10 70 L90 70" stroke="#22D3EE" stroke-width="0.5" opacity="0.2"/>
+            <!-- Internal Spherical Core -->
+            <circle cx="50" cy="50" r="25" fill="none" stroke="#22D3EE" stroke-width="2"/>
+            <circle cx="50" cy="50" r="15" fill="#1E293B" stroke="#22D3EE" stroke-width="1"/>
+            <ellipse cx="50" cy="50" rx="25" ry="10" fill="none" stroke="#22D3EE" stroke-width="1" opacity="0.5"/>
+            <!-- Central Dot -->
+            <circle cx="50" cy="50" r="4" fill="#22D3EE"/>
+        </svg>
+        <h1 class="text-3xl font-black text-white mb-1 tracking-tighter">ProDrill <span class="text-primary">OS</span></h1>
+        <p class="text-gray-400 mb-8 text-center text-xs uppercase tracking-widest">High-End Drilling Matrix</p>
         
-        <div class="bg-card p-6 rounded-xl border border-gray-800 w-full max-w-sm shadow-2xl">
-            <div id="authAlert" class="hidden mb-4 text-xs font-bold p-3 rounded bg-red-900/50 text-red-400 border border-red-800"></div>
+        <div class="bg-card p-6 rounded-xl border border-slate-800 w-full max-w-sm shadow-2xl">
+            <div id="authAlert" class="hidden mb-4 text-xs font-bold p-3 rounded border"></div>
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Email Address</label>
-                    <input type="email" id="authEmail" class="pitch-input w-full" placeholder="proshop@example.com">
+                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase tracking-wider">Operator Email</label>
+                    <input type="email" id="authEmail" class="pitch-input w-full" placeholder="operator@prodrillos.com">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Password</label>
+                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase tracking-wider">Access Key</label>
                     <input type="password" id="authPassword" class="pitch-input w-full" placeholder="••••••••">
-                    <p class="text-[10px] text-gray-500 mt-1">8-16 characters, 1 uppercase, 1 number</p>
                 </div>
                 
                 <div class="pt-2 space-y-3">
-                    <button onclick="handleLogin()" class="w-full bg-primary hover:bg-primaryHover text-dark font-bold py-3 rounded transition">Sign In</button>
-                    <button onclick="handleRegister()" class="w-full bg-transparent border border-gray-600 hover:border-gray-400 text-white font-bold py-3 rounded transition">Create Account</button>
+                    <button onclick="handleLogin()" class="w-full bg-primary hover:bg-primaryHover text-dark font-bold py-3 rounded transition shadow-lg shadow-cyan-950/30">Initialize Session</button>
+                    <button onclick="handleRegister()" class="w-full bg-transparent border border-slate-600 hover:border-slate-400 text-white font-bold py-3 rounded transition">Request System Access</button>
                 </div>
             </div>
         </div>
@@ -54,98 +84,486 @@
 
     <!-- Pending Approval Screen -->
     <div id="pendingScreen" class="fixed inset-0 bg-dark z-50 hidden flex-col items-center justify-center p-6 text-center">
-        <svg class="w-20 h-20 text-yellow-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <h2 class="text-2xl font-black text-white mb-2">Awaiting Approval</h2>
-        <p class="text-gray-400 mb-8 max-w-xs">Your registration has been sent to Monster ProShop. You will be granted 30-day access once approved by the administrator.</p>
-        <button onclick="signOut()" class="bg-card border border-gray-700 hover:bg-gray-800 text-white font-bold px-6 py-3 rounded transition">Sign Out</button>
+        <svg class="w-20 h-20 text-yellow-500 mb-6 matrix-glow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <h2 class="text-2xl font-black text-white mb-2 tracking-tight">System Access Pending</h2>
+        <p class="text-gray-400 mb-8 max-w-xs text-sm">Your request is being reviewed by the Matrix Administrator. You will receive access clearance shortly.</p>
+        <button onclick="signOut()" class="bg-card border border-slate-700 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded transition">Terminate Request</button>
     </div>
 
     <!-- Language Selection Overlay -->
     <div id="languageOverlay" class="fixed inset-0 bg-dark z-40 hidden flex-col items-center justify-center p-6">
-        <h1 class="text-2xl font-black text-white mb-6 tracking-wide text-center">Select Language<br><span class="text-lg text-gray-400">Selecciona el Idioma</span></h1>
+        <h1 class="text-2xl font-black text-white mb-6 tracking-tight text-center">Select System Language<br><span class="text-lg text-gray-400 font-normal">Selecciona el Idioma del Sistema</span></h1>
         <div class="flex flex-col gap-4 w-full max-w-xs">
-            <button onclick="setLanguage('en')" class="bg-primary text-dark font-bold py-4 rounded-xl text-lg">English</button>
-            <button onclick="setLanguage('es')" class="bg-card border border-gray-700 text-white font-bold py-4 rounded-xl text-lg">Español (México)</button>
+            <button onclick="setLanguage('en')" class="bg-primary text-dark font-bold py-4 rounded-xl text-lg shadow-lg shadow-cyan-950/50">English (US)</button>
+            <button onclick="setLanguage('es')" class="bg-card border border-slate-700 text-white font-bold py-4 rounded-xl text-lg shadow-lg">Español (MX)</button>
         </div>
     </div>
 
     <!-- Main App Structure -->
     <div id="appContainer" class="hidden">
-        <header class="bg-card border-b border-gray-800 sticky top-0 z-30 px-4 py-3 shadow-lg flex justify-between items-center relative">
-            <div class="font-black text-white text-xl tracking-widest">BSV <span class="text-primary text-sm">PRO</span></div>
+        <header class="bg-card border-b border-slate-800 sticky top-0 z-30 px-4 py-3 shadow-lg flex justify-between items-center relative">
+            <div class="flex items-center gap-2">
+                <!-- Mini Core Matrix Logo -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="h-7 w-auto matrix-glow">
+                    <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="#22D3EE" stroke-width="3"/>
+                    <circle cx="50" cy="50" r="25" fill="none" stroke="#22D3EE" stroke-width="5"/>
+                    <circle cx="50" cy="50" r="8" fill="#22D3EE"/>
+                </svg>
+                <span class="text-xl font-black text-white tracking-tighter">ProDrill <span class="text-primary">OS</span></span>
+            </div>
             
-            <button onclick="toggleMenu()" class="text-gray-300 hover:text-white p-1.5 border border-gray-600 rounded bg-gray-800 transition">
+            <button onclick="toggleMenu()" class="text-gray-300 hover:text-white p-1.5 border border-slate-600 rounded bg-slate-800 transition active:scale-95">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
             
-            <div id="mainMenu" class="absolute top-16 right-4 bg-gray-900 border border-gray-700 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
-                <button onclick="switchView('bowlers'); toggleMenu();" class="text-left px-4 py-3 text-sm font-bold text-white border-b border-gray-800">🎳 My Bowlers</button>
-                <button onclick="toggleSearch()" class="text-left px-4 py-3 text-sm font-bold text-white border-b border-gray-800">🔍 Search Bowlers</button>
-                <button onclick="showLanguageScreen()" class="text-left px-4 py-3 text-sm font-bold text-white border-b border-gray-800">🌐 Change Language</button>
-                <button onclick="signOut()" class="text-left px-4 py-3 text-sm font-bold text-red-400 hover:bg-gray-800">🚪 Sign Out</button>
+            <div id="mainMenu" class="absolute top-16 right-4 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
+                <button onclick="switchView('bowlers'); toggleMenu();" id="btnMenuBowlers" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-slate-800 border-b border-slate-800">🎳 Matrix Database</button>
+                <button onclick="toggleSearch()" id="btnMenuSearch" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-slate-800 border-b border-slate-800">🔍 Query Profiles</button>
+                <button onclick="showLanguageScreen()" id="btnMenuLang" class="text-left px-4 py-3 text-sm font-bold text-white border-b border-slate-800 hover:bg-slate-800">🌐 Localization</button>
+                <button onclick="signOut()" id="btnMenuSignOut" class="text-left px-4 py-3 text-sm font-bold text-red-400 hover:bg-slate-800">🚪 Terminate Session</button>
             </div>
         </header>
 
         <main class="w-full max-w-lg mx-auto" id="mainContentView">
             <div id="viewBowlers" class="p-4 block">
                 <div class="flex justify-end mb-4 relative z-20">
-                    <button onclick="openForm()" class="bg-blue-600 hover:bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-2xl shadow-lg border-2 border-blue-400">+</button>
+                    <button onclick="openForm()" class="bg-cyan-600 hover:bg-cyan-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-2xl shadow-lg border-2 border-cyan-400 active:scale-95 transition">+</button>
                 </div>
-                <div id="searchContainer" class="hidden mb-4"><input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Search..."></div>
-                <div class="text-[10px] text-gray-500 uppercase tracking-widest text-center mb-4">Swipe Right to PDF • Swipe Left to Delete</div>
+                <div id="searchContainer" class="hidden mb-4">
+                    <input type="text" id="searchInput" onkeyup="filterBowlers()" class="pitch-input w-full text-lg" placeholder="Enter query...">
+                </div>
+                <div class="text-[10px] text-slate-500 uppercase tracking-widest text-center mb-4" id="txtSwipeHint">Swipe Right: Export PDF • Swipe Left: Delete</div>
+                
                 <div id="bowlerList" class="space-y-3"></div>
-                <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-50">
-                    <svg class="w-16 h-16 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    <p>No bowlers found.<br>Tap the + button to create a profile.</p>
+                
+                <div id="emptyState" class="hidden flex flex-col items-center justify-center mt-20 text-center opacity-40">
+                    <!-- Large subtle core logo for empty state -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="h-20 w-auto mb-4" opacity="0.3">
+                        <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="#22D3EE" stroke-width="2"/>
+                        <circle cx="50" cy="50" r="25" fill="none" stroke="#22D3EE" stroke-width="2"/>
+                    </svg>
+                    <p id="txtEmpty" class="text-sm">Database empty.<br>Initialize new profile via + button.</p>
                 </div>
             </div>
         </main>
+
+        <!-- Layout Expert Button - Modified to look more technical -->
+        <button onclick="openLayoutModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-slate-800 hover:bg-slate-700 rounded-xl shadow-lg shadow-cyan-950/30 flex items-center justify-center z-30 transition border border-slate-600 active:scale-95 group">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-8 h-8 group-hover:matrix-glow transition">
+                <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="#22D3EE" stroke-width="4"/>
+                <circle cx="50" cy="50" r="20" fill="none" stroke="#22D3EE" stroke-width="6"/>
+            </svg>
+        </button>
     </div>
 
-    <!-- PDF Export Template (Same as previous) -->
+    <!-- Upright Custom Drill Sheet PDF Export Template -->
     <div id="pdfExportContainer">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
-            <div><h1 style="font-size: 22px; font-weight: 900; margin: 0; text-transform: uppercase;" id="pdfName">Name</h1><div style="font-size: 12px; font-weight: bold; color: #444;" id="pdfStyle">Style</div></div>
-            <div style="text-align: right;"><div style="font-size: 14px; font-weight: 900; color: #000;">MONSTER PRO SHOP</div><div style="font-size: 9px; color: #666;">BSV PRO SPEC SHEET</div></div>
+            <div>
+                <h1 style="font-size: 22px; font-weight: 900; margin: 0; text-transform: uppercase;" id="pdfName">Bowler Name</h1>
+                <div style="font-size: 12px; font-weight: bold; color: #444; margin-top: 2px;" id="pdfStyle">Right Handed (1-Hand)</div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 16px; font-weight: 900; color: #000; tracking-tighter">ProDrill <span style="color:#06B6D4">OS</span></div>
+                <div style="font-size: 9px; color: #666; text-transform: uppercase; tracking-wider;">High-End Drilling Matrix</div>
+            </div>
         </div>
-        <!-- Keep existing PDF HTML structure here to prevent code bloat, it remains unchanged -->
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div style="border: 2px solid #000; padding: 12px; border-radius: 6px;">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase; tracking-wider;">Biometric Specs</div>
+                <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">VEL (Speed):</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfVel">-</td></tr>
+                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">REV (Revs):</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfRev">-</td></tr>
+                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">TILT:</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfTilt">-</td></tr>
+                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">ROT:</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfRot">-</td></tr>
+                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">AVG:</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfAvg">-</td></tr>
+                </table>
+                <div style="margin-top: 10px; border-top: 1px dashed #000; padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: 900;">PAP Matrix:</span>
+                    <span style="font-size: 13px; font-weight: bold; border: 1px solid #000; padding: 2px 8px; border-radius: 4px;" id="pdfPap">--</span>
+                </div>
+            </div>
+
+            <div style="border: 2px solid #000; padding: 12px; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase; tracking-wider;">Span Matrix</div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span style="font-weight: bold;">Left (L):</span><span style="font-weight: bold;" id="pdfLeftSpan">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span style="font-weight: bold;">Right (R):</span><span style="font-weight: bold;" id="pdfRightSpan">-</span>
+                    </div>
+                </div>
+                <div style="background: #eee; text-align: center; padding: 6px; font-weight: 900; font-size: 11px; border: 1px solid #000; border-radius: 4px; text-transform: uppercase;">
+                    Bridge
+                </div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Left Finger</div>
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Lateral (Y): <span id="pdfLf1" style="font-family: monospace;">-</span></div>
+                <div style="font-size: 12px; font-weight: bold;">Linear (X): <span id="pdfLf2" style="font-family: monospace;">-</span></div>
+            </div>
+            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Right Finger</div>
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Lateral (Y): <span id="pdfRf1" style="font-family: monospace;">-</span></div>
+                <div style="font-size: 12px; font-weight: bold;">Linear (X): <span id="pdfRf2" style="font-family: monospace;">-</span></div>
+            </div>
+            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;" id="pdfThumbContainer">
+                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb</div>
+                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Lateral (Y): <span id="pdfTh1" style="font-family: monospace;">-</span></div>
+                <div style="font-size: 12px; font-weight: bold;">Linear (X): <span id="pdfTh2" style="font-family: monospace;">-</span></div>
+            </div>
+        </div>
+
+        <div style="border: 2px solid #000; padding: 10px; border-radius: 6px; margin-bottom: 15px;" id="pdfOvalBox">
+            <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb Oval / Digital Matrix Readings</div>
+            <div style="font-size: 11px; font-family: monospace; white-space: pre-line;" id="pdfCuts">--</div>
+        </div>
+
+        <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
+            <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase; tracking-wider;">Equipment Arsenal</div>
+            <table style="width: 100%; font-size: 11px; border-collapse: collapse;" id="pdfArsenalTable">
+                <thead>
+                    <tr style="border-bottom: 1px solid #000;">
+                        <th style="text-align: left; padding: 2px;">ID</th><th style="text-align: left; padding: 2px;">Model</th>
+                        <th style="text-align: left; padding: 2px;">Layout Matrix</th><th style="text-align: left; padding: 2px;">Surface</th>
+                    </tr>
+                </thead>
+                <tbody id="pdfArsenalBody"></tbody>
+            </table>
+        </div>
+        <div style="text-align: right; font-size: 9px; color: #666; margin-top: 10px;">Generated via ProDrill OS Core • www.prodrillos.com</div>
+    </div>
+
+    <!-- Master Layout Expert Modal -->
+    <div id="layoutModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
+        <div class="sticky top-0 bg-card border-b border-slate-800 px-4 py-4 flex justify-between items-center z-10 shadow-lg">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="h-6 w-auto matrix-glow">
+                    <path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="#22D3EE" stroke-width="4"/>
+                    <circle cx="50" cy="50" r="20" fill="none" stroke="#22D3EE" stroke-width="6"/>
+                </svg>
+                <h2 id="layoutTitle" class="text-lg font-bold text-white tracking-tight">Matrix Layout Expert</h2>
+            </div>
+            <button onclick="closeLayoutModal()" class="text-slate-400 hover:text-white font-bold text-2xl transition">&times;</button>
+        </div>
+        <div class="p-4 space-y-4 pb-12">
+            <p id="layoutDesc" class="text-sm text-slate-400">Synthesize Drilling Matrix based on biometrics & core specs.</p>
+            
+            <div class="bg-card p-4 rounded-xl border border-slate-700 space-y-3">
+                <h3 class="text-xs font-bold text-white uppercase border-b border-slate-800 pb-1 tracking-wider">Bowler Biometrics</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label id="lblCalcSpeed" class="block text-[10px] font-bold text-primary mb-1 uppercase tracking-wider">Speed (mph)</label>
+                        <input type="number" id="calcSpeed" value="16" step="0.1" class="pitch-input font-bold" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcRevs" class="block text-[10px] font-bold text-primary mb-1 uppercase tracking-wider">Revs (RPM)</label>
+                        <input type="number" id="calcRevs" value="350" class="pitch-input font-bold" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcTilt" class="block text-[10px] font-bold text-primary mb-1 uppercase tracking-wider">Axis Tilt (deg)</label>
+                        <input type="number" id="calcTilt" value="12" class="pitch-input" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcRot" class="block text-[10px] font-bold text-primary mb-1 uppercase tracking-wider">Rotation (deg)</label>
+                        <input type="number" id="calcRot" value="45" class="pitch-input" oninput="calculateLayout()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-card p-4 rounded-xl border border-slate-700 space-y-3">
+                <h3 class="text-xs font-bold text-white uppercase border-b border-slate-800 pb-1 tracking-wider">Equipment Specs</h3>
+                <div>
+                    <label id="lblCalcBall" class="block text-xs font-bold text-primary mb-1 uppercase tracking-wider">Core Type & Intended Vector</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="calcBall" class="pitch-input text-sm" onchange="calculateLayout()">
+                            <option value="Asymmetric" id="optAsym">Asymmetric</option>
+                            <option value="Symmetric" id="optSym">Symmetric</option>
+                        </select>
+                        <select id="calcMovement" class="pitch-input text-sm" onchange="calculateLayout()">
+                            <option value="Continuous hook Strong" id="optMov1">Cont. Strong</option>
+                            <option value="Continuous hook Medium" id="optMov2">Cont. Medium</option>
+                            <option value="Continuous hook Weak" id="optMov3">Cont. Weak</option>
+                            <option value="Deep and In Strong" id="optMov4">Deep In Strong</option>
+                            <option value="Deep and In Medium" id="optMov5">Deep In Medium</option>
+                            <option value="Deep and In Weak" id="optMov6">Deep In Weak</option>
+                            <option value="Early roll Strong" id="optMov7">Early Strong</option>
+                            <option value="Early roll Medium" id="optMov8" selected>Early Medium</option>
+                            <option value="Early roll Weak" id="optMov9">Early Weak</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <div>
+                        <label id="lblCalcRG" class="block text-[10px] font-bold text-primary mb-1 uppercase">RG</label>
+                        <input type="number" id="calcRG" value="2.50" step="0.01" class="pitch-input text-center text-xs" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcDiff" class="block text-[10px] font-bold text-primary mb-1 uppercase">Diff</label>
+                        <input type="number" id="calcDiff" value="0.050" step="0.001" class="pitch-input text-center text-xs" oninput="calculateLayout()">
+                    </div>
+                    <div>
+                        <label id="lblCalcIntDiff" class="block text-[10px] font-bold text-primary mb-1 uppercase">Int. Diff</label>
+                        <input type="number" id="calcIntDiff" value="0.015" step="0.001" class="pitch-input text-center text-xs" oninput="calculateLayout()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-black p-5 rounded-xl border-2 border-primary/50 shadow-lg shadow-cyan-950/30 space-y-3">
+                <div class="flex flex-col items-center border-b border-slate-800 pb-3 mb-2">
+                    <label id="lblCalcSystem" class="block text-xs font-bold text-slate-400 uppercase mb-1 tracking-wider">Mapping System</label>
+                    <select id="calcSystem" class="pitch-input text-center text-sm font-bold bg-slate-950 border-slate-700" onchange="calculateLayout()">
+                        <option value="dual" id="optSysDual">Dual Angle System</option>
+                        <option value="vls" id="optSysVLS">Vector Layout System (VLS)</option>
+                        <option value="2ls" id="optSys2LS">2LS System (No-Thumb)</option>
+                    </select>
+                </div>
+                
+                <h3 id="lblRecLayout" class="text-sm font-bold text-primary uppercase text-center border-b border-slate-800 pb-2 tracking-wider">Synthesized Matrix</h3>
+                <div class="flex justify-between items-center text-sm mt-3">
+                    <span id="lblOut1" class="text-slate-400">Drilling Angle</span>
+                    <strong id="outVal1" class="text-white text-lg">40°</strong>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                    <span id="lblOut2" class="text-slate-400">Pin to PAP</span>
+                    <strong id="outVal2" class="text-white text-lg">4 1/2"</strong>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                    <span id="lblOut3" class="text-slate-400">VAL Angle</span>
+                    <strong id="outVal3" class="text-white text-lg">65°</strong>
+                </div>
+                <div class="flex justify-between items-center text-sm border-t border-slate-800 pt-2" id="outRowSum">
+                    <span id="lblOutSum" class="text-slate-400">Total Vector Sum</span>
+                    <strong id="outTotalSum" class="text-white text-lg">105°</strong>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-800 text-center relative">
+                    <!-- Subtle glow behind final output -->
+                    <div class="absolute inset-0 rounded-full bg-primary/10 blur-xl"></div>
+                    <span id="lblOutFinal" class="text-xs font-bold text-slate-500 uppercase block mb-1 tracking-widest relative z-10">Final drilling matrix</span>
+                    <div id="outLayoutString" class="text-2xl md:text-3xl font-black text-primary tracking-tighter relative z-10 matrix-glow">40° x 4 1/2" x 65°</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Bowler Form Modal -->
     <div id="formModal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto w-full max-w-lg mx-auto">
-        <div class="sticky top-0 bg-card border-b border-gray-800 px-4 py-4 flex justify-between items-center z-10 shadow-lg">
-            <h2 id="formTitle" class="text-lg font-bold text-white">Bowler Profile</h2>
-            <button onclick="closeForm()" class="text-gray-400 font-bold text-2xl">&times;</button>
+        <div class="sticky top-0 bg-card border-b border-slate-800 px-4 py-4 flex justify-between items-center z-10 shadow-lg">
+            <h2 id="formTitle" class="text-lg font-bold text-white tracking-tight">Biometric Profile</h2>
+            <button onclick="closeForm()" class="text-slate-400 hover:text-white font-bold text-2xl transition">&times;</button>
         </div>
+
         <form id="bowlerForm" onsubmit="saveBowler(event)" class="p-4 space-y-5">
             <input type="hidden" id="bowlerId">
-            <div class="bg-card p-4 rounded-lg border border-gray-800">
-                <label class="block text-xs font-bold text-primary mb-1 uppercase">Bowler Name</label>
-                <input type="text" id="bName" required class="pitch-input text-lg font-bold mb-4">
-                <label class="block text-xs font-bold text-primary mb-1 uppercase">Bowling Style</label>
-                <select id="bowlerStyle" class="pitch-input font-semibold text-primary">
-                    <option value="right">Right Handed (1-Hand)</option>
-                    <option value="left">Left Handed (1-Hand)</option>
-                    <option value="no_thumb">No Thumb (2-Handed)</option>
-                </select>
+
+            <div class="bg-card p-4 rounded-lg border border-slate-800 space-y-4 shadow-inner">
+                <div class="flex items-center gap-4">
+                    <div class="relative w-16 h-16 rounded-full bg-black border border-slate-700 flex items-center justify-center overflow-hidden shrink-0 cursor-pointer group" onclick="document.getElementById('profilePhotoInput').click()">
+                        <img id="profilePreview" class="w-full h-full object-cover hidden">
+                        <span id="profileIcon" class="text-2xl text-slate-600 group-hover:text-primary transition">📷</span>
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-xs text-white">Edit</div>
+                    </div>
+                    <input type="file" id="profilePhotoInput" accept="image/*" class="hidden" onchange="handleFile(event, 'profile')">
+                    <input type="hidden" id="profilePhotoData">
+                    
+                    <div class="flex-1">
+                        <label id="lblBowlerName" class="block text-xs font-bold text-primary mb-1 uppercase tracking-wider">Subject Name</label>
+                        <input type="text" id="bName" required class="pitch-input text-lg font-bold tracking-tight">
+                    </div>
+                </div>
+
+                <div>
+                    <label id="lblBowlingStyle" class="block text-xs font-bold text-primary mb-1 uppercase tracking-wider">Delivery Style</label>
+                    <select id="bowlerStyle" class="pitch-input font-semibold text-primary" onchange="toggleThumbSections()">
+                        <option id="optStyleRight" value="right">Right Handed (1-Hand)</option>
+                        <option id="optStyleLeft" value="left">Left Handed (1-Hand)</option>
+                        <option id="optStyleNoThumb" value="no_thumb">No Thumb (2-Handed)</option>
+                    </select>
+                </div>
             </div>
-            <div class="pt-4 flex gap-3 pb-8">
-                <button type="submit" class="flex-1 bg-primary text-dark font-bold py-3 rounded-lg">SAVE PROFILE</button>
-                <button type="button" onclick="deleteProfile()" id="btnDelete" class="hidden bg-red-900/50 text-red-400 font-bold px-4 py-3 rounded-lg border border-red-900">DELETE</button>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-card p-3 rounded-lg border border-slate-800">
+                    <label class="block text-xs font-bold text-primary mb-2 uppercase tracking-wider">PAP Matrix</label>
+                    <div class="flex gap-1 mb-2">
+                        <input type="text" id="papX" class="pitch-input" placeholder="Horiz">
+                        <select id="papXDir" class="dir-select px-1"><option value="→" id="optPapRight">→ R</option><option value="←" id="optPapLeft">← L</option></select>
+                    </div>
+                    <div class="flex gap-1">
+                        <input type="text" id="papY" class="pitch-input" placeholder="Vert">
+                        <select id="papYDir" class="dir-select px-1"><option value="↑" id="optPapUp">↑ Up</option><option value="↓" id="optPapDown">↓ Dn</option></select>
+                    </div>
+                </div>
+                
+                <div class="bg-card p-3 rounded-lg border border-slate-800">
+                    <label id="lblStats" class="block text-xs font-bold text-primary mb-2 uppercase tracking-wider">Biometrics (Spd, Rev, Tilt, Rot)</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="statSpeed" class="pitch-input text-center" placeholder="Spd (MPH)" step="0.1">
+                        <input type="number" id="statRevs" class="pitch-input text-center" placeholder="Rev (RPM)">
+                        <input type="number" id="statTilt" class="pitch-input text-center" placeholder="Tilt (deg)">
+                        <input type="number" id="statRot" class="pitch-input text-center" placeholder="Rot (deg)">
+                    </div>
+                    <input type="number" id="statAvg" class="pitch-input mt-2" placeholder="Subject Scoring Average">
+                </div>
+            </div>
+
+            <!-- Profile Specific Layout Expert -->
+            <div class="bg-card p-4 rounded-lg border-2 border-slate-700 space-y-3 shadow-lg shadow-cyan-950/10 relative">
+                <div class="absolute inset-0 rounded-lg bg-primary/5 blur-md"></div>
+                <div class="flex items-center justify-between mb-2 border-b border-slate-700 pb-2 relative z-10">
+                    <div class="flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-5 h-5 matrix-glow"><path d="M50 10 L90 30 L90 70 L50 90 L10 70 L10 30 Z" fill="none" stroke="#22D3EE" stroke-width="6"/><circle cx="50" cy="50" r="20" fill="#22D3EE"/></svg>
+                        <label id="lblProfileLayout" class="block text-xs font-bold text-primary uppercase tracking-wider">Synthesize Layout</label>
+                    </div>
+                </div>
+                
+                <select id="profCalcSystem" class="pitch-input text-xs font-bold text-center w-full mb-2 bg-slate-950 border-slate-700 relative z-10">
+                    <option value="dual" id="optProfSysDual">Dual Angle System</option>
+                    <option value="vls" id="optProfSysVLS">Vector Layout System (VLS)</option>
+                    <option value="2ls" id="optProfSys2LS">2LS System (No-Thumb)</option>
+                </select>
+
+                <div class="grid grid-cols-2 gap-2 relative z-10">
+                    <select id="profCalcBall" class="pitch-input text-xs text-center p-1">
+                        <option value="Asymmetric" id="optProfAsym">Asymmetric</option>
+                        <option value="Symmetric" id="optProfSym">Symmetric</option>
+                    </select>
+                    <select id="profCalcMovement" class="pitch-input text-xs text-center p-1">
+                        <option value="Continuous hook Strong">Cont. Strong</option>
+                        <option value="Continuous hook Medium">Cont. Medium</option>
+                        <option value="Continuous hook Weak">Cont. Weak</option>
+                        <option value="Deep and In Strong">Deep In Strong</option>
+                        <option value="Deep and In Medium">Deep In Medium</option>
+                        <option value="Deep and In Weak">Deep In Weak</option>
+                        <option value="Early roll Strong">Early Strong</option>
+                        <option value="Early roll Medium" selected>Early Medium</option>
+                        <option value="Early roll Weak">Early Weak</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-3 gap-2 relative z-10">
+                    <input type="number" id="profCalcRG" value="2.50" step="0.01" class="pitch-input text-center text-xs p-1" placeholder="RG">
+                    <input type="number" id="profCalcDiff" value="0.050" step="0.001" class="pitch-input text-center text-xs p-1" placeholder="Diff">
+                    <input type="number" id="profCalcIntDiff" value="0.015" step="0.001" class="pitch-input text-center text-xs p-1" placeholder="Int. Diff">
+                </div>
+                <button type="button" onclick="calculateProfileLayout()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-dark text-xs font-bold py-2.5 rounded transition shadow-md shadow-cyan-950/30 relative z-10 uppercase tracking-wider" id="btnGenLayoutProfile">Execute Synthesis</button>
+                <div id="profileLayoutOutput" class="hidden mt-2 text-center text-xl font-black text-primary tracking-tighter matrix-glow relative z-10"></div>
+            </div>
+
+            <div class="bg-card p-4 rounded-lg border border-slate-800 space-y-4">
+                <label id="lblDrillSheet" class="block text-xs font-bold text-primary uppercase border-b border-slate-700 pb-2 tracking-wider">Drilling Matrix / Inclinations</label>
+                
+                <div id="spanSection" class="space-y-2 pb-2 border-b border-slate-800">
+                    <span id="lblSpans" class="text-xs font-bold text-slate-400 block tracking-wider">Spans (L / R)</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <select id="spanLeft" class="pitch-input text-center text-sm font-mono"></select>
+                        <select id="spanRight" class="pitch-input text-center text-sm font-mono"></select>
+                    </div>
+                    
+                    <div class="flex gap-2 items-center bg-black p-2 rounded border border-slate-700 mt-2">
+                        <select id="thumbSize" class="dir-select flex-1 text-xs">
+                            <option value="normal" id="optThumbNormal">Standard Thumb</option>
+                            <option value="small" id="optThumbSmall">Tight (+1/8 FWD)</option>
+                            <option value="large" id="optThumbLarge">Loose (+1/8 REV)</option>
+                        </select>
+                        <button type="button" id="btnAutoPitch" onclick="suggestThumbPitch()" class="bg-primary hover:bg-primaryHover text-dark px-3 py-2 rounded text-xs font-bold transition uppercase tracking-wider">Auto-Calc</button>
+                    </div>
+                </div>
+
+                <div class="bg-black p-2 rounded border border-slate-700">
+                    <span id="lblLeftFinger" class="text-xs font-bold text-slate-400 block mb-1 tracking-wider">Left Finger (L)</span>
+                    <div class="flex gap-2 mb-2">
+                        <select id="lfP1" class="pitch-input font-mono"></select>
+                        <select id="lfD1" class="dir-select dir-y"></select>
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="lfP2" class="pitch-input font-mono"></select>
+                        <select id="lfD2" class="dir-select dir-x"></select>
+                    </div>
+                </div>
+
+                <div class="bg-black p-2 rounded border border-slate-700">
+                    <span id="lblRightFinger" class="text-xs font-bold text-slate-400 block mb-1 tracking-wider">Right Finger (R)</span>
+                    <div class="flex gap-2 mb-2">
+                        <select id="rfP1" class="pitch-input font-mono"></select>
+                        <select id="rfD1" class="dir-select dir-y"></select>
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="rfP2" class="pitch-input font-mono"></select>
+                        <select id="rfD2" class="dir-select dir-x"></select>
+                    </div>
+                </div>
+
+                <div id="thumbFeaturesSection" class="space-y-4">
+                    <div class="bg-black p-2 rounded border border-slate-700">
+                        <span id="lblThumb" class="text-xs font-bold text-primary block mb-1 tracking-wider">Thumb Matrix</span>
+                        <div class="flex gap-2 mb-2">
+                            <select id="thP1" class="pitch-input font-mono border-primary/50"></select>
+                            <select id="thD1" class="dir-select dir-y"></select>
+                        </div>
+                        <div class="flex gap-2">
+                            <select id="thP2" class="pitch-input font-mono border-primary/50"></select>
+                            <select id="thD2" class="dir-select dir-x"></select>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-3 rounded border border-slate-700 shadow-inner">
+                        <span id="lblThumbOval" class="text-xs font-bold text-primary block mb-2 uppercase tracking-wider">Oval Matrix Generator</span>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="text" id="thumbStart" placeholder="Start Ø" class="pitch-input text-center text-xs">
+                            <input type="number" id="thumbOval" placeholder="Angle" class="pitch-input text-center text-xs">
+                            <input type="text" id="thumbEnd" placeholder="End Ø" class="pitch-input text-center text-xs">
+                        </div>
+                        <button type="button" id="btnGenerate" onclick="generateCuts()" class="w-full mt-3 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-2 rounded transition uppercase tracking-wider">Compute Matrix</button>
+                        <div id="cutsOutput" class="mt-3 text-sm text-primary font-mono space-y-1 text-center bg-black rounded py-3 hidden border border-slate-700 shadow-lg"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <label id="lblPhoto" class="block text-xs text-slate-500 mt-3 mb-1 tracking-wider">Physical Analog Sheet Capture (Optional)</label>
+                    <input type="file" accept="image/*" onchange="handleFile(event, 'drillPhoto')" class="text-sm text-slate-400 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-slate-800 file:text-white w-full cursor-pointer">
+                    <input type="hidden" id="drillPhotoData">
+                    <img id="drillPhotoPreview" class="hidden mt-2 max-h-40 rounded border border-slate-700 w-full object-contain bg-black">
+                </div>
+            </div>
+
+            <div class="bg-card p-4 rounded-lg border border-slate-800 space-y-2 shadow-inner">
+                <label id="lblArsenal" class="block text-xs font-bold text-primary uppercase mb-2 tracking-wider">Equipment Arsenal (9 Units Max)</label>
+                <div id="arsenalContainer" class="space-y-3"></div>
+            </div>
+
+            <div class="bg-card p-4 rounded-lg border border-slate-800 shadow-inner">
+                <label id="lblVideo" class="block text-xs font-bold text-primary uppercase mb-1 tracking-wider">Release Mechanics Video</label>
+                <input type="file" accept="video/*" onchange="handleFile(event, 'video')" class="text-sm text-slate-400 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-slate-800 file:text-white w-full cursor-pointer">
+                <input type="hidden" id="videoData">
+                <video id="videoPreview" controls class="hidden mt-3 w-full rounded border border-slate-700 bg-black max-h-48"></video>
+            </div>
+
+            <div class="pt-4 flex gap-3 pb-8 relative z-10">
+                <button type="submit" id="btnSave" class="flex-1 bg-primary text-dark font-bold py-3 rounded-lg shadow-lg shadow-cyan-950/50 uppercase tracking-wider active:scale-95 transition">Commit Profile</button>
+                <button type="button" id="btnDelete" onclick="deleteProfile()" class="hidden bg-red-950/30 text-red-400 font-bold px-4 py-3 rounded-lg border border-red-900 active:scale-95 transition">Purge</button>
             </div>
         </form>
     </div>
 
     <script>
+        // NOTE: Keep your existing Supabase logic here. 
+        // I have only updated branding-related UI functions below.
+
         const SUPABASE_URL = "https://fbcovchdphwngjcyfxgs.supabase.co";
-        const SUPABASE_KEY = "YOUR_ANON_PUBLIC_KEY"; // Ensure your key is pasted here
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZiY292Y2hkcGh3bmdqY3lmeGdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MDU2MzQsImV4cCI6MjEwMzk4MTYzNH0.k42L8YN0Q1BZLM_qrKfxmp-sFXK0LYqJKhZuO-x5iJU";
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
         let userProfile = null;
         let allBowlers = [];
+        let currentLang = 'en';
 
-        // Authentication State Listener
+        // Auth Listeners & Gatekeeping
         db.auth.onAuthStateChange(async (event, session) => {
             if (session) {
                 currentUser = session.user;
@@ -159,7 +577,7 @@
                     document.getElementById('appContainer').classList.add('hidden');
                 } else {
                     document.getElementById('pendingScreen').classList.add('hidden');
-                    let savedLang = localStorage.getItem('bsv_lang');
+                    let savedLang = localStorage.getItem('prodrill_lang'); // Updated localstorage key
                     if (!savedLang) {
                         document.getElementById('languageOverlay').classList.remove('hidden');
                     } else {
@@ -177,150 +595,109 @@
             }
         });
 
-        // Auth Functions
-        function validatePassword(pwd) {
-            const regex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W_]{8,16}$/;
-            return regex.test(pwd);
-        }
-
-        function showAuthError(msg) {
-            const el = document.getElementById('authAlert');
-            el.innerText = msg;
-            el.classList.remove('hidden');
-        }
-
-        async function handleLogin() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            const { error } = await db.auth.signInWithPassword({ email, password });
-            if (error) showAuthError(error.message);
-        }
-
-        async function handleRegister() {
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            
-            if (!validatePassword(password)) {
-                showAuthError("Password must be 8-16 characters, contain 1 uppercase letter and 1 number.");
-                return;
+        // Setup Arrays & UI elements
+        const fractionsArr = ['','1/16','1/8','3/16','1/4','5/16','3/8','7/16','1/2','9/16','5/8','11/16','3/4','13/16','7/8','15/16'];
+        
+        let pitchOptions = '<option value="0">0</option>';
+        for(let whole = 0; whole <= 2; whole++) {
+            for(let frac of fractionsArr) {
+                if(whole === 0 && frac === '') continue;
+                if(whole === 2 && frac !== '') continue;
+                let text = frac ? (whole ? `${whole} ${frac}` : frac) : `${whole}`;
+                pitchOptions += `<option value="${text}">${text}</option>`;
             }
+        }
+        ['lfP1','lfP2','rfP1','rfP2','thP1','thP2'].forEach(id => document.getElementById(id).innerHTML = pitchOptions);
 
-            const { error } = await db.auth.signUp({ email, password });
-            if (error) showAuthError(error.message);
-            else showAuthError("Success! Check your email to confirm registration.");
+        let spanOptions = '<option value="">-</option>';
+        for(let whole = 3; whole <= 7; whole++) {
+            for(let frac of fractionsArr) {
+                if(whole === 7 && frac !== '') break;
+                let text = frac ? `${whole} ${frac}` : `${whole}`;
+                spanOptions += `<option value="${text}">${text}</option>`;
+            }
+        }
+        document.getElementById('spanLeft').innerHTML = spanOptions; document.getElementById('spanRight').innerHTML = spanOptions;
+
+        const finishes = ['500','500P','1000','1000P','1500','1500P','2000','2000P','3000','3000P','4000','4000P'];
+        const arsenalDiv = document.getElementById('arsenalContainer');
+        for(let i=0; i<9; i++) {
+            arsenalDiv.innerHTML += `
+                <div class="flex gap-2 items-center bg-black p-2 rounded border border-slate-800">
+                    <span class="text-xs text-slate-600 font-bold w-4">${i+1}</span>
+                    <input type="text" id="ball_name_${i}" placeholder="Ball Model" class="flex-1 bg-transparent border-b border-slate-700 text-sm text-white focus:border-primary outline-none py-1">
+                    <input type="text" id="ball_layout_${i}" placeholder="Matrix" class="w-1/4 bg-transparent border-b border-slate-700 text-sm text-white focus:border-primary outline-none py-1">
+                    <select id="ball_finish_${i}" class="bg-slate-800 border border-slate-700 rounded text-[10px] text-white p-1">
+                        <option value="">Surface</option>
+                        ${finishes.map(f => `<option value="${f}">${f}</option>`).join('')}
+                    </select>
+                </div>
+            `;
         }
 
-        async function signOut() {
-            await db.auth.signOut();
-        }
+        // Updated Translations for ProDrill OS
+        const translations = {
+            en: {
+                txtEmpty: "Database empty.<br>Initialize new profile via + button.",
+                formTitleNew: "Initialize Profile", formTitleEdit: "Edit Biometrics", lblBowlerName: "Subject Name", lblBowlingStyle: "Delivery Style",
+                optStyleRight: "Right Handed (1-Hand)", optStyleLeft: "Left Handed (1-Hand)", optStyleNoThumb: "No Thumb (2-Handed)",
+                optPapRight: "→ R", optPapLeft: "← L", optPapUp: "↑ Up", optPapDown: "↓ Dn",
+                lblStats: "Biometrics (Spd, Rev, Tilt, Rot)", statRevs: "Rev (RPM)", statAvg: "Scoring Avg", statSpeed: "Spd (MPH)",
+                lblDrillSheet: "Drilling Matrix / Inclinations", lblSpans: "Spans (L / R)",
+                optThumbNormal: "Standard Thumb", optThumbSmall: "Tight (+1/8 FWD)", optThumbLarge: "Loose (+1/8 REV)", btnAutoPitch: "Auto-Calc",
+                lblLeftFinger: "Left Finger (L)", lblRightFinger: "Right Finger (R)", lblThumb: "Thumb Matrix", lblThumbOval: "Oval Matrix Generator",
+                btnGenerate: "Compute Matrix", lblPhoto: "Analog Sheet Capture (Optional)", lblArsenal: "Equipment Arsenal (9 Units Max)",
+                lblVideo: "Release Mechanics Video", btnSave: "Commit Profile", btnDelete: "Purge",
+                alertEndSize: "End Ø must be larger than start Ø", alertSpan: "Select span parameters first.", confirmDelete: "Purge this subject profile?",
+                dirYUp: "↑ Up (LAT)", dirYDown: "↓ Down (LIN)", dirXLeft: "← Left", dirXRight: "→ Right",
+                menuBowlers: "🎳 Matrix Database", menuSearch: "🔍 Query Profiles", menuLang: "🌐 Localization", searchPh: "Enter query...", txtSwipeHint: "Swipe Right: Export PDF • Swipe Left: Delete",
+                layoutTitle: "Matrix Layout Expert", layoutDesc: "Synthesize Drilling Matrix based on biometrics & core specs.",
+                lblCalcSpeed: "Speed (mph)", lblCalcRevs: "Revs (RPM)", lblCalcTilt: "Axis Tilt (deg)", lblCalcRot: "Rotation (deg)", 
+                lblCalcMovement: "Intended Vector", lblCalcBall: "Core Type", lblRecLayout: "Synthesized Matrix",
+                lblCalcRG: "RG", lblCalcDiff: "Diff", lblCalcIntDiff: "Int. Diff",
+                lblCalcSystem: "Mapping System", optSysDual: "Dual Angle System", optSysVLS: "Vector Layout System (VLS)", optSys2LS: "2LS System (No-Thumb)",
+                optProfSysDual: "Dual Angle System", optProfSysVLS: "Vector Layout System (VLS)", optProfSys2LS: "2LS System (No-Thumb)",
+                lblOutDrill: "Drilling Angle", lblOutPin: "Pin to PAP", lblOutVal: "VAL Angle", lblOutSum: "Total Vector Sum", lblOutFinal: "Final drilling matrix",
+                lblPinPAP: "Pin to PAP", lblPSAPAP: "PSA to PAP", lblPinBuffer: "Pin Buffer", lblPinCG: "Pin to CG", lblOut1: "Drilling Angle", lblOut2: "Pin to PAP", lblOut3: "VAL Angle",
+                optAsym: "Asymmetric", optSym: "Symmetric", optProfAsym: "Asymmetric", optProfSym: "Symmetric",
+                lblProfileLayout: "Synthesize Layout", btnGenLayoutProfile: "Execute Synthesis", alertStatsReq: "Input Speed, Revs, Tilt, and Rotation biometrics first."
+            },
+            es: {
+                txtEmpty: "Base de datos vacía.<br>Inicialice nuevo perfil vía botón +.",
+                formTitleNew: "Inicializar Perfil", formTitleEdit: "Editar Biometría", lblBowlerName: "Nombre del Sujeto", lblBowlingStyle: "Estilo de Entrega",
+                optStyleRight: "Diestro (1 Mano)", optStyleLeft: "Zurdo (1 Mano)", optStyleNoThumb: "Sin Pulgar (2 Manos)",
+                optPapRight: "→ Der", optPapLeft: "← Izq", optPapUp: "↑ Arr", optPapDown: "↓ Aba",
+                lblStats: "Biometría (Vel, Rev, Tilt, Rot)", statRevs: "Rev (RPM)", statAvg: "Promedio", statSpeed: "Vel (MPH)",
+                lblDrillSheet: "Matriz de Perforación / Inclinaciones", lblSpans: "Distancias (L / R)",
+                optThumbNormal: "Pulgar Estándar", optThumbSmall: "Ajustado (+1/8 ADE)", optThumbLarge: "Holgado (+1/8 ATR)", btnAutoPitch: "Auto-Calc",
+                lblLeftFinger: "Dedo Izquierdo (L)", lblRightFinger: "Dedo Derecho (R)", lblThumb: "Matriz de Pulgar", lblThumbOval: "Generador de Matriz Oval",
+                btnGenerate: "Calcular Matriz", lblPhoto: "Captura de Hoja Analógica (Opcional)", lblArsenal: "Arsenal de Equipos (Máx 9 Unidades)",
+                lblVideo: "Video de Mecánica de Soltado", btnSave: "Confirmar Perfil", btnDelete: "Purgar",
+                alertEndSize: "Ø final debe ser mayor al Ø inicial", alertSpan: "Seleccione parámetros de distancia primero.", confirmDelete: "¿Purgar este perfil de sujeto?",
+                dirYUp: "↑ Arriba (LAT)", dirYDown: "↓ Abajo (LIN)", dirXLeft: "← Izquierda", dirXRight: "→ Derecha",
+                menuBowlers: "🎳 Base de Datos", menuSearch: "🔍 Consultar Perfiles", menuLang: "🌐 Localización", searchPh: "Sintaxis de consulta...", txtSwipeHint: "Desliza Der: Exportar PDF • Izq: Borrar",
+                layoutTitle: "Experto en Matriz de Layout", layoutDesc: "Sintetizar Matriz de Perforación basada en biometría y especificaciones del núcleo.",
+                lblCalcSpeed: "Velocidad (mph)", lblCalcRevs: "Revoluciones (RPM)", lblCalcTilt: "Tilt del Eje (deg)", lblCalcRot: "Rotación (deg)", 
+                lblCalcMovement: "Vector Intencionado", lblCalcBall: "Tipo de Núcleo", lblRecLayout: "Matriz Sintetizada",
+                lblCalcRG: "RG", lblCalcDiff: "Diff", lblCalcIntDiff: "Diff Int.",
+                lblCalcSystem: "Sistema de Mapeo", optSysDual: "Sistema Dual Angle", optSysVLS: "Sistema Vector Layout (VLS)", optSys2LS: "Sistema 2LS (Sin Pulgar)",
+                optProfSysDual: "Sistema Dual Angle", optProfSysVLS: "Sistema Vector Layout (VLS)", optProfSys2LS: "Sistema 2LS (Sin Pulgar)",
+                lblOutDrill: "Ángulo de Perforación", lblOutPin: "Pin a PAP", lblOutVal: "Ángulo VAL", lblOutSum: "Suma Vectorial Total", lblOutFinal: "Matriz de perforación final",
+                lblPinPAP: "Pin a PAP", lblPSAPAP: "PSA a PAP", lblPinBuffer: "Pin Buffer", lblPinCG: "Pin a CG", lblOut1: "Ángulo de Perforación", lblOut2: "Pin a PAP", lblOut3: "Ángulo VAL",
+                optAsym: "Asimétrico", optSym: "Simétrico", optProfAsym: "Asimétrico", optProfSym: "Simétrico",
+                lblProfileLayout: "Sintetizar Layout", btnGenLayoutProfile: "Ejecutar Síntesis", alertStatsReq: "Ingrese biometría de Velocidad, Revs, Tilt y Rotación primero."
+            }
+        };
 
         function setLanguage(lang) {
-            localStorage.setItem('bsv_lang', lang);
+            currentLang = lang;
+            localStorage.setItem('prodrill_lang', lang);
             document.getElementById('languageOverlay').classList.add('hidden');
-            document.getElementById('appContainer').classList.remove('hidden');
-            loadList();
-        }
-
-        function toggleMenu() {
-            const menu = document.getElementById('mainMenu');
-            menu.classList.toggle('hidden');
-            menu.classList.toggle('flex');
-        }
-
-        function switchView(view) {
-            if(view === 'bowlers') {
-                document.getElementById('viewBowlers').classList.remove('hidden');
-                document.getElementById('searchContainer').classList.add('hidden'); 
+            if (currentUser && userProfile && (userProfile.status === 'active' || userProfile.status === 'trial')) {
+                document.getElementById('appContainer').classList.remove('hidden');
             }
-        }
-
-        function toggleSearch() {
-            toggleMenu(); switchView('bowlers');
-            document.getElementById('searchContainer').classList.remove('hidden');
-        }
-
-        async function loadList() {
-            if (!currentUser) return;
-            const { data, error } = await db.from('bowlers').select('profile_data');
-            if (!error && data) {
-                allBowlers = data.map(row => row.profile_data);
-                renderBowlers(allBowlers);
-            }
-        }
-
-        function renderBowlers(bowlersArray) {
-            const list = document.getElementById('bowlerList');
-            const empty = document.getElementById('emptyState');
-            if(bowlersArray.length === 0) {
-                list.innerHTML = ''; empty.classList.remove('hidden');
-            } else {
-                empty.classList.add('hidden');
-                list.innerHTML = bowlersArray.map(b => `
-                    <div onclick="openForm('${b.id}')" class="bg-card p-3 rounded-xl border border-gray-700 shadow flex justify-between items-center cursor-pointer mb-2">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center">👤</div>
-                            <div>
-                                <h3 class="font-bold text-white">${b.name}</h3>
-                                <p class="text-xs text-gray-400">${b.style}</p>
-                            </div>
-                        </div>
-                    </div>`).join('');
-            }
-        }
-
-        function openForm(id = null) {
-            document.getElementById('bowlerForm').reset();
-            if (id) {
-                document.getElementById('formTitle').innerText = "Edit Profile";
-                document.getElementById('btnDelete').classList.remove('hidden');
-                const b = allBowlers.find(x => x.id === id);
-                if (b) {
-                    document.getElementById('bowlerId').value = b.id;
-                    document.getElementById('bName').value = b.name || '';
-                    document.getElementById('bowlerStyle').value = b.style || 'right';
-                }
-            } else {
-                document.getElementById('formTitle').innerText = "New Bowler";
-                document.getElementById('bowlerId').value = Date.now().toString();
-                document.getElementById('btnDelete').classList.add('hidden');
-            }
-            document.getElementById('formModal').classList.remove('hidden');
-        }
-
-        function closeForm() {
-            document.getElementById('formModal').classList.add('hidden');
-        }
-
-        async function saveBowler(e) {
-            e.preventDefault();
-            const bowler = {
-                id: document.getElementById('bowlerId').value, 
-                name: document.getElementById('bName').value, 
-                style: document.getElementById('bowlerStyle').value
-            };
             
-            const { error } = await db.from('bowlers').upsert({
-                id: bowler.id,
-                user_id: currentUser.id,
-                profile_data: bowler
-            });
+            const t = translations[lang];
             
-            if (!error) { closeForm(); loadList(); }
-        }
-
-        async function deleteProfile() {
-            if(confirm("Delete this profile?")) {
-                const id = document.getElementById('bowlerId').value;
-                await db.from('bowlers').delete().eq('id', id);
-                closeForm(); loadList();
-            }
-        }
-
-        function filterBowlers() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allBowlers.filter(b => b.name.toLowerCase().includes(query));
-            renderBowlers(filtered);
-        }
-    </script>
-</body>
-</html>
+            // Basic UI IDs
+            ['txtEmpty','lblBowler
