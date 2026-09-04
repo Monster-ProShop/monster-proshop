@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ProDrill OS - Monster ProShop</title>
+    <title>ProDrill OS</title>
     
     <meta name="theme-color" content="#0B0F19">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="ProDrill OS">
     <link rel="manifest" href="manifest.json" id="manifest">
     
-    <!-- Dynamic SVG Favicon & iOS Home Screen Icon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><polygon points='50,10 85,30 85,70 50,90 15,70 15,30' fill='none' stroke='%2338BDF8' stroke-width='3'/><polyline points='15,30 50,50 85,30' fill='none' stroke='%2338BDF8' stroke-width='3'/><line x1='50' y1='50' x2='50' y2='90' stroke='%2338BDF8' stroke-width='3'/><circle cx='50' cy='50' r='20' fill='%239CA3AF'/><path d='M 50,30 A 20,20 0 0,1 70,50 L 58,50 A 8,8 0 0,0 50,42 Z' fill='%234B5563'/></svg>">
+    <!-- Updated Favicon & iOS Home Screen Icon -->
+    <link rel="icon" type="image/png" href="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png">
+    <link rel="apple-touch-icon" href="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png">
     
     <!-- ProDrill OS Tech Font -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -51,23 +52,8 @@
 <body class="bg-dark text-gray-200 font-sans antialiased pb-20 overflow-x-hidden">
 
     <!-- Auth / Login Screen -->
-    <div id="authScreen" class="fixed inset-0 bg-dark z-50 flex flex-col items-center justify-center p-6">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="h-24 w-auto mb-4">
-            <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="#38BDF8" stroke-width="2"/>
-            <polyline points="15,30 50,50 85,30" fill="none" stroke="#38BDF8" stroke-width="2"/>
-            <line x1="50" y1="50" x2="50" y2="90" stroke="#38BDF8" stroke-width="2"/>
-            <line x1="32.5" y1="20" x2="32.5" y2="60" stroke="#38BDF8" stroke-width="0.5" opacity="0.5"/>
-            <line x1="67.5" y1="20" x2="67.5" y2="60" stroke="#38BDF8" stroke-width="0.5" opacity="0.5"/>
-            <circle cx="50" cy="50" r="22" fill="url(#sphereGrad)"/>
-            <path d="M 50,28 A 22,22 0 0,1 72,50 L 60,50 A 10,10 0 0,0 50,40 Z" fill="#4B5563"/>
-            <path d="M 50,40 L 60,50 L 60,60 L 50,50 Z" fill="#374151"/>
-            <defs>
-                <radialGradient id="sphereGrad" cx="30%" cy="30%" r="70%">
-                    <stop offset="0%" stop-color="#D1D5DB"/>
-                    <stop offset="100%" stop-color="#4B5563"/>
-                </radialGradient>
-            </defs>
-        </svg>
+    <div id="authScreen" class="fixed inset-0 bg-dark z-50 hidden flex flex-col items-center justify-center p-6">
+        <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" alt="ProDrill OS Logo" class="h-32 w-32 md:h-40 md:w-40 object-cover mb-4 rounded-2xl border border-primary/30 shadow-[0_0_20px_rgba(56,189,248,0.2)]">
         <h1 class="text-3xl font-black text-white tracking-widest mb-1">ProDrill <span class="text-primary">OS</span></h1>
         <p class="text-gray-400 mb-8 text-center text-sm uppercase tracking-widest">Core Layout Matrix</p>
         
@@ -76,18 +62,18 @@
             
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-primary mb-1 uppercase tracking-wide">Terminal Access (Email)</label>
-                    <input type="email" id="authEmail" class="pitch-input w-full font-sans" placeholder="driller@prodrillos.com">
+                    <label id="lblAuthEmail" class="block text-xs font-bold text-primary mb-1 uppercase tracking-wide">Terminal Access (Email)</label>
+                    <input type="email" id="authEmail" class="pitch-input w-full font-sans" placeholder="driller@prodrillos.com" autocomplete="username">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-primary mb-1 uppercase tracking-wide">Security Key</label>
-                    <input type="password" id="authPassword" class="pitch-input w-full font-sans" placeholder="••••••••">
-                    <p class="text-[10px] text-gray-500 mt-1">8-16 chars, 1 upper, 1 num required</p>
+                    <label id="lblAuthPassword" class="block text-xs font-bold text-primary mb-1 uppercase tracking-wide">Security Key</label>
+                    <input type="password" id="authPassword" class="pitch-input w-full font-sans" placeholder="••••••••" autocomplete="current-password">
+                    <p id="txtAuthPasswordHint" class="text-[10px] text-gray-500 mt-1">8-16 chars, 1 upper, 1 num required</p>
                 </div>
                 
                 <div class="pt-2 space-y-3">
-                    <button onclick="handleLogin()" class="w-full bg-primary hover:bg-primaryHover text-dark font-black py-3 rounded transition tracking-widest">INITIALIZE</button>
-                    <button onclick="handleRegister()" class="w-full bg-transparent border border-gray-600 hover:border-primary text-white font-bold py-3 rounded transition tracking-wider text-sm">REQUEST ACCESS</button>
+                    <button type="button" id="btnInitialize" onclick="handleLogin()" class="w-full bg-primary hover:bg-primaryHover text-dark font-black py-3 rounded transition tracking-widest">INITIALIZE</button>
+                    <button type="button" id="btnRequestAccess" onclick="handleRegister()" class="w-full bg-transparent border border-gray-600 hover:border-primary text-white font-bold py-3 rounded transition tracking-wider text-sm">REQUEST ACCESS</button>
                 </div>
             </div>
         </div>
@@ -97,12 +83,12 @@
     <div id="pendingScreen" class="fixed inset-0 bg-dark z-50 hidden flex-col items-center justify-center p-6 text-center">
         <svg class="w-20 h-20 text-yellow-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <h2 class="text-2xl font-black text-white mb-2">Awaiting Approval</h2>
-        <p class="text-gray-400 mb-8 max-w-xs">Your registration has been sent to Monster ProShop. You will be granted access once approved by the administrator.</p>
+        <p class="text-gray-400 mb-8 max-w-xs">Your registration has been sent to Pro Drill OS. You will be granted access once approved by the administrator. If you do not see the email in your Inbox, make sure you check you SPAM folder.</p>
         <button onclick="signOut()" class="bg-card border border-gray-700 hover:bg-gray-800 text-white font-bold px-6 py-3 rounded transition">Sign Out</button>
     </div>
 
     <!-- Language Selection Overlay -->
-    <div id="languageOverlay" class="fixed inset-0 bg-dark z-40 hidden flex-col items-center justify-center p-6">
+    <div id="languageOverlay" class="fixed inset-0 bg-dark z-[60] flex flex-col items-center justify-center p-6">
         <h1 class="text-2xl font-black text-white mb-6 tracking-wide text-center">Select Language<br><span class="text-lg text-gray-400">Selecciona el Idioma</span></h1>
         <div class="flex flex-col gap-4 w-full max-w-xs">
             <button onclick="setLanguage('en')" class="bg-primary text-dark font-bold py-4 rounded-xl text-lg shadow-lg">English</button>
@@ -114,15 +100,10 @@
     <div id="appContainer" class="hidden">
         <header class="bg-card border-b border-gray-800 sticky top-0 z-30 px-4 py-3 shadow-lg flex justify-between items-center relative">
             <div class="flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="h-10 w-10">
-                    <polygon points="50,10 85,30 85,70 50,90 15,70 15,30" fill="none" stroke="#38BDF8" stroke-width="3"/>
-                    <polyline points="15,30 50,50 85,30" fill="none" stroke="#38BDF8" stroke-width="3"/>
-                    <line x1="50" y1="50" x2="50" y2="90" stroke="#38BDF8" stroke-width="3"/>
-                    <circle cx="50" cy="50" r="18" fill="#9CA3AF"/>
-                    <path d="M 50,32 A 18,18 0 0,1 68,50 L 58,50 A 8,8 0 0,0 50,42 Z" fill="#4B5563"/>
-                </svg>
+                <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" alt="Logo" class="h-10 w-10 object-cover rounded-lg border border-primary/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]">
                 <div class="leading-none">
-                    <div class="text-xl font-black text-white tracking-widest">ProDrill<span class="text-primary">OS</span></div>
+                    <!-- Top Left Logo Text -->
+                    <div class="text-xl font-black text-white tracking-widest">ProDrill<span class="text-primary">_OS</span></div>
                 </div>
             </div>
             
@@ -133,12 +114,15 @@
             <div id="mainMenu" class="absolute top-16 right-4 bg-gray-900 border border-primary/30 rounded-lg shadow-2xl hidden flex-col w-56 overflow-hidden z-40">
                 <button onclick="switchView('bowlers'); toggleMenu();" id="btnMenuBowlers" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🎳 Matrix Registry</button>
                 <button onclick="toggleSearch()" id="btnMenuSearch" class="text-left px-4 py-3 text-sm font-bold text-white hover:bg-gray-800 border-b border-gray-800">🔍 Search</button>
+                <button onclick="switchView('admin'); toggleMenu();" id="btnMenuAdmin" class="hidden text-left px-4 py-3 text-sm font-bold text-primary hover:bg-gray-800 border-b border-gray-800">⚙️ Admin Dashboard</button>
                 <button onclick="showLanguageScreen()" id="btnMenuLang" class="text-left px-4 py-3 text-sm font-bold text-white border-b border-gray-800 hover:bg-gray-800">🌐 Localization</button>
                 <button onclick="signOut()" id="btnMenuSignOut" class="text-left px-4 py-3 text-sm font-bold text-red-400 hover:bg-gray-800">🚪 Terminate Session</button>
             </div>
         </header>
 
         <main class="w-full max-w-lg mx-auto" id="mainContentView">
+            
+            <!-- Standard Bowlers View -->
             <div id="viewBowlers" class="p-4 block">
                 <div class="flex justify-end mb-4 relative z-20">
                     <button onclick="openForm()" class="bg-blue-600 hover:bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center text-2xl shadow-lg border-2 border-blue-400">+</button>
@@ -155,6 +139,54 @@
                     <p id="txtEmpty">No bowlers found.<br>Tap the + button to create a profile.</p>
                 </div>
             </div>
+
+            <!-- Admin Terminal View -->
+            <div id="viewAdmin" class="p-4 hidden">
+                <h2 id="lblAdminTerminal" class="text-2xl font-black text-primary mb-4 tracking-widest">ADMIN DASHBOARD</h2>
+                
+                <!-- Active Count -->
+                <div class="bg-card p-4 rounded-xl mb-4 border border-gray-700 flex justify-between items-center shadow-[0_0_10px_rgba(56,189,248,0.1)]">
+                    <h3 id="lblAdminActive" class="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Active Users</h3>
+                    <div id="adminActiveCount" class="text-3xl font-black text-primary">0</div>
+                </div>
+
+                <!-- Pending Requests -->
+                <div class="bg-card p-4 rounded-xl mb-4 border border-gray-700">
+                    <h3 id="lblAdminPending" class="text-sm font-bold text-yellow-400 mb-3 uppercase tracking-wider">Pending Requests</h3>
+                    <div id="adminPendingList" class="space-y-2">
+                        <!-- Pending users injected here -->
+                    </div>
+                </div>
+
+                <!-- New Users Filter -->
+                <div class="bg-card p-4 rounded-xl mb-4 border border-gray-700">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 id="lblAdminNewUsers" class="text-sm font-bold text-white uppercase tracking-wider">New Users</h3>
+                        <select id="adminNewFilter" onchange="renderAdminNewUsers()" class="pitch-input w-auto text-xs py-1 font-bold">
+                            <option value="week" id="optFltWeek">Past Week</option>
+                            <option value="month" id="optFltMonth">Past Month</option>
+                            <option value="quarter" id="optFltQuarter">Past Quarter</option>
+                            <option value="semester" id="optFltSemester">Past 6 Months</option>
+                            <option value="year" id="optFltYear">Past Year</option>
+                        </select>
+                    </div>
+                    <div id="adminNewList" class="space-y-2 max-h-40 overflow-y-auto">
+                        <!-- New users injected here -->
+                    </div>
+                </div>
+
+                <!-- Activity Tracking -->
+                <div class="bg-card p-4 rounded-xl border border-gray-700">
+                    <h3 id="lblAdminMonitor" class="text-sm font-bold text-white mb-2 uppercase tracking-wider border-b border-gray-800 pb-2">Inactivity Monitor</h3>
+                    
+                    <h4 id="lblAdminWarn" class="text-xs font-bold text-yellow-500 mt-3 mb-1 uppercase tracking-widest">7 - 21 Days (Warning)</h4>
+                    <div id="adminInactiveWarning" class="space-y-1 mb-3 bg-gray-900 p-2 rounded"></div>
+                    
+                    <h4 id="lblAdminCrit" class="text-xs font-bold text-red-500 mt-2 mb-1 uppercase tracking-widest">> 21 Days (Critical)</h4>
+                    <div id="adminInactiveCritical" class="space-y-1 bg-gray-900 p-2 rounded"></div>
+                </div>
+            </div>
+
         </main>
 
         <button onclick="openLayoutModal()" class="fixed bottom-6 right-6 w-14 h-14 bg-red-600 hover:bg-red-500 rounded-full shadow-[0_0_15px_rgba(239,68,68,0.5)] flex items-center justify-center z-30 transition-transform active:scale-95 border border-red-400">
@@ -175,7 +207,7 @@
             </div>
             <div style="text-align: right;">
                 <div style="font-size: 14px; font-weight: 900; color: #000;">PRODRILL OS</div>
-                <div style="font-size: 9px; color: #666;">MONSTER PRO SHOP</div>
+                <div style="font-size: 9px; color: #666;">PRO DRILL OS</div>
             </div>
         </div>
 
@@ -417,7 +449,7 @@
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-3 shadow-[0_0_10px_rgba(56,189,248,0.1)]">
                 <div class="flex items-center justify-between mb-2 border-b border-gray-700 pb-2">
                     <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-5 h-5"><circle cx="40" cy="30" r="7" fill="#38BDF8"/><circle cx="60" cy="25" r="7" fill="#38BDF8"/><circle cx="50" cy="55" r="9" fill="#38BDF8"/></svg>
+                        <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" alt="Icon" class="w-5 h-5 rounded">
                         <label id="lblProfileLayout" class="block text-xs font-bold text-primary uppercase">Ball Layout</label>
                     </div>
                 </div>
@@ -557,37 +589,79 @@
 
         let currentUser = null;
         let userProfile = null;
+        let currentLang = localStorage.getItem('bsv_lang') || 'en';
         let allBowlers = [];
+        let systemUsersData = [];
 
         // Auth Listeners & Gatekeeping
         db.auth.onAuthStateChange(async (event, session) => {
+            const auth = document.getElementById('authScreen');
+            const lang = document.getElementById('languageOverlay');
+            const app = document.getElementById('appContainer');
+            const pending = document.getElementById('pendingScreen');
+            const btnAdmin = document.getElementById('btnMenuAdmin');
+
             if (session) {
                 currentUser = session.user;
+                
+                // Track user activity timestamp on login
+                if (event === 'SIGNED_IN') {
+                    await db.from('user_profiles').update({ last_sign_in_at: new Date().toISOString() }).eq('id', currentUser.id);
+                }
+
                 const { data } = await db.from('user_profiles').select('*').eq('id', currentUser.id).single();
                 userProfile = data;
+
+                auth.classList.add('hidden');
+
+                const isAdmin = (userProfile && userProfile.is_admin) || (currentUser.email === 'monsterproshop@outlook.com');
                 
-                document.getElementById('authScreen').classList.add('hidden');
-                
-                if (userProfile && userProfile.status === 'pending' && !userProfile.is_admin) {
-                    document.getElementById('pendingScreen').classList.remove('hidden');
-                    document.getElementById('appContainer').classList.add('hidden');
+                if (isAdmin) {
+                    btnAdmin.classList.remove('hidden');
                 } else {
-                    document.getElementById('pendingScreen').classList.add('hidden');
-                    let savedLang = localStorage.getItem('bsv_lang');
+                    btnAdmin.classList.add('hidden');
+                }
+
+                if (userProfile && userProfile.status === 'pending' && !isAdmin) {
+                    lang.classList.add('hidden');
+                    pending.classList.remove('hidden');
+                    app.classList.add('hidden');
+                } else {
+                    pending.classList.add('hidden');
+                    const savedLang = localStorage.getItem('bsv_lang');
                     if (!savedLang) {
-                        document.getElementById('languageOverlay').classList.remove('hidden');
+                        lang.classList.remove('hidden');
+                        app.classList.add('hidden');
                     } else {
                         setLanguage(savedLang);
-                        document.getElementById('appContainer').classList.remove('hidden');
+                        app.classList.remove('hidden');
+                        
+                        // Admin Default Screen Routing
+                        if (isAdmin) {
+                            switchView('admin');
+                        } else {
+                            switchView('bowlers');
+                        }
+                        
                         loadList();
                     }
                 }
             } else {
                 currentUser = null;
                 userProfile = null;
-                document.getElementById('authScreen').classList.remove('hidden');
-                document.getElementById('appContainer').classList.add('hidden');
-                document.getElementById('pendingScreen').classList.add('hidden');
+                app.classList.add('hidden');
+                pending.classList.add('hidden');
+                btnAdmin.classList.add('hidden');
+
+                const savedLang = localStorage.getItem('bsv_lang');
+                if (savedLang) {
+                    setLanguage(savedLang);
+                    lang.classList.add('hidden');
+                    auth.classList.remove('hidden');
+                } else {
+                    auth.classList.add('hidden');
+                    lang.classList.remove('hidden');
+                }
             }
         });
 
@@ -595,19 +669,10 @@
         function showAuthMessage(msg, type = 'error') {
             const el = document.getElementById('authAlert');
             el.innerText = msg;
-            
-            // Reset baseline classes
             el.className = 'mb-4 text-xs font-bold p-3 rounded border font-sans';
-            
-            // Apply dynamic colors
-            if (type === 'error') {
-                el.classList.add('bg-red-900/50', 'text-red-400', 'border-red-800');
-            } else if (type === 'success') {
-                el.classList.add('bg-green-900/50', 'text-green-400', 'border-green-800');
-            } else if (type === 'warning') {
-                el.classList.add('bg-yellow-900/50', 'text-yellow-400', 'border-yellow-800');
-            }
-            
+            if (type === 'error') { el.classList.add('bg-red-900/50', 'text-red-400', 'border-red-800'); } 
+            else if (type === 'success') { el.classList.add('bg-green-900/50', 'text-green-400', 'border-green-800'); } 
+            else if (type === 'warning') { el.classList.add('bg-yellow-900/50', 'text-yellow-400', 'border-yellow-800'); }
             el.classList.remove('hidden');
         }
 
@@ -616,18 +681,42 @@
             return regex.test(pwd);
         }
 
+        let loginInProgress = false;
+
         async function handleLogin() {
-            const email = document.getElementById('authEmail').value;
+            if (loginInProgress) return;
+            const email = document.getElementById('authEmail').value.trim();
             const password = document.getElementById('authPassword').value;
-            
-            const { error } = await db.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                showAuthMessage(error.message, 'error');
-            } else {
-                showAuthMessage("Login successful! Loading vault...", 'success');
+
+            if (!email || !password) {
+                showAuthMessage(currentLang === 'es' ? 'Ingresa tu correo y contraseña.' : 'Enter your email and password.', 'error');
+                return;
+            }
+
+            loginInProgress = true;
+            const btn = document.getElementById('btnInitialize');
+            btn.disabled = true;
+            btn.classList.add('opacity-60', 'cursor-wait');
+
+            try {
+                const { error } = await db.auth.signInWithPassword({ email, password });
+                if (error) { showAuthMessage(error.message, 'error'); } 
+                else { showAuthMessage(currentLang === 'es' ? '¡Inicio de sesión correcto! Cargando...' : 'Login successful! Loading vault...', 'success'); }
+            } finally {
+                loginInProgress = false;
+                btn.disabled = false;
+                btn.classList.remove('opacity-60', 'cursor-wait');
             }
         }
+
+        ['authEmail', 'authPassword'].forEach(id => {
+            document.getElementById(id).addEventListener('keydown', event => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    handleLogin();
+                }
+            });
+        });
 
         async function handleRegister() {
             const email = document.getElementById('authEmail').value;
@@ -639,12 +728,8 @@
             }
 
             const { error } = await db.auth.signUp({ email, password });
-            
-            if (error) {
-                showAuthMessage(error.message, 'error');
-            } else {
-                showAuthMessage("Success! Check your email to confirm registration.", 'warning');
-            }
+            if (error) { showAuthMessage(error.message, 'error'); } 
+            else { showAuthMessage("Success! Check your email to confirm registration.", 'warning'); }
         }
 
         async function signOut() {
@@ -653,7 +738,6 @@
 
         // Setup Arrays & UI elements
         const fractionsArr = ['','1/16','1/8','3/16','1/4','5/16','3/8','7/16','1/2','9/16','5/8','11/16','3/4','13/16','7/8','15/16'];
-        
         let pitchOptions = '<option value="0">0</option>';
         for(let whole = 0; whole <= 2; whole++) {
             for(let frac of fractionsArr) {
@@ -694,7 +778,7 @@
         // Translations & UI
         const translations = {
             en: {
-                txtHeaderVault: "BOWLER SPECS VAULT", txtEmpty: "No bowlers found.<br>Tap the + button to create a profile.",
+                authEmailLabel: "Terminal Access (Email)", authPasswordLabel: "Security Key", authPasswordHint: "8-16 chars, 1 upper, 1 num required", authInitialize: "INITIALIZE", authRequest: "REQUEST ACCESS", txtHeaderVault: "BOWLER SPECS VAULT", txtEmpty: "No bowlers found.<br>Tap the + button to create a profile.",
                 formTitleNew: "New Bowler", formTitleEdit: "Edit Profile", lblBowlerName: "Bowler Name", lblBowlingStyle: "Bowling Style",
                 optStyleRight: "Right Handed (1-Hand)", optStyleLeft: "Left Handed (1-Hand)", optStyleNoThumb: "No Thumb (2-Handed)",
                 optPapRight: "→ R", optPapLeft: "← L", optPapUp: "↑ Up", optPapDown: "↓ Dn",
@@ -716,10 +800,12 @@
                 lblOutDrill: "Drilling Angle", lblOutPin: "Pin to PAP", lblOutVal: "VAL Angle", lblOutSum: "Total Sum of Angles", lblOutFinal: "Final Layout",
                 lblPinPAP: "Pin to PAP", lblPSAPAP: "PSA to PAP", lblPinBuffer: "Pin Buffer", lblPinCG: "Pin to CG", lblOut1: "Drilling Angle", lblOut2: "Pin to PAP", lblOut3: "VAL Angle",
                 optAsym: "Asymmetric", optSym: "Symmetric", optProfAsym: "Asymmetric", optProfSym: "Symmetric",
-                lblProfileLayout: "Ball Layout", btnGenLayoutProfile: "GET LAYOUT", alertStatsReq: "Please enter Speed, Revs, Tilt, and Rotation in Stats first."
+                lblProfileLayout: "Ball Layout", btnGenLayoutProfile: "GET LAYOUT", alertStatsReq: "Please enter Speed, Revs, Tilt, and Rotation in Stats first.",
+                menuAdmin: "⚙️ Admin Dashboard", lblAdminTerminal: "ADMIN DASHBOARD", lblAdminActive: "Total Active Users", lblAdminPending: "Pending Requests", lblAdminNewUsers: "New Users",
+                lblAdminMonitor: "Inactivity Monitor", lblAdminWarn: "7 - 21 Days (Warning)", lblAdminCrit: "> 21 Days (Critical)", optFltWeek: "Past Week", optFltMonth: "Past Month", optFltQuarter: "Past Quarter", optFltSemester: "Past 6 Months", optFltYear: "Past Year", adminBtnYes: "YES", adminBtnNo: "NO"
             },
             es: {
-                txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón + para crear un perfil.",
+                authEmailLabel: "Acceso al Terminal (Correo)", authPasswordLabel: "Clave de Seguridad", authPasswordHint: "8-16 caracteres, 1 mayúscula y 1 número", authInitialize: "INICIALIZAR", authRequest: "SOLICITAR ACCESO", txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón + para crear un perfil.",
                 formTitleNew: "Nuevo Jugador", formTitleEdit: "Editar Perfil", lblBowlerName: "Nombre del Jugador", lblBowlingStyle: "Estilo de Juego",
                 optStyleRight: "Diestro (1 Mano)", optStyleLeft: "Zurdo (1 Mano)", optStyleNoThumb: "Sin Pulgar (2 Manos)",
                 optPapRight: "→ Der", optPapLeft: "← Izq", optPapUp: "↑ Arr", optPapDown: "↓ Aba",
@@ -741,7 +827,9 @@
                 lblOutDrill: "Ángulo de Perforación", lblOutPin: "Distancia Pin a PAP", lblOutVal: "Ángulo VAL", lblOutSum: "Suma Total de Ángulos", lblOutFinal: "Diseño Final",
                 lblPinPAP: "Pin a PAP", lblPSAPAP: "PSA a PAP", lblPinBuffer: "Pin Buffer", lblPinCG: "Pin a CG", lblOut1: "Ángulo de Perforación", lblOut2: "Distancia Pin a PAP", lblOut3: "Ángulo VAL",
                 optAsym: "Asimétrica", optSym: "Simétrica", optProfAsym: "Asimétrica", optProfSym: "Simétrica",
-                lblProfileLayout: "Recomendador de Layouts", btnGenLayoutProfile: "OBTENER LAYOUT", alertStatsReq: "Por favor ingresa Velocidad, Revs, Tilt y Rotación en Estadísticas primero."
+                lblProfileLayout: "Recomendador de Layouts", btnGenLayoutProfile: "OBTENER LAYOUT", alertStatsReq: "Por favor ingresa Velocidad, Revs, Tilt y Rotación en Estadísticas primero.",
+                menuAdmin: "⚙️ Panel de Admin", lblAdminTerminal: "PANEL DE ADMIN", lblAdminActive: "Usuarios Activos", lblAdminPending: "Solicitudes Pendientes", lblAdminNewUsers: "Nuevos Usuarios",
+                lblAdminMonitor: "Monitor de Inactividad", lblAdminWarn: "7 - 21 Días (Advertencia)", lblAdminCrit: "> 21 Días (Crítico)", optFltWeek: "Última Semana", optFltMonth: "Último Mes", optFltQuarter: "Último Trimestre", optFltSemester: "Últimos 6 Meses", optFltYear: "Último Año", adminBtnYes: "SÍ", adminBtnNo: "NO"
             }
         };
 
@@ -749,21 +837,30 @@
             currentLang = lang;
             localStorage.setItem('bsv_lang', lang);
             document.getElementById('languageOverlay').classList.add('hidden');
-            if (currentUser && userProfile && (userProfile.status === 'active' || userProfile.status === 'trial')) {
+            const isAdmin = (userProfile && userProfile.is_admin) || (currentUser && currentUser.email === 'monsterproshop@outlook.com');
+            
+            if (currentUser && userProfile && (userProfile.status === 'active' || userProfile.status === 'trial' || isAdmin)) {
                 document.getElementById('appContainer').classList.remove('hidden');
             }
             
             const t = translations[lang];
+
+            if(document.getElementById('lblAuthEmail')) document.getElementById('lblAuthEmail').innerText = t.authEmailLabel;
+            if(document.getElementById('lblAuthPassword')) document.getElementById('lblAuthPassword').innerText = t.authPasswordLabel;
+            if(document.getElementById('txtAuthPasswordHint')) document.getElementById('txtAuthPasswordHint').innerText = t.authPasswordHint;
+            if(document.getElementById('btnInitialize')) document.getElementById('btnInitialize').innerText = t.authInitialize;
+            if(document.getElementById('btnRequestAccess')) document.getElementById('btnRequestAccess').innerText = t.authRequest;
+
+            if (!currentUser) { document.getElementById('authScreen').classList.remove('hidden'); }
             
-            // Array of basic UI IDs to translate automatically
-            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS'].forEach(id => {
+            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS', 'lblAdminTerminal', 'lblAdminActive', 'lblAdminPending', 'lblAdminNewUsers', 'lblAdminMonitor', 'lblAdminWarn', 'lblAdminCrit', 'optFltWeek', 'optFltMonth', 'optFltQuarter', 'optFltSemester', 'optFltYear'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
-            // Manually map the menu buttons to prevent 'undefined' errors
             if(document.getElementById('btnMenuBowlers')) document.getElementById('btnMenuBowlers').innerHTML = t.menuBowlers;
             if(document.getElementById('btnMenuSearch')) document.getElementById('btnMenuSearch').innerHTML = t.menuSearch;
             if(document.getElementById('btnMenuLang')) document.getElementById('btnMenuLang').innerHTML = t.menuLang;
+            if(document.getElementById('btnMenuAdmin')) document.getElementById('btnMenuAdmin').innerHTML = t.menuAdmin;
             
             document.getElementById('searchInput').placeholder = t.searchPh;
             document.getElementById('statRevs').placeholder = t.statRevs;
@@ -777,7 +874,10 @@
                 let val = el.value; el.innerHTML = `<option value="←">${t.dirXLeft}</option><option value="→">${t.dirXRight}</option>`; el.value = val || '←';
             });
             
-            loadList(); 
+            if (currentUser) {
+                loadList();
+                if(!document.getElementById('viewAdmin').classList.contains('hidden')) loadAdminDashboard();
+            }
             calculateLayout();
         }
 
@@ -785,6 +885,7 @@
             toggleMenu();
             document.getElementById('languageOverlay').classList.remove('hidden');
             document.getElementById('appContainer').classList.add('hidden');
+            document.getElementById('authScreen').classList.add('hidden');
         }
 
         function toggleMenu() {
@@ -794,9 +895,15 @@
         }
 
         function switchView(view) {
+            document.getElementById('viewBowlers').classList.add('hidden');
+            document.getElementById('viewAdmin').classList.add('hidden');
+            document.getElementById('searchContainer').classList.add('hidden');
+
             if(view === 'bowlers') {
                 document.getElementById('viewBowlers').classList.remove('hidden');
-                document.getElementById('searchContainer').classList.add('hidden'); 
+            } else if (view === 'admin') {
+                document.getElementById('viewAdmin').classList.remove('hidden');
+                loadAdminDashboard();
             }
         }
 
@@ -806,6 +913,118 @@
             document.getElementById('searchContainer').classList.remove('hidden');
             document.getElementById('searchInput').focus();
         }
+
+        /* --- Admin Terminal Functions --- */
+        async function loadAdminDashboard() {
+            const { data, error } = await db.from('user_profiles').select('*');
+            if (data && !error) {
+                systemUsersData = data;
+                renderAdminStats();
+                renderAdminNewUsers();
+            }
+        }
+
+        async function pushUserApproval(userId) {
+            const { error } = await db.from('user_profiles').update({ status: 'active' }).eq('id', userId);
+            if (!error) {
+                loadAdminDashboard();
+            } else {
+                alert(error.message);
+            }
+        }
+
+        async function rejectUserApproval(userId) {
+            if(confirm(currentLang === 'es' ? '¿Rechazar esta solicitud?' : 'Reject this request?')) {
+                const { error } = await db.from('user_profiles').update({ status: 'rejected' }).eq('id', userId);
+                if (!error) {
+                    loadAdminDashboard();
+                } else {
+                    alert(error.message);
+                }
+            }
+        }
+
+        function renderAdminStats() {
+            const pendingList = document.getElementById('adminPendingList');
+            const warnList = document.getElementById('adminInactiveWarning');
+            const critList = document.getElementById('adminInactiveCritical');
+            const btnYes = translations[currentLang].adminBtnYes || "YES";
+            const btnNo = translations[currentLang].adminBtnNo || "NO";
+            
+            let activeCount = 0;
+            let pendingHTML = "";
+            let warnHTML = "";
+            let critHTML = "";
+
+            const now = new Date();
+
+            systemUsersData.forEach(u => {
+                const identifier = u.email || (u.id ? u.id.split('-')[0] : 'Unknown User');
+                
+                if (u.status === 'pending') {
+                    pendingHTML += `
+                        <div class="flex flex-col sm:flex-row justify-between items-center bg-gray-900 p-3 rounded border border-yellow-900/50 mb-2 gap-3 sm:gap-0">
+                            <span class="text-sm font-bold text-gray-300 font-sans truncate pr-2">${identifier}</span>
+                            <div class="flex gap-2 w-full sm:w-auto">
+                                <button onclick="pushUserApproval('${u.id}')" class="flex-1 sm:flex-none bg-green-600 hover:bg-green-500 text-white font-black text-xs px-4 py-2 rounded tracking-widest transition shadow">${btnYes}</button>
+                                <button onclick="rejectUserApproval('${u.id}')" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-500 text-white font-black text-xs px-4 py-2 rounded tracking-widest transition shadow">${btnNo}</button>
+                            </div>
+                        </div>`;
+                } else if (u.status === 'active' || u.status === 'trial') {
+                    activeCount++;
+                    
+                    const lastSeen = u.last_sign_in_at ? new Date(u.last_sign_in_at) : (u.created_at ? new Date(u.created_at) : new Date());
+                    const diffDays = (now - lastSeen) / (1000 * 60 * 60 * 24);
+                    
+                    if (diffDays > 21) {
+                        critHTML += `<div class="text-sm text-gray-400 flex justify-between border-b border-gray-800 pb-1 mb-1"><span>${identifier}</span> <span class="text-red-500 font-bold">${Math.floor(diffDays)}d</span></div>`;
+                    } else if (diffDays > 7) {
+                        warnHTML += `<div class="text-sm text-gray-400 flex justify-between border-b border-gray-800 pb-1 mb-1"><span>${identifier}</span> <span class="text-yellow-500 font-bold">${Math.floor(diffDays)}d</span></div>`;
+                    }
+                }
+            });
+
+            document.getElementById('adminActiveCount').innerText = activeCount;
+            pendingList.innerHTML = pendingHTML || `<div class="text-sm text-gray-500 italic">No pending requests.</div>`;
+            warnList.innerHTML = warnHTML || `<div class="text-xs text-gray-500">System Nominal.</div>`;
+            critList.innerHTML = critHTML || `<div class="text-xs text-gray-500">System Nominal.</div>`;
+        }
+
+        function renderAdminNewUsers() {
+            const filter = document.getElementById('adminNewFilter').value;
+            const list = document.getElementById('adminNewList');
+            const now = new Date();
+            let days = 7;
+            
+            if (filter === 'month') days = 30;
+            else if (filter === 'quarter') days = 90;
+            else if (filter === 'semester') days = 180;
+            else if (filter === 'year') days = 365;
+
+            const cutoff = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000));
+            
+            const newUsers = systemUsersData.filter(u => {
+                if(!u.created_at) return false;
+                return new Date(u.created_at) >= cutoff;
+            });
+
+            if (newUsers.length === 0) {
+                list.innerHTML = `<div class="text-sm text-gray-500 italic">No new users in this timeframe.</div>`;
+                return;
+            }
+
+            list.innerHTML = newUsers.map(u => {
+                const dateStr = new Date(u.created_at).toLocaleDateString();
+                const identifier = u.email || (u.id ? u.id.split('-')[0] : 'Unknown');
+                let statusColor = u.status === 'active' ? 'text-primary' : (u.status === 'pending' ? 'text-yellow-400' : 'text-gray-500');
+                return `<div class="flex justify-between items-center bg-gray-900 p-2 rounded border border-gray-800 mb-1">
+                            <div class="text-xs font-bold text-gray-300 truncate">${identifier}</div>
+                            <div class="text-[10px] ${statusColor} uppercase tracking-wider">${dateStr}</div>
+                        </div>`;
+            }).join('');
+        }
+
+        /* --- End Admin Functions --- */
 
         function openLayoutModal() {
             document.getElementById('layoutModal').classList.remove('hidden');
@@ -1304,7 +1523,6 @@
                 profilePhoto: document.getElementById('profilePhotoData').value, photo: document.getElementById('drillPhotoData').value, video: document.getElementById('videoData').value, arsenal: arsenal
             };
             
-            // Note: We deliberately omit 'user_id' here so admins can edit user profiles without claiming ownership.
             const { error } = await db.from('bowlers').upsert({
                 id: bowler.id,
                 profile_data: bowler
