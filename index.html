@@ -1462,7 +1462,16 @@
                                     ${b.phone ? `<div class="text-xs text-gray-400 mt-1 font-sans">☎ ${b.phone}</div>` : ''}
                                 </div>
                             </div>
-                            <div class="text-primary font-bold pointer-events-none font-sans">›</div>
+                            <div class="flex items-center gap-2">
+                                <button type="button"
+                                        onclick="event.stopPropagation(); generatePDF('${b.id}')"
+                                        ontouchstart="event.stopPropagation()"
+                                        ontouchend="event.stopPropagation()"
+                                        class="pointer-events-auto bg-primary hover:bg-primaryHover text-dark px-3 py-2 rounded-lg text-xs font-black tracking-wide shadow transition"
+                                        title="${currentLang === 'es' ? 'Exportar hoja de perforación en PDF' : 'Export drill sheet as PDF'}"
+                                        aria-label="${currentLang === 'es' ? 'Exportar hoja de perforación en PDF' : 'Export drill sheet as PDF'}">PDF</button>
+                                <div class="text-primary font-bold pointer-events-none font-sans">›</div>
+                            </div>
                         </div>
                     </div>`}).join('');
             }
