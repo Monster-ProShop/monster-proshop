@@ -204,6 +204,7 @@
             <div>
                 <h1 style="font-size: 22px; font-weight: 900; margin: 0; text-transform: uppercase;" id="pdfName">Bowler Name</h1>
                 <div style="font-size: 12px; font-weight: bold; color: #444; margin-top: 2px;" id="pdfStyle">Right Handed (1-Hand)</div>
+                <div style="font-size: 11px; color: #444; margin-top: 2px;"><span id="pdfPhoneLabel">Phone</span>: <span id="pdfPhone">-</span></div>
             </div>
             <div style="text-align: right;">
                 <div style="font-size: 14px; font-weight: 900; color: #000;">PRODRILL OS</div>
@@ -235,6 +236,9 @@
                     </div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
                         <span style="font-weight: bold;">Right Span:</span><span style="font-weight: bold;" id="pdfRightSpan">-</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
+                        <span style="font-weight: bold;">Thumb Fit:</span><span style="font-weight: bold;" id="pdfThumbSize">-</span>
                     </div>
                 </div>
                 <div style="background: #eee; text-align: center; padding: 6px; font-weight: 900; font-size: 11px; border: 1px solid #000; border-radius: 4px;">
@@ -408,6 +412,11 @@
                         <label id="lblBowlerName" class="block text-xs font-bold text-primary mb-1 uppercase">Bowler Name</label>
                         <input type="text" id="bName" required class="pitch-input text-lg font-bold font-sans">
                     </div>
+                </div>
+
+                <div>
+                    <label id="lblPhone" for="bPhone" class="block text-xs font-bold text-primary mb-1 uppercase">Phone</label>
+                    <input type="tel" id="bPhone" class="pitch-input font-sans" autocomplete="tel" inputmode="tel" placeholder="Phone number">
                 </div>
 
                 <div>
@@ -779,7 +788,7 @@
         const translations = {
             en: {
                 authEmailLabel: "Terminal Access (Email)", authPasswordLabel: "Security Key", authPasswordHint: "8-16 chars, 1 upper, 1 num required", authInitialize: "INITIALIZE", authRequest: "REQUEST ACCESS", txtHeaderVault: "BOWLER SPECS VAULT", txtEmpty: "No bowlers found.<br>Tap the + button to create a profile.",
-                formTitleNew: "New Bowler", formTitleEdit: "Edit Profile", lblBowlerName: "Bowler Name", lblBowlingStyle: "Bowling Style",
+                formTitleNew: "New Bowler", formTitleEdit: "Edit Profile", lblBowlerName: "Bowler Name", lblPhone: "Phone", phonePh: "Phone number", lblBowlingStyle: "Bowling Style",
                 optStyleRight: "Right Handed (1-Hand)", optStyleLeft: "Left Handed (1-Hand)", optStyleNoThumb: "No Thumb (2-Handed)",
                 optPapRight: "→ R", optPapLeft: "← L", optPapUp: "↑ Up", optPapDown: "↓ Dn",
                 lblStats: "Stats (Speed, Revs, Tilt, Rot)", statRevs: "Revs (RPM)", statAvg: "League Average", statSpeed: "Speed (MPH)",
@@ -806,7 +815,7 @@
             },
             es: {
                 authEmailLabel: "Acceso al Terminal (Correo)", authPasswordLabel: "Clave de Seguridad", authPasswordHint: "8-16 caracteres, 1 mayúscula y 1 número", authInitialize: "INICIALIZAR", authRequest: "SOLICITAR ACCESO", txtHeaderVault: "BÓVEDA DE MEDIDAS", txtEmpty: "No se encontraron jugadores.<br>Toca el botón + para crear un perfil.",
-                formTitleNew: "Nuevo Jugador", formTitleEdit: "Editar Perfil", lblBowlerName: "Nombre del Jugador", lblBowlingStyle: "Estilo de Juego",
+                formTitleNew: "Nuevo Jugador", formTitleEdit: "Editar Perfil", lblBowlerName: "Nombre del Jugador", lblPhone: "Teléfono", phonePh: "Número de teléfono", lblBowlingStyle: "Estilo de Juego",
                 optStyleRight: "Diestro (1 Mano)", optStyleLeft: "Zurdo (1 Mano)", optStyleNoThumb: "Sin Pulgar (2 Manos)",
                 optPapRight: "→ Der", optPapLeft: "← Izq", optPapUp: "↑ Arr", optPapDown: "↓ Aba",
                 lblStats: "Estadísticas (Vel, Rev, Tilt, Rot)", statRevs: "Rev (RPM)", statAvg: "Promedio Liga", statSpeed: "Velocidad (MPH)",
@@ -853,7 +862,7 @@
 
             if (!currentUser) { document.getElementById('authScreen').classList.remove('hidden'); }
             
-            ['txtHeaderVault','txtEmpty','lblBowlerName','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS', 'lblAdminTerminal', 'lblAdminActive', 'lblAdminPending', 'lblAdminNewUsers', 'lblAdminMonitor', 'lblAdminWarn', 'lblAdminCrit', 'optFltWeek', 'optFltMonth', 'optFltQuarter', 'optFltSemester', 'optFltYear'].forEach(id => {
+            ['txtHeaderVault','txtEmpty','lblBowlerName','lblPhone','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS', 'lblAdminTerminal', 'lblAdminActive', 'lblAdminPending', 'lblAdminNewUsers', 'lblAdminMonitor', 'lblAdminWarn', 'lblAdminCrit', 'optFltWeek', 'optFltMonth', 'optFltQuarter', 'optFltSemester', 'optFltYear'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
@@ -863,6 +872,7 @@
             if(document.getElementById('btnMenuAdmin')) document.getElementById('btnMenuAdmin').innerHTML = t.menuAdmin;
             
             document.getElementById('searchInput').placeholder = t.searchPh;
+            document.getElementById('bPhone').placeholder = t.phonePh;
             document.getElementById('statRevs').placeholder = t.statRevs;
             document.getElementById('statAvg').placeholder = t.statAvg;
             document.getElementById('statSpeed').placeholder = t.statSpeed;
@@ -1352,6 +1362,8 @@
 
             document.getElementById('pdfName').innerText = b.name;
             document.getElementById('pdfStyle').innerText = b.style === 'no_thumb' ? '2-Handed (No Thumb)' : (b.style === 'left' ? 'Left Handed (1-Hand)' : 'Right Handed (1-Hand)');
+            document.getElementById('pdfPhoneLabel').innerText = currentLang === 'es' ? 'Teléfono' : 'Phone';
+            document.getElementById('pdfPhone').innerText = b.phone || '-';
             document.getElementById('pdfVel').innerText = b.speed ? `${b.speed} mph` : '-';
             document.getElementById('pdfRev').innerText = b.revs ? `${b.revs} rpm` : '-';
             document.getElementById('pdfTilt').innerText = b.tilt ? `${b.tilt}°` : '-';
@@ -1360,6 +1372,10 @@
             document.getElementById('pdfPap').innerText = `X: ${b.papX || '0'} ${b.papXDir || ''} / Y: ${b.papY || '0'} ${b.papYDir || ''}`;
             document.getElementById('pdfLeftSpan').innerText = b.spanLeft || '-';
             document.getElementById('pdfRightSpan').innerText = b.spanRight || '-';
+            const thumbSizeLabels = currentLang === 'es'
+                ? { normal: 'Normal', small: 'Pequeño (+1/8 ADE)', large: 'Grande (+1/8 ATR)' }
+                : { normal: 'Normal', small: 'Small (+1/8 FWD)', large: 'Large (+1/8 REV)' };
+            document.getElementById('pdfThumbSize').innerText = b.style === 'no_thumb' ? 'N/A' : (thumbSizeLabels[b.thumbSize] || '-');
             document.getElementById('pdfLf1').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''}`;
             document.getElementById('pdfLf2').innerText = `${b.lfP2 || '0'} ${b.lfD2 || ''}`;
             document.getElementById('pdfRf1').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''}`;
@@ -1439,6 +1455,7 @@
                                         <span>Avg: <strong class="text-gray-200">${b.avg || '-'}</strong></span>
                                         <span>Spd: <strong class="text-gray-200">${b.speed ? b.speed : '-'}</strong></span>
                                     </div>
+                                    ${b.phone ? `<div class="text-xs text-gray-400 mt-1 font-sans">☎ ${b.phone}</div>` : ''}
                                 </div>
                             </div>
                             <div class="text-primary font-bold pointer-events-none font-sans">›</div>
@@ -1464,6 +1481,7 @@
                 if (b) {
                     document.getElementById('bowlerId').value = b.id;
                     document.getElementById('bName').value = b.name || '';
+                    document.getElementById('bPhone').value = b.phone || '';
                     document.getElementById('bowlerStyle').value = b.style || 'right';
                     document.getElementById('papX').value = b.papX || ''; document.getElementById('papXDir').value = b.papXDir || '→';
                     document.getElementById('papY').value = b.papY || ''; document.getElementById('papYDir').value = b.papYDir || '↑';
@@ -1511,7 +1529,7 @@
                 arsenal.push({ name: document.getElementById(`ball_name_${i}`).value, layout: document.getElementById(`ball_layout_${i}`).value, finish: document.getElementById(`ball_finish_${i}`).value });
             }
             const bowler = {
-                id: document.getElementById('bowlerId').value, name: document.getElementById('bName').value, style: document.getElementById('bowlerStyle').value,
+                id: document.getElementById('bowlerId').value, name: document.getElementById('bName').value, phone: document.getElementById('bPhone').value.trim(), style: document.getElementById('bowlerStyle').value,
                 papX: document.getElementById('papX').value, papXDir: document.getElementById('papXDir').value, papY: document.getElementById('papY').value, papYDir: document.getElementById('papYDir').value,
                 revs: document.getElementById('statRevs').value, avg: document.getElementById('statAvg').value, speed: document.getElementById('statSpeed').value,
                 tilt: document.getElementById('statTilt').value, rot: document.getElementById('statRot').value,
@@ -1542,7 +1560,7 @@
 
         function filterBowlers() {
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allBowlers.filter(b => b.name.toLowerCase().includes(query));
+            const filtered = allBowlers.filter(b => b.name.toLowerCase().includes(query) || (b.phone || '').toLowerCase().includes(query));
             renderBowlers(filtered);
         }
     </script>
