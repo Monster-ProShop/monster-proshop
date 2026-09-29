@@ -237,17 +237,23 @@
             </svg>
 
             <div style="position:absolute; left:18px; top:28px; width:174px; border-left:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5;">
-                <b>LEFT FINGER</b><br>Y · FWD/REV: <strong id="pdfLf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfLf2">-</strong><br>GRIP: <strong id="pdfLfGripSize">-</strong><br>DRILL BIT: <strong id="pdfLfDrillBit">-</strong>
+                <b>LEFT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfLf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfLf2">-</strong>
             </div>
             <div style="position:absolute; right:18px; top:28px; width:174px; border-right:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5; text-align:right;">
-                <b>RIGHT FINGER</b><br>Y · FWD/REV: <strong id="pdfRf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfRf2">-</strong><br>GRIP: <strong id="pdfRfGripSize">-</strong><br>DRILL BIT: <strong id="pdfRfDrillBit">-</strong>
+                <b>RIGHT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfRf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfRf2">-</strong>
             </div>
 
             <div style="position:absolute; left:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">LEFT FINGER
-                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; background:#38bdf8; box-shadow:inset 0 0 0 8px #bae6fd;"></div>
+                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; overflow:hidden; background:#bae6fd; display:flex; flex-direction:column; color:#0b0f19;">
+                    <div style="height:50%; display:flex; flex-direction:column; justify-content:center; border-bottom:2px solid #0b0f19; font-size:8px; line-height:1.05;"><span>INSERT</span><strong id="pdfLfGripSize" style="font-size:11px;"></strong></div>
+                    <div style="height:50%; display:flex; flex-direction:column; justify-content:center; font-size:8px; line-height:1.05;"><span>DRILL BIT</span><strong id="pdfLfDrillBit" style="font-size:11px;"></strong></div>
+                </div>
             </div>
             <div style="position:absolute; right:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">RIGHT FINGER
-                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; background:#38bdf8; box-shadow:inset 0 0 0 8px #bae6fd;"></div>
+                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; overflow:hidden; background:#bae6fd; display:flex; flex-direction:column; color:#0b0f19;">
+                    <div style="height:50%; display:flex; flex-direction:column; justify-content:center; border-bottom:2px solid #0b0f19; font-size:8px; line-height:1.05;"><span>INSERT</span><strong id="pdfRfGripSize" style="font-size:11px;"></strong></div>
+                    <div style="height:50%; display:flex; flex-direction:column; justify-content:center; font-size:8px; line-height:1.05;"><span>DRILL BIT</span><strong id="pdfRfDrillBit" style="font-size:11px;"></strong></div>
+                </div>
             </div>
             <div style="position:absolute; left:302px; top:60px; width:76px; text-align:center; background:#fff; font-size:10px; font-weight:900;">BRIDGE</div>
 
@@ -1388,12 +1394,12 @@
             document.getElementById('pdfThumbSize').innerText = b.style === 'no_thumb' ? 'N/A' : (thumbSizeLabels[b.thumbSize] || '-');
             document.getElementById('pdfLf1').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''}`;
             document.getElementById('pdfLf2').innerText = `${b.lfP2 || '0'} ${b.lfD2 || ''}`;
-            document.getElementById('pdfLfGripSize').innerText = b.lfGripSize || '-';
-            document.getElementById('pdfLfDrillBit').innerText = b.lfDrillBit || '-';
+            document.getElementById('pdfLfGripSize').innerText = b.lfGripSize || '';
+            document.getElementById('pdfLfDrillBit').innerText = b.lfDrillBit || '';
             document.getElementById('pdfRf1').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''}`;
             document.getElementById('pdfRf2').innerText = `${b.rfP2 || '0'} ${b.rfD2 || ''}`;
-            document.getElementById('pdfRfGripSize').innerText = b.rfGripSize || '-';
-            document.getElementById('pdfRfDrillBit').innerText = b.rfDrillBit || '-';
+            document.getElementById('pdfRfGripSize').innerText = b.rfGripSize || '';
+            document.getElementById('pdfRfDrillBit').innerText = b.rfDrillBit || '';
 
             if(b.style === 'no_thumb') {
                 document.getElementById('pdfThumbContainer').style.display = 'none';
