@@ -237,10 +237,10 @@
             </svg>
 
             <div style="position:absolute; left:18px; top:28px; width:174px; border-left:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5;">
-                <b>LEFT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfLf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfLf2">-</strong>
+                <b>LEFT FINGER</b><br>Y · FWD/REV: <strong id="pdfLf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfLf2">-</strong><br>GRIP: <strong id="pdfLfGripSize">-</strong><br>DRILL BIT: <strong id="pdfLfDrillBit">-</strong>
             </div>
             <div style="position:absolute; right:18px; top:28px; width:174px; border-right:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5; text-align:right;">
-                <b>RIGHT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfRf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfRf2">-</strong>
+                <b>RIGHT FINGER</b><br>Y · FWD/REV: <strong id="pdfRf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfRf2">-</strong><br>GRIP: <strong id="pdfRfGripSize">-</strong><br>DRILL BIT: <strong id="pdfRfDrillBit">-</strong>
             </div>
 
             <div style="position:absolute; left:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">LEFT FINGER
@@ -525,6 +525,10 @@
                         <select id="lfP2" class="pitch-input font-sans"></select>
                         <select id="lfD2" class="dir-select dir-x font-sans"></select>
                     </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <input type="text" id="lfGripSize" class="pitch-input font-sans" placeholder="Grip / insert size">
+                        <input type="text" id="lfDrillBit" class="pitch-input font-sans" placeholder="Drill bit size">
+                    </div>
                 </div>
 
                 <div class="bg-gray-900 p-2 rounded border border-gray-700">
@@ -536,6 +540,10 @@
                     <div class="flex gap-2">
                         <select id="rfP2" class="pitch-input font-sans"></select>
                         <select id="rfD2" class="dir-select dir-x font-sans"></select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <input type="text" id="rfGripSize" class="pitch-input font-sans" placeholder="Grip / insert size">
+                        <input type="text" id="rfDrillBit" class="pitch-input font-sans" placeholder="Drill bit size">
                     </div>
                 </div>
 
@@ -794,7 +802,7 @@
                 lblStats: "Stats (Speed, Revs, Tilt, Rot)", statRevs: "Revs (RPM)", statAvg: "League Average", statSpeed: "Speed (MPH)",
                 lblDrillSheet: "Drill Sheet / Pitches", lblSpans: "Spans",
                 optThumbNormal: "Normal Thumb", optThumbSmall: "Small Thumb (+1/8 FWD)", optThumbLarge: "Large Thumb (+1/8 REV)", btnAutoPitch: "Auto-Pitch",
-                lblLeftFinger: "Left Finger", lblRightFinger: "Right Finger", lblThumb: "Thumb", lblThumbOval: "Thumb Oval Generator",
+                lblLeftFinger: "Left Finger", lblRightFinger: "Right Finger", gripSizePh: "Grip / insert size", drillBitPh: "Drill bit size", lblThumb: "Thumb", lblThumbOval: "Thumb Oval Generator",
                 btnGenerate: "GENERATE CUTS", lblPhoto: "Physical Spec Sheet Photo (Optional)", lblArsenal: "Arsenal (9 Balls Max)",
                 lblVideo: "Release Video", btnSave: "SAVE PROFILE", btnDelete: "DELETE",
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
@@ -821,7 +829,7 @@
                 lblStats: "Estadísticas (Vel, Rev, Tilt, Rot)", statRevs: "Rev (RPM)", statAvg: "Promedio Liga", statSpeed: "Velocidad (MPH)",
                 lblDrillSheet: "Perforación / Inclinaciones", lblSpans: "Distancias (Spans)",
                 optThumbNormal: "Pulgar Normal", optThumbSmall: "Pulgar Pequeño (+1/8 ADE)", optThumbLarge: "Pulgar Grande (+1/8 ATR)", btnAutoPitch: "Auto-Inclinación",
-                lblLeftFinger: "Dedo Izquierdo", lblRightFinger: "Dedo Derecho", lblThumb: "Pulgar", lblThumbOval: "Generador Óvalo de Pulgar",
+                lblLeftFinger: "Dedo Izquierdo", lblRightFinger: "Dedo Derecho", gripSizePh: "Tamaño de grip / inserto", drillBitPh: "Tamaño de broca", lblThumb: "Pulgar", lblThumbOval: "Generador Óvalo de Pulgar",
                 btnGenerate: "GENERAR CORTES", lblPhoto: "Foto de Hoja Física (Opcional)", lblArsenal: "Arsenal (Máx 9 Bolas)",
                 lblVideo: "Video de Lanzamiento", btnSave: "GUARDAR PERFIL", btnDelete: "ELIMINAR",
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
@@ -876,6 +884,8 @@
             document.getElementById('statRevs').placeholder = t.statRevs;
             document.getElementById('statAvg').placeholder = t.statAvg;
             document.getElementById('statSpeed').placeholder = t.statSpeed;
+            ['lfGripSize','rfGripSize'].forEach(id => document.getElementById(id).placeholder = t.gripSizePh);
+            ['lfDrillBit','rfDrillBit'].forEach(id => document.getElementById(id).placeholder = t.drillBitPh);
 
             document.querySelectorAll('.dir-y').forEach(el => {
                 let val = el.value; el.innerHTML = `<option value="↑">${t.dirYUp}</option><option value="↓">${t.dirYDown}</option>`; el.value = val || '↑';
@@ -1378,8 +1388,12 @@
             document.getElementById('pdfThumbSize').innerText = b.style === 'no_thumb' ? 'N/A' : (thumbSizeLabels[b.thumbSize] || '-');
             document.getElementById('pdfLf1').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''}`;
             document.getElementById('pdfLf2').innerText = `${b.lfP2 || '0'} ${b.lfD2 || ''}`;
+            document.getElementById('pdfLfGripSize').innerText = b.lfGripSize || '-';
+            document.getElementById('pdfLfDrillBit').innerText = b.lfDrillBit || '-';
             document.getElementById('pdfRf1').innerText = `${b.rfP1 || '0'} ${b.rfD1 || ''}`;
             document.getElementById('pdfRf2').innerText = `${b.rfP2 || '0'} ${b.rfD2 || ''}`;
+            document.getElementById('pdfRfGripSize').innerText = b.rfGripSize || '-';
+            document.getElementById('pdfRfDrillBit').innerText = b.rfDrillBit || '-';
 
             if(b.style === 'no_thumb') {
                 document.getElementById('pdfThumbContainer').style.display = 'none';
@@ -1502,7 +1516,9 @@
                     document.getElementById('statSpeed').value = b.speed || ''; document.getElementById('statTilt').value = b.tilt || ''; document.getElementById('statRot').value = b.rot || '';
                     document.getElementById('spanLeft').value = b.spanLeft || ''; document.getElementById('spanRight').value = b.spanRight || ''; document.getElementById('thumbSize').value = b.thumbSize || 'normal';
                     document.getElementById('lfP1').value = b.lfP1 || '0'; document.getElementById('lfD1').value = b.lfD1 || '↑'; document.getElementById('lfP2').value = b.lfP2 || '0'; document.getElementById('lfD2').value = b.lfD2 || '←';
+                    document.getElementById('lfGripSize').value = b.lfGripSize || ''; document.getElementById('lfDrillBit').value = b.lfDrillBit || '';
                     document.getElementById('rfP1').value = b.rfP1 || '0'; document.getElementById('rfD1').value = b.rfD1 || '↑'; document.getElementById('rfP2').value = b.rfP2 || '0'; document.getElementById('rfD2').value = b.rfD2 || '←';
+                    document.getElementById('rfGripSize').value = b.rfGripSize || ''; document.getElementById('rfDrillBit').value = b.rfDrillBit || '';
                     document.getElementById('thP1').value = b.thP1 || '0'; document.getElementById('thD1').value = b.thD1 || '↑'; document.getElementById('thP2').value = b.thP2 || '0'; document.getElementById('thD2').value = b.thD2 || '←';
                     document.getElementById('thumbStart').value = b.thumbStart || ''; document.getElementById('thumbOval').value = b.thumbOval || ''; document.getElementById('thumbEnd').value = b.thumbEnd || '';
 
@@ -1548,7 +1564,9 @@
                 tilt: document.getElementById('statTilt').value, rot: document.getElementById('statRot').value,
                 spanLeft: document.getElementById('spanLeft').value, spanRight: document.getElementById('spanRight').value, thumbSize: document.getElementById('thumbSize').value,
                 lfP1: document.getElementById('lfP1').value, lfD1: document.getElementById('lfD1').value, lfP2: document.getElementById('lfP2').value, lfD2: document.getElementById('lfD2').value,
+                lfGripSize: document.getElementById('lfGripSize').value.trim(), lfDrillBit: document.getElementById('lfDrillBit').value.trim(),
                 rfP1: document.getElementById('rfP1').value, rfD1: document.getElementById('rfD1').value, rfP2: document.getElementById('rfP2').value, rfD2: document.getElementById('rfD2').value,
+                rfGripSize: document.getElementById('rfGripSize').value.trim(), rfDrillBit: document.getElementById('rfDrillBit').value.trim(),
                 thP1: document.getElementById('thP1').value, thD1: document.getElementById('thD1').value, thP2: document.getElementById('thP2').value, thD2: document.getElementById('thD2').value,
                 thumbStart: document.getElementById('thumbStart').value, thumbOval: document.getElementById('thumbOval').value, thumbEnd: document.getElementById('thumbEnd').value, cutsOutput: document.getElementById('cutsOutput').innerHTML,
                 profilePhoto: document.getElementById('profilePhotoData').value, photo: document.getElementById('drillPhotoData').value, video: document.getElementById('videoData').value, arsenal: arsenal
