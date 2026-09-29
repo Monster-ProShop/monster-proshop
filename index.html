@@ -215,56 +215,53 @@
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <div style="border: 2px solid #000; padding: 12px; border-radius: 6px;">
+        <div style="border: 2px solid #0b0f19; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px;">
                 <div style="font-size: 11px; font-weight: 900; color: #0369a1; border-bottom: 2px solid #38bdf8; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bowler Specs & Stats</div>
-                <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
-                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">VEL (Speed):</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfVel">-</td></tr>
-                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">REV (Revs):</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfRev">-</td></tr>
-                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">TILT:</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfTilt">-</td></tr>
-                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">ROT:</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfRot">-</td></tr>
-                    <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">AVG:</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfAvg">-</td></tr>
-                </table>
-                <div style="margin-top: 10px; border-top: 1px dashed #000; padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 12px; font-weight: 900;">PAP:</span>
-                    <span style="font-size: 13px; font-weight: bold; border: 1px solid #000; padding: 2px 8px; border-radius: 4px;" id="pdfPap">--</span>
+                <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; font-size: 10px; text-align: center;">
+                    <div><b>SPEED</b><br><span id="pdfVel">-</span></div>
+                    <div><b>REVS</b><br><span id="pdfRev">-</span></div>
+                    <div><b>AXIS TILT</b><br><span id="pdfTilt">-</span></div>
+                    <div><b>ROTATION</b><br><span id="pdfRot">-</span></div>
+                    <div><b>AVERAGE</b><br><span id="pdfAvg">-</span></div>
+                    <div><b>PAP</b><br><span id="pdfPap">--</span></div>
                 </div>
-            </div>
-
-            <div style="border: 2px solid #000; padding: 12px; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between;">
-                <div>
-                    <div style="font-size: 11px; font-weight: 900; color: #0369a1; border-bottom: 2px solid #38bdf8; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bridge & Spans</div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
-                        <span style="font-weight: bold;">Left Span:</span><span style="font-weight: bold;" id="pdfLeftSpan">-</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
-                        <span style="font-weight: bold;">Right Span:</span><span style="font-weight: bold;" id="pdfRightSpan">-</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
-                        <span style="font-weight: bold;">Thumb Fit:</span><span style="font-weight: bold;" id="pdfThumbSize">-</span>
-                    </div>
-                </div>
-                <div style="background: #e0f2fe; color: #075985; text-align: center; padding: 6px; font-weight: 900; font-size: 11px; border: 1px solid #38bdf8; border-radius: 4px;">
-                    PUENTE (BRIDGE)
-                </div>
-            </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
-                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Left Finger</div>
-                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Pitch 1 (Y): <span id="pdfLf1" style="font-family: monospace;">-</span></div>
-                <div style="font-size: 12px; font-weight: bold;">Pitch 2 (X): <span id="pdfLf2" style="font-family: monospace;">-</span></div>
+        <div style="position: relative; height: 320px; border: 2px solid #0b0f19; border-radius: 6px; margin-bottom: 12px; overflow: hidden; background: #fff;">
+            <div style="position: absolute; inset: 0; opacity: .14; background: radial-gradient(circle at center, #38bdf8 0, transparent 55%);"></div>
+            <svg viewBox="0 0 680 320" style="position: absolute; inset: 0; width: 100%; height: 100%;" aria-hidden="true">
+                <defs><marker id="pdfArrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#0b0f19"/></marker></defs>
+                <line x1="270" y1="78" x2="410" y2="78" stroke="#0b0f19" stroke-width="3"/>
+                <line x1="273" y1="115" x2="330" y2="213" stroke="#0b0f19" stroke-width="3" marker-end="url(#pdfArrow)"/>
+                <line x1="407" y1="115" x2="350" y2="213" stroke="#0b0f19" stroke-width="3" marker-end="url(#pdfArrow)"/>
+            </svg>
+
+            <div style="position:absolute; left:18px; top:28px; width:174px; border-left:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5;">
+                <b>LEFT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfLf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfLf2">-</strong>
             </div>
-            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
-                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Right Finger</div>
-                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Pitch 1 (Y): <span id="pdfRf1" style="font-family: monospace;">-</span></div>
-                <div style="font-size: 12px; font-weight: bold;">Pitch 2 (X): <span id="pdfRf2" style="font-family: monospace;">-</span></div>
+            <div style="position:absolute; right:18px; top:28px; width:174px; border-right:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5; text-align:right;">
+                <b>RIGHT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfRf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfRf2">-</strong>
             </div>
-            <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;" id="pdfThumbContainer">
-                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb</div>
-                <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Pitch 1 (Y): <span id="pdfTh1" style="font-family: monospace;">-</span></div>
-                <div style="font-size: 12px; font-weight: bold;">Pitch 2 (X): <span id="pdfTh2" style="font-family: monospace;">-</span></div>
+
+            <div style="position:absolute; left:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">LEFT FINGER
+                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; background:#38bdf8; box-shadow:inset 0 0 0 8px #bae6fd;"></div>
+            </div>
+            <div style="position:absolute; right:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">RIGHT FINGER
+                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; background:#38bdf8; box-shadow:inset 0 0 0 8px #bae6fd;"></div>
+            </div>
+            <div style="position:absolute; left:302px; top:60px; width:76px; text-align:center; background:#fff; font-size:10px; font-weight:900;">BRIDGE</div>
+
+            <div style="position:absolute; left:231px; top:147px; width:86px; text-align:center; font-size:10px; font-weight:900; background:#fff;">LEFT SPAN<br><span id="pdfLeftSpan" style="font-size:13px; color:#0369a1;">-</span></div>
+            <div style="position:absolute; right:231px; top:147px; width:86px; text-align:center; font-size:10px; font-weight:900; background:#fff;">RIGHT SPAN<br><span id="pdfRightSpan" style="font-size:13px; color:#0369a1;">-</span></div>
+
+            <div id="pdfThumbContainer" style="position:absolute; left:294px; top:204px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">THUMB
+                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; background:#38bdf8; box-shadow:inset 0 0 0 8px #bae6fd;"></div>
+            </div>
+            <div id="pdfThumbPitchLeft" style="position:absolute; left:53px; top:217px; width:190px; border-left:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5;">
+                <b>THUMB PITCH</b><br>Y · FWD/REV: <strong id="pdfTh1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfTh2">-</strong>
+            </div>
+            <div id="pdfThumbFitBox" style="position:absolute; right:53px; top:229px; width:190px; border-right:4px solid #38bdf8; padding:9px; background:#e0f2fe; font-size:11px; text-align:right;">
+                <b>THUMB FIT</b><br><strong id="pdfThumbSize">-</strong>
             </div>
         </div>
 
@@ -1386,9 +1383,13 @@
 
             if(b.style === 'no_thumb') {
                 document.getElementById('pdfThumbContainer').style.display = 'none';
+                document.getElementById('pdfThumbPitchLeft').style.display = 'none';
+                document.getElementById('pdfThumbFitBox').style.display = 'none';
                 document.getElementById('pdfOvalBox').style.display = 'none';
             } else {
                 document.getElementById('pdfThumbContainer').style.display = 'block';
+                document.getElementById('pdfThumbPitchLeft').style.display = 'block';
+                document.getElementById('pdfThumbFitBox').style.display = 'block';
                 document.getElementById('pdfOvalBox').style.display = 'block';
                 document.getElementById('pdfTh1').innerText = `${b.thP1 || '0'} ${b.thD1 || ''}`;
                 document.getElementById('pdfTh2').innerText = `${b.thP2 || '0'} ${b.thD2 || ''}`;
