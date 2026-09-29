@@ -237,19 +237,19 @@
             </svg>
 
             <div style="position:absolute; left:18px; top:28px; width:174px; border-left:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5;">
-                <b>LEFT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfLf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfLf2">-</strong>
+                <b>MIDDLE FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfLf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfLf2">-</strong>
             </div>
             <div style="position:absolute; right:18px; top:28px; width:174px; border-right:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5; text-align:right;">
-                <b>RIGHT FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfRf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfRf2">-</strong>
+                <b>RING FINGER PITCH</b><br>Y · FWD/REV: <strong id="pdfRf1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfRf2">-</strong>
             </div>
 
-            <div style="position:absolute; left:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">LEFT FINGER
+            <div style="position:absolute; left:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">MIDDLE FINGER
                 <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; overflow:hidden; background:#bae6fd; display:flex; flex-direction:column; color:#0b0f19;">
                     <div style="height:50%; display:flex; flex-direction:column; justify-content:center; border-bottom:2px solid #0b0f19; font-size:8px; line-height:1.05;"><span>INSERT</span><strong id="pdfLfGripSize" style="font-size:11px;"></strong></div>
                     <div style="height:50%; display:flex; flex-direction:column; justify-content:center; font-size:8px; line-height:1.05;"><span>DRILL BIT</span><strong id="pdfLfDrillBit" style="font-size:11px;"></strong></div>
                 </div>
             </div>
-            <div style="position:absolute; right:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">RIGHT FINGER
+            <div style="position:absolute; right:220px; top:34px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">RING FINGER
                 <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; overflow:hidden; background:#bae6fd; display:flex; flex-direction:column; color:#0b0f19;">
                     <div style="height:50%; display:flex; flex-direction:column; justify-content:center; border-bottom:2px solid #0b0f19; font-size:8px; line-height:1.05;"><span>INSERT</span><strong id="pdfRfGripSize" style="font-size:11px;"></strong></div>
                     <div style="height:50%; display:flex; flex-direction:column; justify-content:center; font-size:8px; line-height:1.05;"><span>DRILL BIT</span><strong id="pdfRfDrillBit" style="font-size:11px;"></strong></div>
@@ -257,11 +257,15 @@
             </div>
             <div style="position:absolute; left:302px; top:60px; width:76px; text-align:center; background:#fff; font-size:10px; font-weight:900;">BRIDGE</div>
 
-            <div style="position:absolute; left:231px; top:147px; width:86px; text-align:center; font-size:10px; font-weight:900; background:#fff;">LEFT SPAN<br><span id="pdfLeftSpan" style="font-size:13px; color:#0369a1;">-</span></div>
-            <div style="position:absolute; right:231px; top:147px; width:86px; text-align:center; font-size:10px; font-weight:900; background:#fff;">RIGHT SPAN<br><span id="pdfRightSpan" style="font-size:13px; color:#0369a1;">-</span></div>
+            <div style="position:absolute; left:231px; top:147px; width:86px; text-align:center; font-size:10px; font-weight:900; background:#fff;">MIDDLE SPAN<br><span id="pdfLeftSpan" style="font-size:13px; color:#0369a1;">-</span></div>
+            <div style="position:absolute; right:231px; top:147px; width:86px; text-align:center; font-size:10px; font-weight:900; background:#fff;">RING SPAN<br><span id="pdfRightSpan" style="font-size:13px; color:#0369a1;">-</span></div>
 
             <div id="pdfThumbContainer" style="position:absolute; left:294px; top:204px; width:92px; text-align:center; font-size:10px; font-weight:900; color:#075985;">THUMB
-                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; background:#38bdf8; box-shadow:inset 0 0 0 8px #bae6fd;"></div>
+                <div style="width:76px; height:76px; margin:5px auto; border:4px solid #0b0f19; border-radius:50%; overflow:hidden; background:#bae6fd; display:flex; flex-direction:column; color:#0b0f19;">
+                    <div style="height:33.34%; display:flex; flex-direction:column; justify-content:center; border-bottom:1.5px solid #0b0f19; font-size:6.5px; line-height:1;"><span>LOWER BIT</span><strong id="pdfThumbStart" style="font-size:9px;"></strong></div>
+                    <div style="height:33.33%; display:flex; flex-direction:column; justify-content:center; border-bottom:1.5px solid #0b0f19; font-size:6.5px; line-height:1;"><span>OVAL ANGLE</span><strong id="pdfThumbOval" style="font-size:9px;"></strong></div>
+                    <div style="height:33.33%; display:flex; flex-direction:column; justify-content:center; font-size:6.5px; line-height:1;"><span>FINISH SIZE</span><strong id="pdfThumbEnd" style="font-size:9px;"></strong></div>
+                </div>
             </div>
             <div id="pdfThumbPitchLeft" style="position:absolute; left:53px; top:217px; width:190px; border-left:4px solid #38bdf8; padding:7px 9px; background:#e0f2fe; font-size:11px; line-height:1.5;">
                 <b>THUMB PITCH</b><br>Y · FWD/REV: <strong id="pdfTh1">-</strong><br>X · LEFT/RIGHT: <strong id="pdfTh2">-</strong>
@@ -507,8 +511,8 @@
                 <div id="spanSection" class="space-y-2 pb-2 border-b border-gray-800">
                     <span id="lblSpans" class="text-xs font-bold text-gray-400 block">Spans</span>
                     <div class="grid grid-cols-2 gap-2">
-                        <select id="spanLeft" class="pitch-input text-center text-sm font-sans"></select>
-                        <select id="spanRight" class="pitch-input text-center text-sm font-sans"></select>
+                        <label class="text-[10px] text-gray-500 text-center"><span id="lblMiddleSpan">Middle Finger</span><select id="spanLeft" class="pitch-input text-center text-sm font-sans mt-1"></select></label>
+                        <label class="text-[10px] text-gray-500 text-center"><span id="lblRingSpan">Ring Finger</span><select id="spanRight" class="pitch-input text-center text-sm font-sans mt-1"></select></label>
                     </div>
                     
                     <div class="flex gap-2 items-center bg-gray-900 p-2 rounded border border-gray-700 mt-2">
@@ -522,7 +526,7 @@
                 </div>
 
                 <div class="bg-gray-900 p-2 rounded border border-gray-700">
-                    <span id="lblLeftFinger" class="text-xs font-bold text-gray-400 block mb-1">Left Finger</span>
+                    <span id="lblLeftFinger" class="text-xs font-bold text-gray-400 block mb-1">Middle Finger</span>
                     <div class="flex gap-2 mb-2">
                         <select id="lfP1" class="pitch-input font-sans"></select>
                         <select id="lfD1" class="dir-select dir-y font-sans"></select>
@@ -538,7 +542,7 @@
                 </div>
 
                 <div class="bg-gray-900 p-2 rounded border border-gray-700">
-                    <span id="lblRightFinger" class="text-xs font-bold text-gray-400 block mb-1">Right Finger</span>
+                    <span id="lblRightFinger" class="text-xs font-bold text-gray-400 block mb-1">Ring Finger</span>
                     <div class="flex gap-2 mb-2">
                         <select id="rfP1" class="pitch-input font-sans"></select>
                         <select id="rfD1" class="dir-select dir-y font-sans"></select>
@@ -806,9 +810,9 @@
                 optStyleRight: "Right Handed (1-Hand)", optStyleLeft: "Left Handed (1-Hand)", optStyleNoThumb: "No Thumb (2-Handed)",
                 optPapRight: "→ R", optPapLeft: "← L", optPapUp: "↑ Up", optPapDown: "↓ Dn",
                 lblStats: "Stats (Speed, Revs, Tilt, Rot)", statRevs: "Revs (RPM)", statAvg: "League Average", statSpeed: "Speed (MPH)",
-                lblDrillSheet: "Drill Sheet / Pitches", lblSpans: "Spans",
+                lblDrillSheet: "Drill Sheet / Pitches", lblSpans: "Spans", lblMiddleSpan: "Middle Finger", lblRingSpan: "Ring Finger",
                 optThumbNormal: "Normal Thumb", optThumbSmall: "Small Thumb (+1/8 FWD)", optThumbLarge: "Large Thumb (+1/8 REV)", btnAutoPitch: "Auto-Pitch",
-                lblLeftFinger: "Left Finger", lblRightFinger: "Right Finger", gripSizePh: "Grip / insert size", drillBitPh: "Drill bit size", lblThumb: "Thumb", lblThumbOval: "Thumb Oval Generator",
+                lblLeftFinger: "Middle Finger", lblRightFinger: "Ring Finger", gripSizePh: "Grip / insert size", drillBitPh: "Drill bit size", thumbStartPh: "Lower drill bit", thumbOvalPh: "Oval angle", thumbEndPh: "Finishing size", lblThumb: "Thumb", lblThumbOval: "Thumb Oval Generator",
                 btnGenerate: "GENERATE CUTS", lblPhoto: "Physical Spec Sheet Photo (Optional)", lblArsenal: "Arsenal (9 Balls Max)",
                 lblVideo: "Release Video", btnSave: "SAVE PROFILE", btnDelete: "DELETE",
                 alertEndSize: "End size must be larger than start size", alertSpan: "Please select a span first.", confirmDelete: "Delete this bowler profile?",
@@ -833,9 +837,9 @@
                 optStyleRight: "Diestro (1 Mano)", optStyleLeft: "Zurdo (1 Mano)", optStyleNoThumb: "Sin Pulgar (2 Manos)",
                 optPapRight: "→ Der", optPapLeft: "← Izq", optPapUp: "↑ Arr", optPapDown: "↓ Aba",
                 lblStats: "Estadísticas (Vel, Rev, Tilt, Rot)", statRevs: "Rev (RPM)", statAvg: "Promedio Liga", statSpeed: "Velocidad (MPH)",
-                lblDrillSheet: "Perforación / Inclinaciones", lblSpans: "Distancias (Spans)",
+                lblDrillSheet: "Perforación / Inclinaciones", lblSpans: "Distancias (Spans)", lblMiddleSpan: "Dedo Medio", lblRingSpan: "Dedo Anular",
                 optThumbNormal: "Pulgar Normal", optThumbSmall: "Pulgar Pequeño (+1/8 ADE)", optThumbLarge: "Pulgar Grande (+1/8 ATR)", btnAutoPitch: "Auto-Inclinación",
-                lblLeftFinger: "Dedo Izquierdo", lblRightFinger: "Dedo Derecho", gripSizePh: "Tamaño de grip / inserto", drillBitPh: "Tamaño de broca", lblThumb: "Pulgar", lblThumbOval: "Generador Óvalo de Pulgar",
+                lblLeftFinger: "Dedo Medio", lblRightFinger: "Dedo Anular", gripSizePh: "Tamaño de grip / inserto", drillBitPh: "Tamaño de broca", thumbStartPh: "Broca inicial", thumbOvalPh: "Ángulo del óvalo", thumbEndPh: "Tamaño final", lblThumb: "Pulgar", lblThumbOval: "Generador Óvalo de Pulgar",
                 btnGenerate: "GENERAR CORTES", lblPhoto: "Foto de Hoja Física (Opcional)", lblArsenal: "Arsenal (Máx 9 Bolas)",
                 lblVideo: "Video de Lanzamiento", btnSave: "GUARDAR PERFIL", btnDelete: "ELIMINAR",
                 alertEndSize: "El tamaño final debe ser mayor al inicial", alertSpan: "Selecciona una distancia (span) primero.", confirmDelete: "¿Eliminar este perfil de jugador?",
@@ -876,7 +880,7 @@
 
             if (!currentUser) { document.getElementById('authScreen').classList.remove('hidden'); }
             
-            ['txtHeaderVault','txtEmpty','lblBowlerName','lblPhone','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS', 'lblAdminTerminal', 'lblAdminActive', 'lblAdminPending', 'lblAdminNewUsers', 'lblAdminMonitor', 'lblAdminWarn', 'lblAdminCrit', 'optFltWeek', 'optFltMonth', 'optFltQuarter', 'optFltSemester', 'optFltYear'].forEach(id => {
+            ['txtHeaderVault','txtEmpty','lblBowlerName','lblPhone','lblBowlingStyle','optStyleRight','optStyleLeft','optStyleNoThumb','optPapRight','optPapLeft','optPapUp','optPapDown','lblStats','lblDrillSheet','lblSpans','lblMiddleSpan','lblRingSpan','optThumbNormal','optThumbSmall','optThumbLarge','btnAutoPitch','lblLeftFinger','lblRightFinger','lblThumb','lblThumbOval','btnGenerate','lblPhoto','lblArsenal','lblVideo','btnSave','btnDelete','layoutTitle','layoutDesc','lblCalcSpeed','lblCalcRevs','lblCalcTilt','lblCalcRot','lblCalcMovement','lblCalcBall','lblRecLayout','lblOutFinal','optAsym','optSym','lblCalcRG','lblCalcDiff','lblCalcIntDiff','txtSwipeHint','lblProfileLayout','btnGenLayoutProfile','optProfAsym','optProfSym', 'lblCalcSystem', 'optSysDual', 'optSysVLS', 'optSys2LS', 'optProfSysDual', 'optProfSysVLS', 'optProfSys2LS', 'lblAdminTerminal', 'lblAdminActive', 'lblAdminPending', 'lblAdminNewUsers', 'lblAdminMonitor', 'lblAdminWarn', 'lblAdminCrit', 'optFltWeek', 'optFltMonth', 'optFltQuarter', 'optFltSemester', 'optFltYear'].forEach(id => {
                 if(document.getElementById(id)) document.getElementById(id).innerHTML = t[id];
             });
             
@@ -892,6 +896,9 @@
             document.getElementById('statSpeed').placeholder = t.statSpeed;
             ['lfGripSize','rfGripSize'].forEach(id => document.getElementById(id).placeholder = t.gripSizePh);
             ['lfDrillBit','rfDrillBit'].forEach(id => document.getElementById(id).placeholder = t.drillBitPh);
+            document.getElementById('thumbStart').placeholder = t.thumbStartPh;
+            document.getElementById('thumbOval').placeholder = t.thumbOvalPh;
+            document.getElementById('thumbEnd').placeholder = t.thumbEndPh;
 
             document.querySelectorAll('.dir-y').forEach(el => {
                 let val = el.value; el.innerHTML = `<option value="↑">${t.dirYUp}</option><option value="↓">${t.dirYDown}</option>`; el.value = val || '↑';
@@ -1392,6 +1399,9 @@
                 ? { normal: 'Normal', small: 'Pequeño (+1/8 ADE)', large: 'Grande (+1/8 ATR)' }
                 : { normal: 'Normal', small: 'Small (+1/8 FWD)', large: 'Large (+1/8 REV)' };
             document.getElementById('pdfThumbSize').innerText = b.style === 'no_thumb' ? 'N/A' : (thumbSizeLabels[b.thumbSize] || '-');
+            document.getElementById('pdfThumbStart').innerText = b.thumbStart || '';
+            document.getElementById('pdfThumbOval').innerText = b.thumbOval ? `${b.thumbOval}°` : '';
+            document.getElementById('pdfThumbEnd').innerText = b.thumbEnd || '';
             document.getElementById('pdfLf1').innerText = `${b.lfP1 || '0'} ${b.lfD1 || ''}`;
             document.getElementById('pdfLf2').innerText = `${b.lfP2 || '0'} ${b.lfD2 || ''}`;
             document.getElementById('pdfLfGripSize').innerText = b.lfGripSize || '';
