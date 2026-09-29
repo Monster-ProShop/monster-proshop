@@ -46,7 +46,7 @@
         .dir-select { background-color: #1f2937; color: white; border: 1px solid #374151; border-radius: 4px; padding: 8px; font-size: 0.875rem; outline: none; }
         .dir-select:focus { border-color: #38BDF8; }
         
-        #pdfExportContainer { background: white; color: black; padding: 20px; font-family: sans-serif; display: none; box-sizing: border-box; width: 7.5in; }
+        #pdfExportContainer { background: #f8fafc; color: #0b0f19; padding: 20px; font-family: Arial, sans-serif; display: none; box-sizing: border-box; width: 7.5in; border-top: 10px solid #38bdf8; }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-sans antialiased pb-20 overflow-x-hidden">
@@ -200,21 +200,24 @@
 
     <!-- Upright Custom Drill Sheet PDF Export Template -->
     <div id="pdfExportContainer">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #0b0f19; color: #fff; border-bottom: 4px solid #38bdf8; padding: 12px 14px; margin: -20px -20px 15px;">
             <div>
                 <h1 style="font-size: 22px; font-weight: 900; margin: 0; text-transform: uppercase;" id="pdfName">Bowler Name</h1>
-                <div style="font-size: 12px; font-weight: bold; color: #444; margin-top: 2px;" id="pdfStyle">Right Handed (1-Hand)</div>
-                <div style="font-size: 11px; color: #444; margin-top: 2px;"><span id="pdfPhoneLabel">Phone</span>: <span id="pdfPhone">-</span></div>
+                <div style="font-size: 12px; font-weight: bold; color: #cbd5e1; margin-top: 3px;" id="pdfStyle">Right Handed (1-Hand)</div>
+                <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;"><span id="pdfPhoneLabel">Phone</span>: <span id="pdfPhone">-</span></div>
             </div>
-            <div style="text-align: right;">
-                <div style="font-size: 14px; font-weight: 900; color: #000;">PRODRILL OS</div>
-                <div style="font-size: 9px; color: #666;">PRO DRILL OS</div>
+            <div style="display: flex; align-items: center; gap: 9px; text-align: right;">
+                <div>
+                    <div style="font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px;">PRODRILL <span style="color: #38bdf8;">OS</span></div>
+                    <div style="font-size: 9px; color: #94a3b8; letter-spacing: 1.5px;">CORE LAYOUT MATRIX</div>
+                </div>
+                <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" crossorigin="anonymous" alt="ProDrill OS" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid #38bdf8;">
             </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
             <div style="border: 2px solid #000; padding: 12px; border-radius: 6px;">
-                <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bowler Specs & Stats</div>
+                <div style="font-size: 11px; font-weight: 900; color: #0369a1; border-bottom: 2px solid #38bdf8; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bowler Specs & Stats</div>
                 <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
                     <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">VEL (Speed):</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfVel">-</td></tr>
                     <tr><td style="padding: 4px 0; font-weight: bold; color: #333;">REV (Revs):</td><td style="padding: 4px 0; text-align: right; font-weight: bold;" id="pdfRev">-</td></tr>
@@ -230,7 +233,7 @@
 
             <div style="border: 2px solid #000; padding: 12px; border-radius: 6px; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
-                    <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bridge & Spans</div>
+                    <div style="font-size: 11px; font-weight: 900; color: #0369a1; border-bottom: 2px solid #38bdf8; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">Bridge & Spans</div>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px;">
                         <span style="font-weight: bold;">Left Span:</span><span style="font-weight: bold;" id="pdfLeftSpan">-</span>
                     </div>
@@ -241,7 +244,7 @@
                         <span style="font-weight: bold;">Thumb Fit:</span><span style="font-weight: bold;" id="pdfThumbSize">-</span>
                     </div>
                 </div>
-                <div style="background: #eee; text-align: center; padding: 6px; font-weight: 900; font-size: 11px; border: 1px solid #000; border-radius: 4px;">
+                <div style="background: #e0f2fe; color: #075985; text-align: center; padding: 6px; font-weight: 900; font-size: 11px; border: 1px solid #38bdf8; border-radius: 4px;">
                     PUENTE (BRIDGE)
                 </div>
             </div>
@@ -266,12 +269,12 @@
         </div>
 
         <div style="border: 2px solid #000; padding: 10px; border-radius: 6px; margin-bottom: 15px;" id="pdfOvalBox">
-            <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb Oval Cuts / Digital Readings</div>
+            <div style="font-size: 11px; font-weight: 900; color: #0369a1; border-bottom: 2px solid #38bdf8; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Thumb Oval Cuts / Digital Readings</div>
             <div style="font-size: 11px; font-family: monospace; white-space: pre-line;" id="pdfCuts">--</div>
         </div>
 
         <div style="border: 2px solid #000; padding: 10px; border-radius: 6px;">
-            <div style="font-size: 11px; font-weight: 900; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Arsenal Summary</div>
+            <div style="font-size: 11px; font-weight: 900; color: #0369a1; border-bottom: 2px solid #38bdf8; padding-bottom: 4px; margin-bottom: 6px; text-transform: uppercase;">Arsenal Summary</div>
             <table style="width: 100%; font-size: 11px; border-collapse: collapse;" id="pdfArsenalTable">
                 <thead>
                     <tr style="border-bottom: 1px solid #000;">
@@ -282,7 +285,7 @@
                 <tbody id="pdfArsenalBody"></tbody>
             </table>
         </div>
-        <div style="text-align: right; font-size: 9px; color: #666; margin-top: 10px;">Generated via ProDrill OS • prodrillos.com</div>
+        <div style="text-align: right; font-size: 9px; font-weight: bold; color: #0369a1; margin-top: 10px;">Generated via ProDrill OS • prodrillos.com</div>
     </div>
 
     <!-- Master Layout Expert Modal -->
@@ -1421,7 +1424,7 @@
                 margin: 0.4,
                 filename: `${b.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_drill_sheet.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#f8fafc' },
                 jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
