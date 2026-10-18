@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="robots" content="noindex,nofollow">
+<script src="staging-config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ProDrill OS</title>
@@ -11,8 +13,8 @@
     <link rel="manifest" href="manifest.json" id="manifest">
     
     <!-- Updated Favicon & iOS Home Screen Icon -->
-    <link rel="icon" type="image/png" href="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png">
-    <link rel="apple-touch-icon" href="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png">
+    <link rel="icon" type="image/png" href="/brand/prodrillos-logo.png">
+    <link rel="apple-touch-icon" href="/brand/prodrillos-logo.png">
     
     <!-- ProDrill OS Tech Font -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -53,7 +55,7 @@
 
     <!-- Auth / Login Screen -->
     <div id="authScreen" class="fixed inset-0 bg-dark z-50 hidden flex flex-col items-center justify-center p-6">
-        <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" alt="ProDrill OS Logo" class="h-32 w-32 md:h-40 md:w-40 object-cover mb-4 rounded-2xl border border-primary/30 shadow-[0_0_20px_rgba(56,189,248,0.2)]">
+        <img src="/brand/prodrillos-logo.png" alt="ProDrill OS Logo" class="h-32 w-32 md:h-40 md:w-40 object-cover mb-4 rounded-2xl border border-primary/30 shadow-[0_0_20px_rgba(56,189,248,0.2)]">
         <h1 class="text-3xl font-black text-white tracking-widest mb-1">ProDrill <span class="text-primary">OS</span></h1>
         <p class="text-gray-400 mb-8 text-center text-sm uppercase tracking-widest">Core Layout Matrix</p>
         
@@ -100,7 +102,7 @@
     <div id="appContainer" class="hidden">
         <header class="bg-card border-b border-gray-800 sticky top-0 z-30 px-4 py-3 shadow-lg flex justify-between items-center relative">
             <div class="flex items-center gap-3">
-                <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" alt="Logo" class="h-10 w-10 object-cover rounded-lg border border-primary/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]">
+                <img src="/brand/prodrillos-logo.png" alt="Logo" class="h-10 w-10 object-cover rounded-lg border border-primary/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]">
                 <div class="leading-none">
                     <!-- Top Left Logo Text -->
                     <div class="text-xl font-black text-white tracking-widest">ProDrill<span class="text-primary">_OS</span></div>
@@ -211,7 +213,7 @@
                     <div style="font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px;">PRODRILL <span style="color: #38bdf8;">OS</span></div>
                     <div style="font-size: 9px; color: #94a3b8; letter-spacing: 1.5px;">CORE LAYOUT MATRIX</div>
                 </div>
-                <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" crossorigin="anonymous" alt="ProDrill OS" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid #38bdf8;">
+                <img src="/brand/prodrillos-logo.png" crossorigin="anonymous" alt="ProDrill OS" style="width: 46px; height: 46px; border-radius: 8px; object-fit: cover; border: 1px solid #38bdf8;">
             </div>
         </div>
 
@@ -468,7 +470,7 @@
             <div class="bg-card p-4 rounded-lg border border-gray-800 space-y-3 shadow-[0_0_10px_rgba(56,189,248,0.1)]">
                 <div class="flex items-center justify-between mb-2 border-b border-gray-700 pb-2">
                     <div class="flex items-center gap-2">
-                        <img src="https://fbcovchdphwngjcyfxgs.supabase.co/storage/v1/object/public/TempImgsProDrillOS/ProDrillOSLOGO.png" alt="Icon" class="w-5 h-5 rounded">
+                        <img src="/brand/prodrillos-logo.png" alt="Icon" class="w-5 h-5 rounded">
                         <label id="lblProfileLayout" class="block text-xs font-bold text-primary uppercase">Ball Layout</label>
                     </div>
                 </div>
@@ -610,8 +612,12 @@
     </div>
 
     <script>
-        const SUPABASE_URL = "https://fbcovchdphwngjcyfxgs.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZiY292Y2hkcGh3bmdqY3lmeGdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MDU2MzQsImV4cCI6MjEwMzk4MTYzNH0.k42L8YN0Q1BZLM_qrKfxmp-sFXK0LYqJKhZuO-x5iJU";
+        const SUPABASE_URL = window.PRODRILLOS_STAGING?.supabaseUrl;
+        const SUPABASE_KEY = window.PRODRILLOS_STAGING?.supabasePublishableKey;
+        if (!SUPABASE_URL || !SUPABASE_KEY || new URL(SUPABASE_URL).hostname === 'fbcovchdphwngjcyfxgs.supabase.co') {
+            document.body.innerHTML = '<main style="padding:3rem;color:white;background:#0b0f19;font-family:sans-serif"><h1>ProDrillOS Bowler Manager — Staging</h1><p>The isolated Supabase project is pending. Sign-in and data access are disabled.</p></main>';
+            throw new Error('A separate staging Supabase project is required');
+        }
         const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let currentUser = null;
